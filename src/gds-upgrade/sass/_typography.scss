@@ -11,7 +11,7 @@ h1 {
 
 .heading-secondary {
   font-weight: normal;
-  color: map.get($govuk-colours, "dark-grey");
+  color: govuk-colour("dark-grey");
 }
 
 ul.list-bullet {
@@ -80,7 +80,7 @@ dl.inline {
 }
 
 blockquote {
-  background: map.get($govuk-colours, "light-grey");
+  background: govuk-colour("light-grey");
   padding: 15px;
   border-left:5px solid map.get($govuk-colours, "light-grey");
   margin: 15px 0;

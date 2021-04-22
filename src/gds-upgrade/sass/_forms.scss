@@ -128,7 +128,7 @@ fieldset.with-sub-title {
 .button-secondary {
   // @include button(map.get($govuk-colours, "light-grey"));
   &[disabled="disabled"] {
-    background-color: map.get($govuk-colours, "light-grey");
+    background-color: govuk-colour("light-grey");
   }
 }
 
@@ -163,12 +163,12 @@ fieldset.with-sub-title {
 }
 
 .delete-org .button-text {
-  color: map.get($govuk-colours, "blue");
+  color: govuk-colour("blue");
   text-align: left;
 }
 
 .notification-information .button-text {
-  color: map.get($govuk-colours, "blue");
+  color: govuk-colour("blue");
 }
 
 .submit-buttons {
@@ -219,7 +219,7 @@ fieldset.with-sub-title {
       padding: 0 0 0 10px;
       display: block;
       height: 40px;
-      border-color: map.get($govuk-colours, "black");
+      border-color: govuk-colour("black");
       line-height: 38px;
     }
   }
@@ -243,7 +243,7 @@ fieldset.with-sub-title {
       overflow: hidden;
       text-indent: -5000px;
       color: #fff;
-      background-color: map.get($govuk-colours, "green");
+      background-color: govuk-colour("green");
       background-image: url("../images/search-icon.svg");
       background-repeat: no-repeat;
       background-size: 20px 20px;
@@ -274,7 +274,7 @@ form.show-filters {
 .button-link {
   border: none;
   background: none;
-  color: map.get($govuk-colours, "blue");
+  color: govuk-colour("blue");
   text-decoration: underline;
   padding: 0;
   margin: 0;
@@ -283,7 +283,7 @@ form.show-filters {
   cursor: pointer;
   font-size: inherit;
   &:hover {
-    color: map.get($govuk-colours, "light-blue");
+    color: govuk-colour("light-blue");
   }
 }
 
@@ -296,7 +296,7 @@ form.show-filters {
 
 .email-editor {
   border: 1px solid $border-color;
-  background: map.get($govuk-colours, "light-grey");
+  background: govuk-colour("light-grey");
   padding: 10px;
   .static-text {
     padding: 5px;

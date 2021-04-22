@@ -14,7 +14,7 @@
 a.card {
   display: block;
   text-decoration: none;
-  color: map.get($govuk-colours, "black");
+  color: govuk-colour("black");
   background: #eee;
   @include simple-animation;
   &:hover {
@@ -44,7 +44,7 @@ a.card {
 div.manage-card {
   display: block;
   text-decoration: none;
-  color: map.get($govuk-colours, "black");
+  color: govuk-colour("black");
   background: #F8F8F8;
   @include simple-animation;
   &:hover {
@@ -57,11 +57,11 @@ div.manage-card {
 div.manage-card-disabled {
   display: block;
   text-decoration: none;
-  color: map.get($govuk-colours, "black");
+  color: govuk-colour("black");
   background: #F8F8F8;
 
   h2 {
-    color: map.get($govuk-colours, "black");
+    color: govuk-colour("black");
   }
 }
 
@@ -99,7 +99,7 @@ nav.subnav {
     margin: 0 auto;
     width: 15%;
     height: 15%;
-    background-color: map.get($govuk-colours, "black");
+    background-color: govuk-colour("black");
     border-radius: 100%;
     animation: spinner-circleBounceDelay $animationDuration infinite ease-in-out both;
   }
@@ -133,7 +133,7 @@ nav.subnav {
   right: 0;
   bottom: 0;
   line-height: 2.2em;
-  background: map.get($govuk-colours, "green");
+  background: govuk-colour("green");
 
   .ball {
     width: $size / 2;

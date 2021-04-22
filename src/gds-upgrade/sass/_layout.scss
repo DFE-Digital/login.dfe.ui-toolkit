@@ -8,8 +8,8 @@
 }
 
 .row > div > span {
-  background: map.get($govuk-colours, "light-grey");
-  color: map.get($govuk-colours, "light-grey");
+  background: govuk-colour("light-grey");
+  color: govuk-colour("light-grey");
   display: block;
   text-align: center;
   padding: 15px 0;
@@ -174,7 +174,7 @@ ul.list-table {
     }
     .meta {
       @include govuk-font(16);
-      color: map.get($govuk-colours, "dark-grey");
+      color: govuk-colour("dark-grey");
     }
   }
 }

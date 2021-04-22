@@ -10,7 +10,7 @@
   button, a {
     font-weight:700;
     font-size: 16px;
-    background: map.get($govuk-colours, "blue");
+    background: govuk-colour("blue");
     text-align: center;
     border-radius: 50%;
     color: #fff;
@@ -27,7 +27,7 @@
     line-height: 1.4 !important;
   }
   .bubble {
-    background: map.get($govuk-colours, "black");
+    background: govuk-colour("black");
     color: #fff;
     border-radius: 3px;
     padding:5px 10px;

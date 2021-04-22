@@ -54,7 +54,7 @@ th a {
   color:map.get($govuk-colours, "blue");
   text-decoration: none;
   &:visited {
-    color: map.get($govuk-colours, "blue");
+    color: govuk-colour("blue");
   }
   &:hover {
     text-decoration: underline;
@@ -93,12 +93,12 @@ table tr td:last-child:not(:first-child) {
 }
 
 tr.pending {
-  color: map.get($govuk-colours, "dark-grey");
+  color: govuk-colour("dark-grey");
   font-style: italic;
 }
 
 .empty-state {
-  background: map.get($govuk-colours, "light-grey");
+  background: govuk-colour("light-grey");
   padding: 15px;
   text-align: center;
   p {
