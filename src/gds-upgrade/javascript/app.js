@@ -27,7 +27,7 @@ NSA = {
 
   backLink: function () {
     var backLink = $('<a>')
-      .attr({ 'href': '#', "class": "govuk-back-link" })
+      .attr({ 'href': '#', "class": "govuk-back-link-bold" })
       .text('Back')
       .on('click', function (e) { window.history.back(); e.preventDefault(); });
     $('.js-back-link').html(backLink);
