@@ -235,18 +235,18 @@ div.show-password {
   color: $link-colour;
 }
 
-.submit-buttons {
-  .button {
-    margin-bottom: 10px;
-    @include media(tablet) {
-      margin-right: 5px;
-    }
-  }
-}
+// .submit-buttons {
+//   .button {
+//     margin-bottom: 10px;
+//     @include media(tablet) {
+//       margin-right: 5px;
+//     }
+//   }
+// }
 
-.form-submit {
-  @extend .form-group
-}
+// .form-submit {
+//   @extend .form-group
+// }
 
 .search-form {
   position: relative;
