@@ -47,13 +47,10 @@
 aside {
   border-top: 5px solid map.get($govuk-colours, "blue");
   padding-top: 15px;
-  margin-top: 15px;
+  margin-top: govuk-spacing(6);
   > h2.govuk-heading-m {
     margin-top: 0;
     margin-bottom: 15px;
-  }
-  @include govuk-media-query(tablet) {
-    margin-top: 70px;
   }
 }
 
