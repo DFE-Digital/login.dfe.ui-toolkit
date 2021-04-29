@@ -113,70 +113,6 @@ fieldset.with-sub-title {
   }
 }
 
-div.show-password {
-  position: relative;
-  input.form-control {
-    padding-right: 35px;
-    margin: 0;
-  }
-  .show-password-control {
-    position: absolute;
-    right:0;
-    bottom: 0;
-    top: 0;
-    label {
-      background-image: url("../images/icon-view-password.png");
-      @include govuk-device-pixel-ratio {
-        background-image: url("../images/icon-view-password-2x.png");
-        background-size: 27px 27px;
-      }
-      display: block;
-      user-select: none;
-      cursor: pointer;
-      overflow: hidden;
-      text-indent: -9999px;
-      width: 27px;
-      height: 27px;
-      margin: 2px 5px;
-      @include govuk-media-query(tablet) {
-        margin: 5px 7px;
-      }
-    }
-    input {
-      opacity: 0;
-      position: absolute;
-    }
-    &.type-password {
-      label {
-        background-image: url("../images/icon-hide-password.png");
-        @include govuk-device-pixel-ratio {
-          background-image: url("../images/icon-hide-password-2x.png");
-          background-size: 27px 27px;
-        }
-      }
-    }
-  }
-}
-
-@include govuk-media-query(tablet) {
-  div.show-password {
-    display: inline-block;
-    width: 50%;
-    &.full-width {
-      width: 100%;
-    }
-    .form-control {
-      width: 100%;
-    }
-    .show-password-control {
-      right:0;
-      label {
-        font-size: 19px;
-        line-height: 1.31579;
-      }
-    }
-  }
-}
 
 
 // Start now buttons
@@ -192,7 +128,7 @@ div.show-password {
 .button-secondary {
   // @include button(map.get($govuk-colours, "light-grey"));
   &[disabled="disabled"] {
-    background-color: map.get($govuk-colours, "light-grey");
+    background-color: govuk-colour("light-grey");
   }
 }
 
@@ -227,12 +163,12 @@ div.show-password {
 }
 
 .delete-org .button-text {
-  color: map.get($govuk-colours, "blue");
+  color: govuk-colour("blue");
   text-align: left;
 }
 
 .notification-information .button-text {
-  color: map.get($govuk-colours, "blue");
+  color: govuk-colour("blue");
 }
 
 .submit-buttons {
@@ -283,7 +219,7 @@ div.show-password {
       padding: 0 0 0 10px;
       display: block;
       height: 40px;
-      border-color: map.get($govuk-colours, "black");
+      border-color: govuk-colour("black");
       line-height: 38px;
     }
   }
@@ -307,7 +243,7 @@ div.show-password {
       overflow: hidden;
       text-indent: -5000px;
       color: #fff;
-      background-color: map.get($govuk-colours, "green");
+      background-color: govuk-colour("green");
       background-image: url("../images/search-icon.svg");
       background-repeat: no-repeat;
       background-size: 20px 20px;
@@ -338,7 +274,7 @@ form.show-filters {
 .button-link {
   border: none;
   background: none;
-  color: map.get($govuk-colours, "blue");
+  color: govuk-colour("blue");
   text-decoration: underline;
   padding: 0;
   margin: 0;
@@ -347,7 +283,7 @@ form.show-filters {
   cursor: pointer;
   font-size: inherit;
   &:hover {
-    color: map.get($govuk-colours, "light-blue");
+    color: govuk-colour("light-blue");
   }
 }
 
@@ -360,7 +296,7 @@ form.show-filters {
 
 .email-editor {
   border: 1px solid $border-color;
-  background: map.get($govuk-colours, "light-grey");
+  background: govuk-colour("light-grey");
   padding: 10px;
   .static-text {
     padding: 5px;

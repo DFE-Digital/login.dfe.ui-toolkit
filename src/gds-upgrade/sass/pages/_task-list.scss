@@ -76,7 +76,7 @@ $task-list-indent: 35px;
 }
 
 .task-pending {
-  background-color: map.get($govuk-colours, "dark-grey");
+  background-color: govuk-colour("dark-grey");
 }
 .task-rejected {
   background-color: #d32f32;

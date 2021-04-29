@@ -1,6 +1,6 @@
 .request {
   padding: 10px;
-  background: map.get($govuk-colours, "light-grey");
+  background: govuk-colour("light-grey");
   margin-bottom: 10px;
   position: relative;
   border: 1px solid map.get($govuk-colours, "light-grey");
@@ -37,7 +37,7 @@
 
 .requestV2 {
   padding: 15px;
-  background: map.get($govuk-colours, "light-grey");
+  background: govuk-colour("light-grey");
   margin-bottom: 10px;
   position: relative;
   border: 1px solid map.get($govuk-colours, "light-grey");
@@ -93,5 +93,5 @@
 }
 
 .overdue-text {
-  color: map.get($govuk-colours, "red");
+  color: govuk-colour("red");
 }

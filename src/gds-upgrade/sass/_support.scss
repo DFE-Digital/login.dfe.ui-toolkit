@@ -5,7 +5,7 @@
       padding-top: 5px;
       padding-bottom: 1px;
       .identity {
-        color: map.get($govuk-colours, "mid-grey");
+        color: govuk-colour("mid-grey");
         b {
           color: #fff
         }

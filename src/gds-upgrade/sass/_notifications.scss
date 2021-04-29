@@ -3,7 +3,7 @@ $warning: map.get($govuk-colours, "orange");
 
 .notification {
   font-family: $govuk-font-family;
-  background: map.get($govuk-colours, "light-grey");
+  background: govuk-colour("light-grey");
   margin: 15px 0;
   padding: 10px;
   @include govuk-media-query(tablet) {

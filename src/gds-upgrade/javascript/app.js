@@ -1,32 +1,33 @@
 var NSA = NSA || {};
 
 NSA = {
-  showPassword : function () {
-    var $showPassword = $('.show-password');
-    $showPassword.each(function (i) {
+
+  initialiseShowPassword : function () {
+    // Get all the password inputs in the page and loop through them to add the show/hide button
+    var $passwordInputs = $('.password-input');
+    $passwordInputs.each(function (i) {
       var $that = $(this);
-      var $pwdFld = $that.find('input:password');
-      var $checkLbl = $('<label />').prop({ for: 'show-password-' + i }).html('Show');
-      var $checkBox = $('<input />').prop({ type: 'checkbox', id: 'show-password-' + i }).on('change', function () {
-        var $that = $(this);
-        $pwdFld.prop('type', function () {
-          return $that.prop('checked') ? 'text' : 'password';
-        });
-        $checkLbl.html(function () {
-          return $that.prop('checked') ? 'Hide' : 'Show';
-        });
-        $that.parent().removeClass('type-password');
-        if ($that.prop('checked')) {
-          $that.parent().addClass('type-password');
+      // Create show/hide button
+      var $showButton = $('<button />').prop({ type: 'button', class: 'show-password govuk-button govuk-button--secondary govuk-!-margin-bottom-1' });
+      $showButton.html('Show');
+      // When clicking on that button we will show/hide the password accordingly
+      $showButton.on('click', function(){ 
+        if($that.attr('type') === 'password'){
+          $that.attr("type", "text");
+          $showButton.text("Hide");
+        } else {
+          $that.attr("type", "password");
+          $showButton.text("Show");
         }
       });
-      var $cbWrap = $('<div />').prop('class', 'show-password-control').append($checkBox, $checkLbl);
-      $pwdFld.after($cbWrap);
+      // Add button to the document
+      $that.after($showButton);
     });
   },
+
   backLink: function () {
     var backLink = $('<a>')
-      .attr({ 'href': '#', "class": "govuk-back-link" })
+      .attr({ 'href': '#', "class": "govuk-back-link-bold" })
       .text('Back')
       .on('click', function (e) { window.history.back(); e.preventDefault(); });
     $('.js-back-link').html(backLink);
@@ -66,8 +67,8 @@ function select2ModelMatcher (params, data) {
   return null;
 }
 
-if ($('.show-password').length > 0) {
-  NSA.showPassword();
+if ($('.password-input').length > 0) {
+  NSA.initialiseShowPassword();
 }
 
 if ($('.js-back-link')) {

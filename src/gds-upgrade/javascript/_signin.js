@@ -25,7 +25,14 @@ NSA.signin = {
       postData[this.name] = $(this).val();
     });
 
-    $('#password').prop('type', 'password').next().removeClass('type-password');
+    // Hide any password inputs we may have in the form
+    var $passwordInputs = $('.password-input');
+    $passwordInputs.each(function (i) {
+      // Hide password
+      $(this).attr("type", "password");
+      // Update text in show/hide button
+      $(this).siblings('.show-password').html('Show');
+    });
 
     $.ajax({
       type: 'POST',
@@ -85,7 +92,7 @@ NSA.signin = {
     var $ul = $('<ul />').attr('class', 'govuk-list govuk-error-summary__list');
 
     if (messages) {
-      $h2.text('Information missing or incorrect');
+      $h2.text('There is a problem');
       $.each(messages, function (index, value) {
         if (index === 'loginError') {
           index = 'username';
@@ -122,10 +129,6 @@ NSA.signin = {
     $.each(messages, function( index, value ) {
       var $field = $('input[name=' + index + ']'),
         $parent = $field.parent();
-
-      if ($parent.hasClass('show-password')) {
-        $parent = $parent.parent();
-      }
 
       var $label = $parent.find('label').first();
 

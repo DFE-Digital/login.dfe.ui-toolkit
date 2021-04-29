@@ -40,7 +40,7 @@
     }
   }
   .meta {
-    background: map.get($govuk-colours, "light-grey");
+    background: govuk-colour("light-grey");
     padding: 10px;
     margin-top: 10px;
     position: relative;
@@ -76,7 +76,7 @@
     .links {
       border: 1px solid map.get($govuk-colours, "light-grey");
       @include govuk-clearfix;
-      background: map.get($govuk-colours, "light-grey");
+      background: govuk-colour("light-grey");
       margin-left: 5px;
       position: relative;
     }
@@ -90,16 +90,16 @@
       margin: -1px;
       background: none;
       &:hover {
-        color: map.get($govuk-colours, "light-blue");
+        color: govuk-colour("light-blue");
         border-left-color: map.get($govuk-colours, "light-blue");
       }
     }
     div.service-link-disabled {
       &:hover {
-        color: map.get($govuk-colours, "dark-grey");
+        color: govuk-colour("dark-grey");
         border-left-color: map.get($govuk-colours, "blue");
       }
-      color: map.get($govuk-colours, "dark-grey");
+      color: govuk-colour("dark-grey");
       h3 {
         margin-top: 0;
       }
@@ -117,7 +117,7 @@
       border-left: 1px solid map.get($govuk-colours, "light-grey");
       font-size: 15px;
       margin-top: 10px;
-      background: map.get($govuk-colours, "light-grey");
+      background: govuk-colour("light-grey");
       position: absolute;
       top: 0;
       right: 0;
@@ -125,7 +125,7 @@
     .service-description {
       font-size: 15px;
       padding: 15px;
-      background: map.get($govuk-colours, "light-grey");
+      background: govuk-colour("light-grey");
       border-top: 3px solid darken(map.get($govuk-colours, "light-grey"), 5%);
       margin-left: 10px;
       visibility: visible;
@@ -136,7 +136,7 @@
     }
     .service-descriptionv2 {
       font-size: 15px;
-      background: map.get($govuk-colours, "light-grey");
+      background: govuk-colour("light-grey");
       p {
         margin: 0;
         padding: 0;
@@ -244,7 +244,7 @@ html.modal-open body {
       padding: 15px;
       padding-right: 40px;
       min-height: 2.8em;
-      color: map.get($govuk-colours, "blue");
+      color: govuk-colour("blue");
       font-weight: bold;
       border: 3px solid map.get($govuk-colours, "blue");
       border-radius: 5px;
@@ -263,8 +263,8 @@ html.modal-open body {
         fill: map.get($govuk-colours, "mid-grey");
       }
       &:visited {
-        color: map.get($govuk-colours, "black");
-        color: map.get($govuk-colours, "blue");
+        color: govuk-colour("black");
+        color: govuk-colour("blue");
       }
       &:hover {
         box-shadow: 0px 2px 9px 2px darken(#f8f9fb, 30%);
