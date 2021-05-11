@@ -34,9 +34,6 @@ fieldset.highlight {
   &.govuk-form-group-error .govuk-error-message {
     display: block;
   }
-  .help-text {
-
-  }
   @include govuk-media-query(tablet) {
     &.indent {
       padding-left: 210px;
@@ -113,17 +110,6 @@ fieldset.with-sub-title {
   }
 }
 
-
-
-// Start now buttons
-.button-start,
-.button-get-started {
-  background-image: url("../images/icon-pointer.png");
-  @include govuk-device-pixel-ratio {
-    background-image: url("../images/icon-pointer-2x.png");
-    background-size: 30px 19px;
-  }
-}
 
 .button-secondary {
   // @include button(map.get($govuk-colours, "light-grey"));
