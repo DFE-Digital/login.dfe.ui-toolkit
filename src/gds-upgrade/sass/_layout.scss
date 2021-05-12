@@ -1,3 +1,19 @@
+// Show/Hide stuff based on JS being enabled/disabled
+.hidden-when-js-enabled {
+  display: block;
+  .js-enabled & {
+      display: none;
+  }
+}
+
+.hidden-when-js-disabled {
+  display: none;
+  .js-enabled & {
+      display: block;
+  }
+}
+
+
 // Grid layout
 
 .row {
@@ -140,16 +156,6 @@ dl.inline {
   }
 }
 
-.js-enabled .js-visible {
-  display: block;
-  visibility: visible;
-}
-
-.hidden,
-.js-enabled .js-hidden {
-  display: none;
-  visibility: hidden
-}
 
 .heading-group {
   margin: 15px 0;
