@@ -1,3 +1,5 @@
+@import 'components/index.scss';
+
 .card {
   padding: 15px;
   border-right: none;
@@ -202,5 +204,3 @@ p.contents-header {
     background-size: 27px 27px;
   }
 }
-
-@import 'components/index.scss';
