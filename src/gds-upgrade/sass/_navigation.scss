@@ -155,6 +155,9 @@ ul.tabs {
   @include govuk-clearfix;
   margin-top: -10px;
   margin-bottom: 20px;
+  .govuk-list {
+    line-height: inherit;
+  }
   li {
     float: left;
     text-align: center;

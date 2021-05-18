@@ -1,8 +1,13 @@
 table {
+  border-spacing: 0;
   border-top: 1px solid map.get($govuk-colours, "black");
   border-bottom: 2px solid map.get($govuk-colours, "black");
   margin-bottom: 20px;
   th, td {
+    @include govuk-font(19);
+    padding: em(12, 19) em(20, 19) em(9, 19) 0;
+    text-align: left;
+    border-bottom: 1px solid map.get($govuk-colours, "mid-grey");
     vertical-align: top;
   }
   thead th {

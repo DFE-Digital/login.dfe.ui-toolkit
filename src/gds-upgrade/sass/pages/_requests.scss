@@ -75,19 +75,6 @@
   }
 }
 
-.badge {
-  display: inline-block;
-  min-width: 10px;
-  padding: 5px 8px 1px 8px;
-  font-size: 14px;
-  font-weight: 600;
-  background: #B10E1E;
-  color: #FFF;
-  text-align: center;
-  white-space: nowrap;
-  border-radius: 10px;
-}
-
 .overdue {
   border-left: 5px solid map.get($govuk-colours, "red");
 }
