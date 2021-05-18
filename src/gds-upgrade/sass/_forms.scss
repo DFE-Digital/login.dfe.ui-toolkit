@@ -157,18 +157,18 @@ fieldset.with-sub-title {
   color: govuk-colour("blue");
 }
 
-.submit-buttons {
-  .button {
-    margin-bottom: 10px;
-    @include govuk-media-query(tablet) {
-      margin-right: 5px;
-    }
-  }
-}
+// .submit-buttons {
+//   .button {
+//     margin-bottom: 10px;
+//     @include govuk-media-query(tablet) {
+//       margin-right: 5px;
+//     }
+//   }
+// }
 
-.form-submit {
-  @extend .govuk-form-group
-}
+// .form-submit {
+//   @extend .govuk-form-group
+// }
 
 .search-form {
   position: relative;
