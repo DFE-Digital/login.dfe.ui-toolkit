@@ -12,6 +12,7 @@ $task-list-indent: 35px;
 
 .task-list {
   @include govuk-responsive-margin(6, "top");
+  padding-inline-start: 0;
   // @include govuk-media-query(tablet) {
   //   margin-top: ($govuk-gutter * 2);
   // }
@@ -22,22 +23,22 @@ $task-list-indent: 35px;
   display: table;
 
   @include govuk-font(24, $weight: bold);
-  @include govuk-responsive-padding(6, "bottom");
+  @include govuk-responsive-padding(1, "bottom");
 }
 
 .task-list-section-number {
   display: table-cell;
-  @include govuk-responsive-padding(6, "right");
+  @include govuk-responsive-padding(1, "right");
 
   @include govuk-media-query(tablet) {
     min-width: $task-list-indent;
-    // padding-right: 0;
+    padding-right: 0;
   }
 }
 
 
 .task-list-items {
-  @include govuk-responsive-margin(6, "bottom");
+  @include govuk-responsive-margin(9, "bottom");
   // @include govuk-media-query(tablet) {
   //   margin-bottom: ($govuk-gutter * 2);
   // }
@@ -49,8 +50,8 @@ $task-list-indent: 35px;
 
 .task-list-item {
   border-bottom: 1px solid map.get($govuk-colours, "mid-grey");
-  @include govuk-responsive-padding(6, "top");
-  @include govuk-responsive-padding(6, "bottom");
+  @include govuk-responsive-padding(2, "top");
+  @include govuk-responsive-padding(2, "bottom");
   @include govuk-clearfix;
 }
 
@@ -60,27 +61,35 @@ $task-list-indent: 35px;
 
 
 .task-name {
-  // width: $two-thirds;
+  @include govuk-grid-column(two-thirds);
   float: left;
   margin: 0 0;
+  padding-left: 0;
 }
 
-.task-completed, .task-pending, .task-rejected {
-  // @include phase-tag;
-
+.task-status {
   float: right;
   margin-right: 0;
-  padding-top: 3px;
   min-width: 105px;
   text-align: center;
 }
 
-.task-pending {
-  background-color: govuk-colour("dark-grey");
-}
-.task-rejected {
-  background-color: #d32f32;
-}
+// .task-completed, .task-pending, .task-rejected {
+//   // @include phase-tag;
+
+//   float: right;
+//   margin-right: 0;
+//   padding-top: 3px;
+//   min-width: 105px;
+//   text-align: center;
+// }
+
+// .task-pending {
+//   background-color: govuk-colour("dark-grey");
+// }
+// .task-rejected {
+//   background-color: #d32f32;
+// }
 
 .pending-task {
   color: #6f777b;

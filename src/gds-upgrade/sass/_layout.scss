@@ -13,6 +13,11 @@
   }
 }
 
+// Lists without style by default
+ul, ol {
+  list-style-type: none;
+}
+
 
 // Grid layout
 
