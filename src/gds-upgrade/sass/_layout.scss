@@ -13,6 +13,12 @@
   }
 }
 
+// class to show/hide elements from JS
+.js-hidden {
+  display:none;
+  visibility:hidden;
+}
+
 // Lists without style by default
 ul, ol {
   list-style-type: none;
