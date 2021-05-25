@@ -3,6 +3,7 @@ $warning: map.get($govuk-colours, "orange");
 
 .notification {
   font-family: $govuk-font-family;
+  font-size: 1.2rem;
   background: govuk-colour("light-grey");
   margin: 15px 0;
   padding: 10px;
@@ -24,7 +25,6 @@ $warning: map.get($govuk-colours, "orange");
   // }
   p {
     margin-bottom: 0;
-    font-size: 1.2rem;
     a {
       &:hover {
         text-decoration: none;
