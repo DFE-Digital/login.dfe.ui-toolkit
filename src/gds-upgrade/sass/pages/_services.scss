@@ -1,6 +1,7 @@
 .organisation-services {
   margin-bottom: 30px;
 }
+
 .organisation {
   header {
     display: table;
@@ -289,4 +290,8 @@ html.modal-open body {
       border-bottom: none;
     }
   }
+}
+
+ul {
+  padding-inline-start: 0;
 }
