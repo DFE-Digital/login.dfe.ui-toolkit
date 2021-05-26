@@ -154,6 +154,7 @@ aside {
 
 dl.inline {
   dt, dd {
+    margin-inline-start: 0;
     display: inline;
   }
   dt {
