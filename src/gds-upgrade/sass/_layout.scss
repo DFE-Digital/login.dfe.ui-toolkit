@@ -22,6 +22,7 @@
 // Lists without style by default
 ul, ol {
   list-style-type: none;
+  padding-inline-start: 0;
 }
 
 
