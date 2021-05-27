@@ -194,54 +194,34 @@ fieldset.with-sub-title {
 
 .search-field {
   position: relative;
-  margin-bottom: 30px;
-  .search-input {
-    padding: 0 40px 0 0;
-    input {
-      border-radius: 0;
-      font-size: 16px;
-      font-weight: 400;
-      width: 100%;
-      padding: 0 0 0 10px;
-      display: block;
-      height: 40px;
-      border-color: govuk-colour("black");
-      line-height: 38px;
-    }
-  }
   .search-submit {
     position: absolute;
     bottom: 0;
     right: 0;
     height: 40px;
     width: 40px;
-    overflow: visible;
-    button {
-      border-radius: 0;
-      box-shadow: none;
-      position: absolute;
-      z-index: 4;
-      right: 0;
-      top: 0;
-      width: 40px;
-      height: 40px;
-      border: none;
-      overflow: hidden;
-      text-indent: -5000px;
-      color: #fff;
-      background-color: govuk-colour("green");
-      background-image: url("../images/search-icon.svg");
-      background-repeat: no-repeat;
-      background-size: 20px 20px;
-      background-position: 9px 9px;
-    }
-  }
-  label {
-    display: block;
   }
   .spinner-inline {
     opacity: .7;
   }
+}
+
+.search-button {
+  cursor: pointer;
+  border-radius: 0;
+  box-shadow: none;
+  z-index: 4;
+  width: 40px;
+  height: 40px;
+  border: none;
+  overflow: hidden;
+  text-indent: -5000px;
+  color: #fff;
+  background-color: govuk-colour("green");
+  background-image: url("../images/search-icon.svg");
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position: 9px 9px;
 }
 
 form.show-filters {
