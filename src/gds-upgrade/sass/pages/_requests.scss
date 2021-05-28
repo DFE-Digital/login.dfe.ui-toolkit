@@ -1,47 +1,10 @@
 .request {
-  padding: 10px;
-  background: govuk-colour("light-grey");
-  margin-bottom: 10px;
-  position: relative;
-  border: 1px solid map.get($govuk-colours, "light-grey");
-  border-left: 5px solid map.get($govuk-colours, "light-grey");
-  p {
-    margin: 0;
-    a {
-      font-weight: bold;
-    }
-  }
-  .button-respond {
-    display: inline-block;
-    margin: 5px 0 0;
-  }
-  .button-respondx {
-    padding: 5px 15px;
-    border-left: 1px solid #dee0e2;
-    margin-top: 10px;
-    background: #f8f8f8;
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-  .pnl {
-    border: none;
-    padding: 0 0 1px;
-  }
-  .respond {
-    .form-submit {
-      margin-bottom: 0;
-    }
-  }
-}
-
-.requestV2 {
   padding: 15px;
   background: govuk-colour("light-grey");
   margin-bottom: 10px;
   position: relative;
-  border: 1px solid map.get($govuk-colours, "light-grey");
-  border-left: 5px solid map.get($govuk-colours, "light-grey");
+  border: 1px solid map.get($govuk-colours, "mid-grey");
+  border-left: 5px solid map.get($govuk-colours, "mid-grey");
   p {
     @include govuk-media-query(tablet) {
       margin: 0;
@@ -52,11 +15,12 @@
     }
   }
   .button-respond {
+    @extend .govuk-link-bold;
     @include govuk-media-query(tablet) {
       padding: 5px 15px;
-      border-left: 1px solid #dee0e2;
+      border-left: 1px solid map.get($govuk-colours, "mid-grey");
       margin-top: 10px;
-      background: #f8f8f8;
+      background: govuk-colour("light-grey");
       position: absolute;
       top: 0;
       right: 0;
@@ -64,34 +28,14 @@
     display: inline-block;
     margin: 5px 0 0;
   }
-  .pnl {
-    border: none;
-    padding: 0 0 1px;
-  }
-  .respond {
-    .form-submit {
-      margin-bottom: 0;
-    }
+  
+  .overdue-text {
+    color: govuk-colour("red");
   }
 }
 
-.badge {
-  display: inline-block;
-  min-width: 10px;
-  padding: 5px 8px 1px 8px;
-  font-size: 14px;
-  font-weight: 600;
-  background: #B10E1E;
-  color: #FFF;
-  text-align: center;
-  white-space: nowrap;
-  border-radius: 10px;
-}
-
-.overdue {
-  border-left: 5px solid map.get($govuk-colours, "red");
-}
-
-.overdue-text {
-  color: govuk-colour("red");
+.pane {
+  .overdue {
+    border-left: 5px solid map.get($govuk-colours, "red");
+  }
 }

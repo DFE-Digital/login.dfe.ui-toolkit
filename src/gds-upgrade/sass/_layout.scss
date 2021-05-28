@@ -13,6 +13,18 @@
   }
 }
 
+// class to show/hide elements from JS
+.js-hidden {
+  display:none;
+  visibility:hidden;
+}
+
+// Lists without style by default
+ul, ol {
+  list-style-type: none;
+  padding-inline-start: 0;
+}
+
 
 // Grid layout
 
@@ -143,6 +155,7 @@ aside {
 
 dl.inline {
   dt, dd {
+    margin-inline-start: 0;
     display: inline;
   }
   dt {
