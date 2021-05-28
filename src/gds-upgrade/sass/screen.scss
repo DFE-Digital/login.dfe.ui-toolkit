@@ -10,6 +10,7 @@ $govuk-assets-path: "/gds-upgrade/";
 @import "layout";
 @import "links";
 @import "components";
+@import "components-pre-gds";
 @import "forms";
 @import "tables";
 @import "notifications";
