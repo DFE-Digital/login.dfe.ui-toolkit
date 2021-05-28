@@ -1,3 +1,12 @@
+.empty-state {
+  background: govuk-colour("light-grey");
+  padding: 15px;
+  text-align: center;
+  p {
+    margin: 0;
+  }
+}
+
 .custom-table {
   border-spacing: 0;
   border-top: 1px solid map.get($govuk-colours, "black");
@@ -69,15 +78,6 @@
   tr.pending {
     color: govuk-colour("dark-grey");
     font-style: italic;
-  }
-  
-  .empty-state {
-    background: govuk-colour("light-grey");
-    padding: 15px;
-    text-align: center;
-    p {
-      margin: 0;
-    }
   }
   
   td span.empty-state {
