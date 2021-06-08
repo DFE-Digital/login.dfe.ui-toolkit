@@ -8,6 +8,7 @@
 }
 
 .custom-table {
+  width: 100%;
   border-spacing: 0;
   border-top: 1px solid map.get($govuk-colours, "black");
   border-bottom: 2px solid map.get($govuk-colours, "black");
