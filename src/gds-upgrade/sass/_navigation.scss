@@ -11,6 +11,7 @@
     list-style: none;
     position: relative;
     bottom: -1px;
+    padding-inline-start: 0;
     @include govuk-media-query(tablet) {
       margin: 0 15px;
     }
@@ -34,9 +35,13 @@
     text-decoration: none;
     color: govuk-colour("black");
     text-decoration: underline;
+    &.govuk-link-bold {
+      color: govuk-colour("black");
+    }
     &.current {
       font-weight: bold;
       text-decoration: none;
+      color: govuk-colour("blue");
       &:after {
         display: block;
         background: govuk-colour("blue");
@@ -155,6 +160,9 @@ ul.tabs {
   @include govuk-clearfix;
   margin-top: -10px;
   margin-bottom: 20px;
+  .govuk-list {
+    line-height: inherit;
+  }
   li {
     float: left;
     text-align: center;

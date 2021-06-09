@@ -1,6 +1,7 @@
 .organisation-services {
   margin-bottom: 30px;
 }
+
 .organisation {
   header {
     display: table;
@@ -71,10 +72,12 @@
 
 
 .service-list {
+  margin: 0;
+  padding: 0;
   > li {
     margin-bottom: 10px;
     .links {
-      border: 1px solid map.get($govuk-colours, "light-grey");
+      border: 1px solid $govuk-border-colour;
       @include govuk-clearfix;
       background: govuk-colour("light-grey");
       margin-left: 5px;
@@ -84,27 +87,24 @@
       display: block;
       border-left: 5px solid map.get($govuk-colours, "blue");
       padding: 15px;
+      font-size: 19px;
       font-weight: bold;
       line-height: 1;
       position: relative;
       margin: -1px;
       background: none;
-      &:hover {
+      &:hover, .govuk-link-bold:hover {
         color: govuk-colour("light-blue");
         border-left-color: map.get($govuk-colours, "light-blue");
       }
     }
-    div.service-link-disabled {
-      &:hover {
-        color: govuk-colour("dark-grey");
-        border-left-color: map.get($govuk-colours, "blue");
-      }
+    div.service-link-disabled,  div.service-link-disabled:hover{
+      border-left-color: map.get($govuk-colours, "dark-grey");
       color: govuk-colour("dark-grey");
-      h3 {
+      .govuk-heading-s {
         margin-top: 0;
-      }
-      p {
         margin-bottom: 0;
+        color: govuk-colour("dark-grey");
       }
       span.date {
         font-size: 15px;
@@ -221,6 +221,13 @@ html.modal-open body {
   .navigation {
     background: #fff;
   }
+  .width-35 {
+    width: 35% !important
+  }
+  .width-65 {
+    width: 65% !important
+  }
+
   .my-orgs {
     margin-bottom: 0.625em;
     @include govuk-media-query(tablet) {
@@ -290,8 +297,4 @@ html.modal-open body {
       border-bottom: none;
     }
   }
-}
-
-.services-dropdown{
-  margin-top: 20px;
 }

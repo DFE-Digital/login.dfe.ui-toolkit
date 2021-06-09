@@ -13,6 +13,18 @@
   }
 }
 
+// class to show/hide elements from JS
+.js-hidden {
+  display:none;
+  visibility:hidden;
+}
+
+// Lists without style by default
+ul, ol {
+  list-style-type: none;
+  padding-inline-start: 0;
+}
+
 
 // Grid layout
 
@@ -143,6 +155,7 @@ aside {
 
 dl.inline {
   dt, dd {
+    margin-inline-start: 0;
     display: inline;
   }
   dt {
@@ -237,4 +250,28 @@ img.spacing {
   form, p {
     display: inline;
   }
+}
+
+.code {
+  white-space: normal;
+  line-height: 1.4em;
+  color: govuk-colour('dark-grey');
+  background-color: govuk-colour('light-grey');
+  text-shadow: 0 1px #fff;
+  font-family: Consolas,Monaco,"Andale Mono","Ubuntu Mono",monospace;
+  font-size: 14px;
+  direction: ltr;
+  text-align: left;
+  word-spacing: normal;
+  word-break: normal;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+  border: 1px solid #bfc1c3;
+  border-radius: 5px;
+  padding: 15px;
 }

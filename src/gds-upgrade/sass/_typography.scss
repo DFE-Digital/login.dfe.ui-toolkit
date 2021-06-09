@@ -99,7 +99,7 @@ blockquote {
   word-break: break-word;
 }
 
-.meta {
+.meta * {
   font-size: 14px;
   @include govuk-media-query(tablet) {
     font-size: 16px;
