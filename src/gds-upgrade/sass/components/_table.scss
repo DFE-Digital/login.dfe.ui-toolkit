@@ -1,0 +1,7 @@
+.govuk-table__row {
+    & .govuk-table__cell {
+        vertical-align: middle;
+        padding-top: govuk-spacing(4);
+        padding-bottom: govuk-spacing(4);
+    }
+}
