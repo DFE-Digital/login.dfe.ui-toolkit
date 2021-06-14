@@ -170,6 +170,10 @@ if (formRegister.length > 0) {
   });
 }
 
+$('.auto-scroll-on-change').on('change', function(e) {
+  $(window).scrollTop($('.auto-scroll-dest').position().top);
+});
+
 var showHideContent = new GOVUK.ShowHideContent()
 showHideContent.init()
 
