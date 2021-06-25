@@ -174,6 +174,11 @@ $('.auto-scroll-on-change').on('change', function(e) {
   $(window).scrollTop($('.auto-scroll-dest').position().top);
 });
 
+$('.close-button').on('click', function(e) {
+  var notification = e.target.closest(".govuk-notification-banner");
+  notification.remove();
+});
+
 var showHideContent = new GOVUK.ShowHideContent()
 showHideContent.init()
 
