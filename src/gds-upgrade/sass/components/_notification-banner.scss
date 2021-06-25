@@ -1,0 +1,10 @@
+.govuk-notification-banner {
+  & .govuk-notification-banner__header {
+    .close-button {
+      color:  #fff;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  }
+}
