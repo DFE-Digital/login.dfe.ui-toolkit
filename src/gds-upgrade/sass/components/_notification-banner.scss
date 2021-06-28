@@ -1,0 +1,9 @@
+.govuk-notification-banner {
+  & .govuk-notification-banner__header {
+    .close-button {
+      @include govuk-font(19, $weight: bold);
+      color: govuk-colour("white");
+      cursor: pointer;
+    }
+  }
+}

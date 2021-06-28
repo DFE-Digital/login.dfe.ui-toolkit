@@ -24,6 +24,7 @@ const sassInput = ['./src/pre-gds/sass/*.scss', './src/pre-gds/sass/pages/*.scss
 const output = './dist/css/';
 
 const gdsUpgradeSassInput = ['./src/gds-upgrade/sass/*.scss', './src/gds-upgrade/sass/pages/*.scss'];
+const gdsUpgradeSassWatch = ['./src/gds-upgrade/sass/**/*.scss'];
 const gdsUpgradeOutput = './dist/gds-upgrade/css/';
 
 const sassOptions = {
@@ -175,7 +176,7 @@ gulp.task('watch', () => {
 });
 
 gulp.task('gds-upgrade-watch', () => {
-  gulp.watch(gdsUpgradeSassInput, ['gds-upgrade-sass'])
+  gulp.watch(gdsUpgradeSassWatch, ['gds-upgrade-sass'])
     .on('change', (event) => {
       console.log(`File ${event.path} was ${event.type}, running tasks...`);
     });

@@ -275,3 +275,8 @@ img.spacing {
   border-radius: 5px;
   padding: 15px;
 }
+
+// to force the cursor type when required
+.cursor-pointer {
+  cursor: pointer;
+}
