@@ -1,3 +1,128 @@
+// TODO remove global-navigation and main-nav
+.global-navigation {
+  border-bottom: 1px solid map.get($govuk-colours, "mid-grey");
+  nav {
+    @include govuk-media-query(desktop) {
+      margin: 0 auto;
+      max-width: 960px
+    }
+  }
+  ul {
+    @include govuk-clearfix;
+    list-style: none;
+    position: relative;
+    bottom: -1px;
+    padding-inline-start: 0;
+    @include govuk-media-query(tablet) {
+      margin: 0 15px;
+    }
+    @include govuk-media-query(desktop) {
+      margin: 0 -15px;
+    }
+  }
+  li {
+    border-bottom: 1px solid map.get($govuk-colours, "mid-grey");
+    position: relative;
+    @include govuk-media-query(tablet) {
+      float: left;
+      &.pull-right {
+        float: right;
+      }
+    }
+  }
+  a {
+    display: block;
+    padding: 8px 15px 6px;
+    text-decoration: none;
+    color: govuk-colour("black");
+    text-decoration: underline;
+    &.govuk-link-bold {
+      color: govuk-colour("black");
+    }
+    &.current {
+      font-weight: bold;
+      text-decoration: none;
+      color: govuk-colour("blue");
+      &:after {
+        display: block;
+        background: govuk-colour("blue");
+        content: "";
+        width:5px;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        position: absolute;
+        @include govuk-media-query(tablet) {
+          top: auto;
+          left: 15px;
+          right: 15px;
+          bottom: -1px;
+          width: auto;
+          height: 5px;
+        }
+      }
+    }
+  }
+}
+
+
+.main-nav {
+  border-bottom: 1px solid map.get($govuk-colours, "mid-grey");
+  nav {
+    @include govuk-media-query(desktop) {
+      margin: 0 auto;
+      max-width: 960px
+    }
+  }
+  ul {
+    @include govuk-clearfix;
+    list-style: none;
+    position: relative;
+    bottom: -1px;
+    @include govuk-media-query(tablet) {
+      margin: 0 15px;
+    }
+    @include govuk-media-query(desktop) {
+      margin: 0 -15px;
+    }
+  }
+  li {
+    border-bottom: 1px solid map.get($govuk-colours, "mid-grey");
+    position: relative;
+    @include govuk-media-query(tablet) {
+      float: left;
+      &.pull-right {
+        float: right;
+      }
+    }
+  }
+  a {
+    display: block;
+    padding: 7px 15px 5px;
+    text-decoration: none;
+    color: govuk-colour("black");
+    &.current {
+      font-weight: bold;
+      &:after {
+        display: block;
+        background: govuk-colour("blue");
+        content: "";
+        width:5px;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        position: absolute;
+        @include govuk-media-query(tablet) {
+          top: auto;
+          left: 15px;
+          right: 15px;
+          width: auto;
+          height: 5px;
+        }
+      }
+    }
+  }
+}
 
 ul.tabs {
   list-style: none;
