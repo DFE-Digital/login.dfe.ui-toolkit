@@ -135,7 +135,7 @@ nav.subnav {
   right: 0;
   bottom: 0;
   line-height: 2em;
-  background: govuk-colour("green");
+  background: inherit;
 
   .ball {
     width: $size / 2;
