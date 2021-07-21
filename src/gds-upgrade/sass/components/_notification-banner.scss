@@ -6,4 +6,8 @@
       cursor: pointer;
     }
   }
+
+  &:focus {
+    outline: none;
+  }
 }
