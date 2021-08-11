@@ -40,7 +40,7 @@ if ($('select.select2').length > 0) {
 
 function select2ModelMatcher (params, data) {
   data.parentText = data.parentText || "";
-  if ($.trim(params.term) === '') {
+  if (typeof(params.term) === 'undefined' || !params.term || params.term.trim() === '') {
     return data;
   }
   if (data.children && data.children.length > 0) {
