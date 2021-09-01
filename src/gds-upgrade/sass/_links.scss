@@ -13,3 +13,7 @@
         border-color: govuk-colour("black");
     }
 }
+
+.govuk-link--no-underline:not(:hover):not(:active) {
+    text-decoration: none;
+}
