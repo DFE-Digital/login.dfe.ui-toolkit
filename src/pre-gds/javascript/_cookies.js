@@ -64,18 +64,6 @@ var GovUKCookie = {
     return;
   }
 
-  (function initGA () {
-    if (!window.gtag || !window.gaTrackingId) {
-      console.error(
-        'Google Analytics (GA) has not initialised. GA will not track this session.',
-        window.gtag,
-        window.gaTrackingId);
-      return
-    }
-    window.gtag('js', new Date());
-    window.gtag('config', window.gaTrackingId, { cookie_flags: 'secure'});
-  })();
-
   var $cookieBanner = $('#dsi-cookie-banner.global-cookie-message-dfe-sign-in');
   var $cookieAcceptButton = $cookieBanner.find('button.cookie-accept');
 
