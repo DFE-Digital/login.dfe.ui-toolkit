@@ -179,6 +179,14 @@ $('.close-button').on('click', function(e) {
   notification.remove();
 });
 
+// select next element in the template, show it and hide the toggle link
+$('.toggle-open').on('click', function (e) {
+  var meta = $(this).next();
+  e.preventDefault();
+  meta.removeClass('govuk-visually-hidden');
+  $(this).addClass('govuk-visually-hidden');
+});
+
 var showHideContent = new GOVUK.ShowHideContent()
 showHideContent.init()
 
