@@ -90,7 +90,7 @@ function showReviewUsersBanner() {
 }
 
 function setReviewUsersBannerLastSeen() {
-  GovUKCookie.set('user_banner_last_seen', new Date().getTime());
+  GovUKCookie.set(COOKIE_NAMES.USER_BANNER_LAST_SEEN, new Date().getTime());
 }
 
 function loadReviewUsersBanner() {
