@@ -1,12 +1,9 @@
 var COOKIE_NAMES = {
   PREFERENCES_SET: 'cookies_preferences_set',
-  POLICY: 'cookies_policy'
-};
-
-var DEFAULT_POLICY = {
-  essential: true,
-  settings: false,
-  usage: true
+  POLICY: 'cookies_policy',
+  GA: '_ga',
+  GA_GID: '_gid',
+  GA_GAT: '_gat'
 };
 
 var GOVUK_COOKIE_OPTIONS = {
@@ -57,114 +54,11 @@ var GovUKCookie = {
   }
 };
 
-(function (window) {
-  var $ = window.$;
-  var Cookies = window.Cookies;
-  if (!Cookies || !$) {
-    return;
-  }
-
-  var $cookieBanner = $('#dsi-cookie-banner.global-cookie-message-dfe-sign-in');
-  var $cookieAcceptButton = $cookieBanner.find('button.cookie-accept');
-
-  var getAcceptedAllPolicy = function () {
-    var acceptedPolicy = $.extend(DEFAULT_POLICY, {}); // deep copy
-
-    $.each(acceptedPolicy, function (key) {
-      acceptedPolicy[key] = true;
-    });
-
-    return acceptedPolicy;
-  };
-
-  var onCookieAccept = function (event, newPolicy) {
-    var acceptedPolicy = newPolicy || getAcceptedAllPolicy();
-
-    GovUKCookie.set(
-      COOKIE_NAMES.POLICY,
-      acceptedPolicy
-    );
-    GovUKCookie.set(
-      COOKIE_NAMES.PREFERENCES_SET,
-      true
-    );
-
-    if (event.target === $cookieAcceptButton[0]) {
-      $cookieBanner.slideUp();
-    }
-  };
-
-  if (!GovUKCookie.get(COOKIE_NAMES.PREFERENCES_SET)) {
-    GovUKCookie.set(
-      COOKIE_NAMES.POLICY,
-      DEFAULT_POLICY
-    );
-    $cookieAcceptButton.click(onCookieAccept);
-    if (window.location.pathname !== '/cookies') {
-      $cookieBanner.slideDown();
-    } else {
-      $cookieBanner.show();
-    }
-  }
-
-  var $preferencesForm = $('#dsi-cookie-form.cookies-page-dfe-sign-in__preferences-form');
-
-  $preferencesForm.length && $preferencesForm.on('submit', function (event) {
-    event.preventDefault();
-    var newPolicy = {
-      settings: !!$preferencesForm.find("input[name='cookie.settings']:checked").val()
-    };
-
-    var acceptedPolicy = $.extend(DEFAULT_POLICY, newPolicy);
-    onCookieAccept(event, acceptedPolicy);
-
-    if (document.referrer) {
-      window.location = document.referrer;
-    } else {
-      window.location.pathname = '/';
-    }
-    return false;
-  });
-
-})(window);
-
-function checkConditionForUsersBanner() {
-  // Check user's consent for the cookie
-  var cookiePreferencesSet = GovUKCookie.getRaw('cookies_preferences_set');
-  var cookiePolicy = GovUKCookie.get('cookies_policy');
-
-  if (!!cookiePreferencesSet && !!cookiePolicy && cookiePolicy.settings) {
-    var lastSeen = GovUKCookie.getRaw('user_banner_last_seen');
-    if (!!lastSeen) {
-      var numberOfDays = (new Date().getTime() - lastSeen) / (1000 * 3600 * 24);
-      if (numberOfDays > 90) {
-        // if the period is longer than 90 days show/update the banner
-        return true;
-      }
-    } else {
-      // if there is no value then show/update the banner
-      return true;
-    }
-  }
-  return false;
-}
-
-function showReviewUsersBanner(){
-  $('#review-users-banner').show();
-}
-
-function setReviewUsersBannerLastSeen(){
-  GovUKCookie.set('user_banner_last_seen', new Date().getTime());
-}
-
-function loadReviewUsersBanner() {
-  if (checkConditionForUsersBanner()) {
-    showReviewUsersBanner();
-  }
-}
-
-function updateCookieReviewUsersBanner(){
-  if (checkConditionForUsersBanner()) {
-    setReviewUsersBannerLastSeen();
-  }
-}
+// function that will remove any existing tracking cookies on page load
+(function () {
+  GovUKCookie.remove(COOKIE_NAMES.POLICY);
+  GovUKCookie.remove(COOKIE_NAMES.PREFERENCES_SET);
+  GovUKCookie.remove(COOKIE_NAMES.GA);
+  GovUKCookie.remove(COOKIE_NAMES.GA_GAT);
+  GovUKCookie.remove(COOKIE_NAMES.GA_GID);
+})();
