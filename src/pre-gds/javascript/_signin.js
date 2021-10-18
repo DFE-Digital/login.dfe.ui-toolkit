@@ -41,7 +41,13 @@ NSA.signin = {
             this.resetValidation($form);
             this.showValidationMessage(data.validationMessages);
             this.showInlineValidation(data.validationMessages);
-            $submitButtons.removeAttr('disabled');
+            if (data.delayTill) {
+              setTimeout(function() {
+                $submitButtons.prop('disabled', false);
+              }.bind(this), data.delayTill);
+            } else {
+              $submitButtons.removeAttr('disabled');
+            }
             $submitButton.find('.loader').addClass('vh');
           } else {
             this.buildFormAndSubmit(data);
