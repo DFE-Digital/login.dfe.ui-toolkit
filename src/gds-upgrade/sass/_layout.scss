@@ -284,3 +284,10 @@ img.spacing {
 .text-break {
   overflow-wrap: break-word;
 }
+
+// custom width
+@for $j from 1 through 100 {
+  .width-#{$j} {
+      width: #{$j}#{"%"} !important;
+  }
+}
