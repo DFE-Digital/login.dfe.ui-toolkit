@@ -46,15 +46,13 @@ NSA.signin = {
         } else {
           if (data.isFailedLogin) {
             this.resetValidation($form);
-            this.showValidationMessage(data.validationMessages);
-            this.showInlineValidation(data.validationMessages);
             if (data.delayTill) {
-              setTimeout(function() {
-                $submitButtons.prop('disabled', false);
-              }.bind(this), data.delayTill);
+              this.showValidationMessage(data.validationMessages, true);
             } else {
+              this.showValidationMessage(data.validationMessages);
               $submitButtons.removeAttr('disabled');
             }
+            this.showInlineValidation(data.validationMessages);
             $submitButton.find('.loader').addClass('vh');
           } else {
             this.buildFormAndSubmit(data);
@@ -86,7 +84,7 @@ NSA.signin = {
     });
   },
 
-  showValidationMessage: function (messages) {
+  showValidationMessage: function (messages, showRefreshLink) {
 
     var $div = $('<div />').attr('class', 'govuk-error-summary govuk-!-margin-top-6').attr('role', 'alert').attr('tabindex', '-1').attr('aria-labelledby', 'error-summary-title');
     var $h2 = $('<h2 />').attr('class', 'govuk-error-summary__title').attr('id', 'error-summary');
@@ -103,6 +101,11 @@ NSA.signin = {
         var $li = $('<li />').append($a);
         $ul.append($li);
       });
+      if (showRefreshLink) {
+        var $a = $('<a />').attr('class', 'govuk-link').attr('href', 'javascript:window.location.href=window.location.href').text('Refresh this page').css('color', '#1d70b8');
+        var $li = $('<li />').append($a);
+        $ul.append($li);
+      }
 
     } else {
       $h2.text('There has been an error');
