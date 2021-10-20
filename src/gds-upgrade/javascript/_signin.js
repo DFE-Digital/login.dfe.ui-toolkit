@@ -102,7 +102,7 @@ NSA.signin = {
         $ul.append($li);
       });
       if (showRefreshLink) {
-        var $a = $('<a />').attr('class', 'govuk-link').attr('href', 'javascript:window.location.href=window.location.href').text('Refresh this page').css('color', '#1d70b8');
+        var $a = $('<a />').attr('class', 'govuk-link-bold').attr('href', 'javascript:window.location.href=window.location.href').text('Refresh this page').css('color', '#1d70b8');
         var $li = $('<li />').append($a);
         $ul.append($li);
       }
