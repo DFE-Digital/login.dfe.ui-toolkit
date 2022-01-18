@@ -11,3 +11,18 @@
     outline: none;
   }
 }
+
+.govuk-notification-badge {
+  font-weight: 400;
+  font-size: .875rem;
+  line-height: 1.42857;
+  display: inline-block;
+  min-width: 13px;
+  padding: 1px 4px 0;
+  border-radius: 10px;
+  color:govuk-colour("white");;
+  background: govuk-colour("red");;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
