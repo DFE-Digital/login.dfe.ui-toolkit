@@ -27,6 +27,7 @@ $govuk-assets-path: "/gds-upgrade/";
 @import "pages/splash";
 @import "pages/requests";
 @import "pages/task-list";
+@import "pages/password";
 
 html, body {
   background: govuk-colour("light-grey");
