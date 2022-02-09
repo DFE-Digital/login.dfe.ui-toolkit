@@ -8,7 +8,7 @@ NSA = {
     $passwordInputs.each(function (i) {
       var $that = $(this);
       // Create show/hide button
-      var $showButton = $('<button />').prop({ type: 'button', class: 'show-password govuk-button govuk-button--secondary govuk-!-margin-bottom-1' });
+      var $showButton = $('<button />').prop({ type: 'button', class: 'show-password govuk-button govuk-button--secondary govuk-!-margin-bottom-1', ariaLabel = 'Show password' });
       $showButton.html('Show');
       // When clicking on that button we will show/hide the password accordingly
       $showButton.on('click', function(){ 
