@@ -3,15 +3,15 @@ function validatePassword() {
   $(`#validation-feedback-${id}`).slideDown();
   /*Array of rules and the information target*/
   var rules = [{
-      Pattern: "[A-Z]{2}",
+      Pattern: /(.*[A-Z]){2}/,
       Target: `upper-case-${id}`
     },
     {
-      Pattern: "[a-z]{2}",
+      Pattern: /(.*[a-z]){2}/,
       Target: `lower-case-${id}`
     },
     {
-      Pattern: "[0-9]{2}",
+      Pattern: /(.*\d){2}/,
       Target: `numbers-${id}`
     },
   ];
