@@ -1,6 +1,5 @@
 function validatePassword() {
   var id =  $(this).attr("id")
-  $(`#validation-feedback-${id}`).slideDown();
   /*Array of rules and the information target*/
   var rules = [{
       Pattern: /(.*[A-Z]){2}/,
@@ -25,17 +24,18 @@ function validatePassword() {
   }
 }
 
-function initialiseValidatePassword() {
-  var $passwordInput = $(this)
-  var id = $passwordInput.attr("id")
-  var validatePasswordHtml = $(`<div id='validation-feedback-${id}' style='display: none;'>`)
-  .append(`<div id='length-${id}' class='icon-remove'>8 charcters minimum</div>`)
-  .append(`<div id='upper-case-${id}' class='icon-remove'>contain at least 2 upper-case characters</div>`)
-  .append(`<div id='lower-case-${id}' class='icon-remove'>contain at least 2 lower-case characters</div>`)
-  .append(`<div id='numbers-${id}' class='icon-remove'>contain at least 2 numbers</div>`);
+$('.password-input-check').each(
+  function(index, element) {
+    var $passwordInput = $(this)
+    var id = $passwordInput.attr("id")
+    var validatePasswordHtml = $(`<div id='validation-feedback-${id}'>`)
+    .append(`<div id='length-${id}' class='icon-remove'>8 characters minimum</div>`)
+    .append(`<div id='upper-case-${id}' class='icon-remove'>contain at least 2 upper-case characters</div>`)
+    .append(`<div id='lower-case-${id}' class='icon-remove'>contain at least 2 lower-case characters</div>`)
+    .append(`<div id='numbers-${id}' class='icon-remove' style='margin-bottom: 6px;'>contain at least 2 numbers</div>`);
+  
+    $passwordInput.before(validatePasswordHtml);
+  }
+);
 
-  $passwordInput.before(validatePasswordHtml);
-}
-
-$('.password-input-check').one('click', initialiseValidatePassword);
 $('.password-input-check').on('keyup', validatePassword);
