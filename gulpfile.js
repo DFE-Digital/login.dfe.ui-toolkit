@@ -3,7 +3,7 @@
 const gulp = require('gulp');
 const sass = require('gulp-dart-sass');
 const concat = require('gulp-concat');
-const uglify = require('gulp-uglify');
+const uglify = require('gulp-uglify-es').default;
 const cleanCSS = require('gulp-clean-css');
 
 const browserify = require('browserify');
