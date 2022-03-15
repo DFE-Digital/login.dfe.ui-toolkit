@@ -43,9 +43,11 @@ NSA.signin = {
       success: function (data) {
         if (data.redirect) {
           window.location.href = data.uri;
+          $('title').html('DfE Sign-in');
         } else {
           if (data.isFailedLogin) {
             this.resetValidation($form);
+            $('title').html('Error: DfE Sign-in');
             if (data.delayTill) {
               this.showValidationMessage(data.validationMessages, true);
             } else {
@@ -112,7 +114,6 @@ NSA.signin = {
       var $li = $('<li />').html('Please try again later. If the problem continues, follow the link to <a href="https://help.signin.education.gov.uk/contact/form">submit a support request</a>');
       $ul.append($li);
     }
-
     $div.append($h2).append($ulContainer.append($ul));
     $('main').prepend($div);
 
@@ -132,7 +133,7 @@ NSA.signin = {
       if (!$parent.hasClass('govuk-form-group--error')) {
 
         var errorMessage = $('<span class="govuk-body">')
-          .html(value)
+          .html('<span class="govuk-visually-hidden">Error:</span>' + value)
           .prop('class', 'govuk-error-message')
           .prop('id', 'validation-' + index);
       }
