@@ -10,6 +10,12 @@
   &:focus {
     outline: none;
   }
+
+  & .govuk-notification-banner__content {
+    .wrap {
+      overflow-wrap: break-word;
+    }
+  }
 }
 
 .govuk-notification-badge {
