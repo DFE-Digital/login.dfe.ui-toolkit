@@ -11,7 +11,7 @@ NSA = {
       var $showButton = $('<button />').prop({ type: 'button', class: 'show-password govuk-button govuk-button--secondary govuk-!-margin-bottom-1', ariaLabel = 'Show password' });
       $showButton.html('Show');
       // When clicking on that button we will show/hide the password accordingly
-      $showButton.on('click', function(){ 
+      $showButton.on('click', function(){
         if($that.attr('type') === 'password'){
           $that.attr("type", "text");
           $showButton.text("Hide");
@@ -122,14 +122,14 @@ if (searchFields.length > 0) {
 var redirect = $('#redirect-url');
 
 $('#add-redirect').on('click', function() {
-  $('<p class="govuk-body"><label for="redirect-url"><input class="form-control inputConfig" name="redirect_uris"></label></p>').appendTo(redirect);
+  $('<p class="govuk-body"><label for="redirect-url"><input class="form-control inputConfig govuk-input" name="redirect_uris"></label></p>').appendTo(redirect);
   return false;
 });
 
 var logout = $('#logout-url');
 
 $('#add-logout').on('click', function() {
-  $('<p class="govuk-body"><label for="logout-url"><input class="form-control inputConfig" name="post_logout_redirect_uris"></label></p>').appendTo(logout);
+  $('<p class="govuk-body"><label for="logout-url"><input class="form-control inputConfig govuk-input" name="post_logout_redirect_uris"></label></p>').appendTo(logout);
   return false;
 });
 
