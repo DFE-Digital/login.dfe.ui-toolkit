@@ -4,6 +4,8 @@
       @include govuk-font(19, $weight: bold);
       color: govuk-colour("white");
       cursor: pointer;
+      float: right;
+      margin-left: 1em;
     }
   }
 
