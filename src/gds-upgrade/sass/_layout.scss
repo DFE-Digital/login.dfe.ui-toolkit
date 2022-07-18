@@ -125,11 +125,8 @@ aside {
     margin-bottom: 15px;
     position: relative;
     @include govuk-media-query(tablet) {
-      flex-basis: calc(50% - 30px);
+      flex-basis: calc((100% / 3) - 30px);
       margin: 0 15px 30px;
-    }
-    p.manage-link{
-      color: #005ea5;
     }
   }
   div.manage-card > a {
@@ -140,11 +137,6 @@ aside {
     height: 100%;
     width: 100%;
     z-index: 1;
-  }
-  div.manage-card > a:hover, a:visited, a:active, a:focus {
-    background: none;
-    color: inherit;
-    text-decoration: none;
   }
   .manage-card, .manage-card-disabled a {
     position: relative;

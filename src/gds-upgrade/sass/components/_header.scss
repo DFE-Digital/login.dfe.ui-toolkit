@@ -1,10 +1,18 @@
 // make the last element (sign out) go to the end of the container
-.govuk-header__navigation-item:last-child {
-  float: right;
+.govuk-header {
+  &__navigation {
+    @include govuk-clearfix;
+  }
 
-  // except when we have the menu (small screens), then show aligned with the others
-  @include govuk-media-query ($until: desktop) {
-    float: none;
+  &__navigation-item {
+    &:last-child {
+      float: right;
+
+      // except when we have the menu (small screens), then show aligned with the others
+      @include govuk-media-query ($until: desktop) {
+        float: none;
+      }
+    }
   }
 }
 

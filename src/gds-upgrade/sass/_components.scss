@@ -29,42 +29,16 @@ a.card {
 .manage-card, .manage-card-disabled {
   padding: 15px;
   border-right: none;
-  border-left: 5px solid #347ca9;
-  h2 {
-    font-weight: bold;
-    font-size: 110%;
-    position: relative;
-    color: #005ea5;
-    margin-top: 5px;
-  }
-  p {
-    margin-bottom: 3px;
-    position: relative;
-  }
 }
 
 div.manage-card {
   display: block;
-  text-decoration: none;
-  color: govuk-colour("black");
   background: #F8F8F8;
-  @include simple-animation;
-  &:hover {
-    border-left-width: 10px;
-    padding-left: 10px;
-    background: #f5f5f5;
-  }
 }
 
 div.manage-card-disabled {
   display: block;
-  text-decoration: none;
-  color: govuk-colour("black");
   background: #F8F8F8;
-
-  h2 {
-    color: govuk-colour("black");
-  }
 }
 
 nav.subnav {
