@@ -7,18 +7,8 @@
   }
 }
 
-.custom-manage-table {
-  th,td {
-    vertical-align: top;
-    border-bottom: 1px solid #b1b4b6;
-    padding: 10px 20px 10px 0;
-  }
-
-  tr th:last-child:not(:first-child),
-  tr td:last-child:not(:first-child) {
-  text-align: right;
-  padding: 10px 0px 10px 0;
-}
+.govuk-table.cell-align-top .govuk-table__body .govuk-table__row .govuk-table__cell {
+  vertical-align: top;
 }
 
 .custom-table {
