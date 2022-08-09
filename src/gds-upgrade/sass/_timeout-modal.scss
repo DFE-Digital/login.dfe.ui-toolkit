@@ -1,0 +1,25 @@
+.session-timeout-overlay {
+  background: rgba(0,0,0,.4);
+  position: fixed;
+  z-index:9998;
+  top: 0;
+  left:0;
+  right:0;
+  bottom:0;
+  display: none;
+  }
+
+  .session-timeout-modal {
+  background: #fff;
+  width: 500px;
+  position: absolute;
+  top: 50%;
+  left:50%;
+  right: 50%;
+  margin: -200px 0 0 -330px;
+  padding: 30px;
+  }
+
+  .session-timeout-modal h2 {
+  margin-top: 0;
+  }

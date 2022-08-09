@@ -187,6 +187,44 @@ $('.toggle-open').on('click', function (e) {
   $(this).addClass('govuk-visually-hidden');
 });
 
+function sessionTimeout() {
+  setTimeout(function() {
+  $('.session-timeout-overlay').show();
+  startTimer();
+  }, 10000); // session time out in milli seconds
+}
+
+$('#modal-signin').on("click", ()=>{
+  location.reload();
+})
+
+$('#modal-signout').on("click", ()=>{
+  location.href = '/signout'
+})
+
+function startTimer() {
+
+  var minute = 2;
+  var sec = 60;
+
+  setInterval(function() {
+      document.getElementById("minutes").innerHTML = minute;
+      document.getElementById("seconds").innerHTML = sec;
+      sec--;
+      if (sec == 00) {
+          minute --;
+          sec = 60;
+          if (minute == 0) {
+              //minute = 2;
+              alert('You are being signed out now');
+              location.href = '/signout'
+
+          }
+      }
+  }, 1000);
+}
+
+
 var showHideContent = new GOVUK.ShowHideContent()
 showHideContent.init()
 
