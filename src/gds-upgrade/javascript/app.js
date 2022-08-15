@@ -188,19 +188,21 @@ $('.toggle-open').on('click', function (e) {
 });
 
 function sessionTimeout() {
+  localStorage.removeItem('ReturnUrl');
   setTimeout(function() {
   $('.session-timeout-overlay').show();
+  $('#modal-signin').focus();
   startTimer();
   }, 10000); // session time out in milli seconds
 }
 
 $('#modal-signin').on("click", ()=>{
   location.reload();
-})
+});
 
 $('#modal-signout').on("click", ()=>{
   location.href = '/signout'
-})
+});
 
 function startTimer() {
 
@@ -215,10 +217,8 @@ function startTimer() {
           minute --;
           sec = 60;
           if (minute == 0) {
-              //minute = 2;
-              alert('You are being signed out now');
-              location.href = '/signout'
-
+              localStorage.setItem('ReturnUrl', location.pathname);
+              location.href = '/signout?timeout=1'
           }
       }
   }, 1000);
