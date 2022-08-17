@@ -1,4 +1,7 @@
 .govuk-table {
+    & .govuk-table__body .govuk-table__header {
+        vertical-align: middle;
+    }
     & .govuk-table__row {
         & .govuk-table__cell {
             vertical-align: middle;
