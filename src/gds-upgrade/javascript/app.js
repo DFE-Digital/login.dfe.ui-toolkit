@@ -195,7 +195,7 @@ function sessionTimeout() {
   $('.session-timeout-overlay').show();
   $('#modal-signin').focus();
   startTimer();
-  }, 1 * 10 * 1000); // minute * seconds * milliseconds e.g 15 * 60 * 1000 = 15 min
+  }, 15 * 60 * 1000); // minute * seconds * milliseconds e.g 15 * 60 * 1000 = 15 min
 }
 
 $('#modal-signin').on("click", ()=>{
@@ -209,7 +209,7 @@ $('#modal-signout').on("click", ()=>{
 
 function startTimer() {
 
-  var timePlaceHolder = "0 minutes and 10 seconds";
+  var timePlaceHolder = "4 minutes and 60 seconds";
   var timeoutTimer = setInterval(function() {
 
   if (localStorage.getItem('tabs') === '0'){
