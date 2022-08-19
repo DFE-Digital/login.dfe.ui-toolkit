@@ -187,6 +187,58 @@ $('.toggle-open').on('click', function (e) {
   $(this).addClass('govuk-visually-hidden');
 });
 
+// #region Session time out
+function sessionTimeout() {
+  localStorage.removeItem('uri');
+  setTimeout(function() {
+  localStorage.setItem('tabs',  '1');
+  $('.session-timeout-overlay').show();
+  $('#modal-signin').focus();
+  startTimer();
+  }, 15 * 60 * 1000); // minute * seconds * milliseconds e.g 15 * 60 * 1000 = 15 min
+}
+
+$('#modal-signin').on("click", ()=>{
+  localStorage.setItem('tabs', '0')
+  location.reload();
+});
+
+$('#modal-signout').on("click", ()=>{
+  location.href = '/signout'
+});
+
+function startTimer() {
+
+  var timePlaceHolder = "4 minutes and 60 seconds";
+  var timeoutTimer = setInterval(function() {
+
+  if (localStorage.getItem('tabs') === '0'){
+        location.reload();
+  }
+
+  var timer = timePlaceHolder.split('and');
+  var minutes = parseInt(timer[0], 10);
+  var seconds = parseInt(timer[1], 10);
+  --seconds;
+  minutes = (seconds < 0) ? --minutes : minutes;
+  seconds = (seconds < 0) ? 59 : seconds;
+  seconds = (seconds < 10) ? '0' + seconds : seconds;
+
+  $('#minutes').html(minutes);
+  $('#seconds').html(seconds);
+
+  if (minutes < 0 || (seconds <= 0) && (minutes <= 0)) {
+    localStorage.setItem('uri', location.pathname);
+    location.href = '/signout?timeout=1'
+    clearInterval(timeoutTimer);
+  }
+
+  timePlaceHolder = minutes + ' minutes and ' + seconds + ' seconds';
+}, 1000);
+}
+
+// #endregion
+
 var showHideContent = new GOVUK.ShowHideContent()
 showHideContent.init()
 
