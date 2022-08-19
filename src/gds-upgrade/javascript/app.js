@@ -195,7 +195,7 @@ function sessionTimeout() {
   $('.session-timeout-overlay').show();
   $('#modal-signin').focus();
   startTimer();
-  }, 15 * 60 * 1000); // minute * seconds * milliseconds e.g 15 * 60 * 1000 = 15 min
+  }, 14 * 60 * 1000); // minute * seconds * milliseconds e.g 14 * 60 * 1000
 }
 
 $('#modal-signin').on("click", ()=>{
