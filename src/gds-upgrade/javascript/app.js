@@ -229,7 +229,7 @@ function startTimer() {
 
   if (minutes < 0 || (seconds <= 0) && (minutes <= 0)) {
     localStorage.setItem('uri', location.pathname);
-    location.href = '/signout?timeout=1'
+    location.href = '/signout'
     clearInterval(timeoutTimer);
   }
 
