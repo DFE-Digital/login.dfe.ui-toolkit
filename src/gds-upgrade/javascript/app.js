@@ -195,25 +195,32 @@ function sessionTimeout() {
   $('.session-timeout-overlay').show();
   $('#modal-signin').focus();
   startTimer();
-  }, 14 * 60 * 1000); // minute * seconds * milliseconds e.g 14 * 60 * 1000
+  }, 14 * 59 * 1000); // minute * seconds * milliseconds e.g 14 * 60 * 1000
 }
 
 $('#modal-signin').on("click", ()=>{
+  clearInterval(timeoutTimer);
   localStorage.setItem('tabs', '0')
   location.reload();
 });
 
 $('#modal-signout').on("click", ()=>{
+  clearInterval(timeoutTimer);
   location.href = '/signout'
 });
 
+var timeoutTimer;
+
 function startTimer() {
 
-  var timePlaceHolder = "4 minutes and 60 seconds";
-  var timeoutTimer = setInterval(function() {
+  var timePlaceHolder = "4 minutes and 60 seconds"
+  clearInterval(timeoutTimer);
+
+  timeoutTimer = setInterval(function() {
 
   if (localStorage.getItem('tabs') === '0'){
-        location.reload();
+    clearInterval(timeoutTimer);
+    location.reload();
   }
 
   var timer = timePlaceHolder.split('and');
@@ -228,9 +235,9 @@ function startTimer() {
   $('#seconds').html(seconds);
 
   if (minutes < 0 || (seconds <= 0) && (minutes <= 0)) {
+    clearInterval(timeoutTimer);
     localStorage.setItem('uri', location.pathname);
     location.href = '/signout'
-    clearInterval(timeoutTimer);
   }
 
   timePlaceHolder = minutes + ' minutes and ' + seconds + ' seconds';
