@@ -214,7 +214,6 @@ var timeoutTimer;
 function startTimer() {
 
   var timePlaceHolder = "4 minutes and 60 seconds"
-  clearInterval(timeoutTimer);
 
   timeoutTimer = setInterval(function() {
 
