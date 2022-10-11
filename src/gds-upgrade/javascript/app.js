@@ -140,6 +140,7 @@ $('#generate-client-secret').on('click', function() {
   var isConfirm = confirm('Are you sure you want to regenerate the client secret?');
   if (isConfirm) {
     $('input#clientSecret').attr('value', secret);
+    $("#saveButton").prop('disabled', false);
   }
   return false;
 });
@@ -150,6 +151,7 @@ $('#generate-api-secret').on('click', function() {
   var isConfirm = confirm('Are you sure you want to regenerate the api secret?');
   if (isConfirm) {
     $('input#apiSecret').attr('value', secret);
+    $("#saveButton").prop('disabled', false);
   }
   return false;
 });
