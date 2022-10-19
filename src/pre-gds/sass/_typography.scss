@@ -95,6 +95,14 @@ blockquote {
   word-break: break-word;
 }
 
+.heading-breakable {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+}
+
 .meta {
   font-size: 14px;
   @include media(tablet) {
