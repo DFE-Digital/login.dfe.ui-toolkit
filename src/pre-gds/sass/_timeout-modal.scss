@@ -20,6 +20,13 @@
   padding: 30px;
   }
 
+  @media(max-width: 40.0525em) {
+    .session-timeout-modal {
+      width: 300px;
+      margin-left: -180px;
+    }
+  }
+
   .session-timeout-modal h2 {
   margin-top: 0;
   }
