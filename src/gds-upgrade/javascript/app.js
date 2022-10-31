@@ -264,7 +264,6 @@ function callTimeout() {
   location.href = '/signout';
 }
 
-
 function countTimeDiff() {
   var diff = new Date().getTime() - Number(tabId);
   var minutes = diff/(60 * 1000);
@@ -272,7 +271,9 @@ function countTimeDiff() {
   if (minutes > 20) {
     console.log(minutes + ' mins tab id=' + tabId);
     console.log(`onfocus: session ended ${new Date().toDateString()} ${new Date().toTimeString()}`);
-    callTimeout();
+    localStorage.setItem('uri', location.pathname);
+    clearInterval(timeoutTimer);
+    location.reload();
   }
 }
 
