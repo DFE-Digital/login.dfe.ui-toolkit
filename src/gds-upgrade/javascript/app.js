@@ -190,14 +190,28 @@ $('.toggle-open').on('click', function (e) {
 });
 
 // #region Session time out
+
+var tabId = new Date().getTime();
+
 function sessionTimeout() {
   localStorage.removeItem('uri');
+
+  window.onfocus = function () {
+    console.log(`onfocus: session was started at ${new Date(tabId).toDateString()} ${new Date(tabId).toTimeString()}`);
+    countTimeDiff();
+  }
+
   setTimeout(function() {
-  localStorage.setItem('tabs',  '1');
-  $('.session-timeout-overlay').show();
-  $('#modal-signin').focus();
-  startTimer();
-  }, 14 * 59 * 1000); // minute * seconds * milliseconds e.g 14 * 60 * 1000
+
+    // Tabs are set to check if other tabs running timer then set to 1
+    // when set to 0 means 'Stay signed in' is selected
+    localStorage.setItem('tabs',  '1');
+
+    $('.session-timeout-overlay').show();
+    $('#modal-signin').focus();
+
+    startTimer();
+  }, 14 * 59 * 1000); // minute * seconds * milliseconds e.g 14 * 59 * 1000
 }
 
 $('#modal-signin').on("click", ()=>{
@@ -214,7 +228,6 @@ $('#modal-signout').on("click", ()=>{
 var timeoutTimer;
 
 function startTimer() {
-
   var timePlaceHolder = "4 minutes and 60 seconds"
 
   timeoutTimer = setInterval(function() {
@@ -236,13 +249,31 @@ function startTimer() {
   $('#seconds').html(seconds);
 
   if (minutes < 0 || (seconds <= 0) && (minutes <= 0)) {
-    clearInterval(timeoutTimer);
-    localStorage.setItem('uri', location.pathname);
-    location.href = '/signout'
-  }
+    console.log(`session was started at ${new Date(tabId).toDateString()} ${new Date(tabId).toTimeString()}`)
+    console.log(`session ended ${new Date().toDateString()} ${new Date().toTimeString()}`);
+    callTimeout();
+   }
 
   timePlaceHolder = minutes + ' minutes and ' + seconds + ' seconds';
 }, 1000);
+}
+
+function callTimeout() {
+  clearInterval(timeoutTimer);
+  localStorage.setItem('uri', location.pathname);
+  location.href = '/signout';
+}
+
+
+function countTimeDiff() {
+  var diff = new Date().getTime() - Number(tabId);
+  var minutes = diff/(60 * 1000);
+
+  if (minutes > 20) {
+    console.log(minutes + ' mins tab id=' + tabId);
+    console.log(`onfocus: session ended ${new Date().toDateString()} ${new Date().toTimeString()}`);
+    callTimeout();
+  }
 }
 
 // #endregion
@@ -251,4 +282,3 @@ var showHideContent = new GOVUK.ShowHideContent()
 showHideContent.init()
 
 GOVUK.details.init()
-
