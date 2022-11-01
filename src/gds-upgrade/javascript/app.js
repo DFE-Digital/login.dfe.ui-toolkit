@@ -196,10 +196,10 @@ var tabId = new Date().getTime();
 function sessionTimeout() {
   localStorage.removeItem('uri');
 
-  // window.onfocus = function () {
-  //   console.log(`onfocus: session was started at ${new Date(tabId).toDateString()} ${new Date(tabId).toTimeString()}`);
-  //   countTimeDiff();
-  // }
+  window.onfocus = function () {
+    console.log(`onfocus: session was started at ${new Date(tabId).toDateString()} ${new Date(tabId).toTimeString()}`);
+    countTimeDiff();
+  }
 
   setTimeout(function() {
 
