@@ -197,7 +197,6 @@ function sessionTimeout() {
   localStorage.removeItem('uri');
 
   window.onfocus = function () {
-    console.log(`onfocus: session was started at ${new Date(tabId).toDateString()} ${new Date(tabId).toTimeString()}`);
     countTimeDiff();
   }
 
@@ -249,9 +248,9 @@ function startTimer() {
   $('#seconds').html(seconds);
 
   if (minutes < 0 || (seconds <= 0) && (minutes <= 0)) {
-    console.log(`session was started at ${new Date(tabId).toDateString()} ${new Date(tabId).toTimeString()}`)
-    console.log(`session ended ${new Date().toDateString()} ${new Date().toTimeString()}`);
     callTimeout();
+   } else if(tabId) {
+    countTimeDiff();
    }
 
   timePlaceHolder = minutes + ' minutes and ' + seconds + ' seconds';
@@ -264,15 +263,14 @@ function callTimeout() {
   location.href = '/signout';
 }
 
-
 function countTimeDiff() {
   var diff = new Date().getTime() - Number(tabId);
   var minutes = diff/(60 * 1000);
 
   if (minutes > 20) {
-    console.log(minutes + ' mins tab id=' + tabId);
-    console.log(`onfocus: session ended ${new Date().toDateString()} ${new Date().toTimeString()}`);
-    callTimeout();
+    localStorage.setItem('uri', location.pathname);
+    clearInterval(timeoutTimer);
+    location.reload();
   }
 }
 
