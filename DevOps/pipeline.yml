@@ -1,0 +1,162 @@
+name: Release-$(rev:r)
+resources:
+  repositories:
+
+trigger:
+  branches:
+    include:
+    - release/*
+    - feature/*
+
+parameters:
+- name: StorageAccountName
+  type: string
+- name: 
+  type: 
+- name: 
+  type: 
+- name: 
+  type: 
+- name: 
+  type: 
+- name: 
+  type: 
+- name: 
+  type: 
+- name: 
+  type: 
+- name: 
+  type: 
+
+
+- name:
+  type:
+  displayName:
+  default:
+
+variables:
+- group: variables-dev-cip
+- group: variables-cip
+- group: dsi-global
+- name: StorageAccountName
+  value: parameters.StorageAccountName
+- name: updatedStorageAccountName
+  value: 
+- name:
+  value:
+- name:
+  value:
+- name:
+  value:
+- name:
+  value:
+- name:
+  value:
+
+stages:
+- stage: dev-cip
+  displayName: dev-cip
+  jobs:
+  - job: agentJob
+    displayname: Agent Job
+    steps:
+      - task: PowerShell@2
+        displayName: Fix Storage Account Name
+        inputs:
+          targetType: 'inline'
+          script: |
+            $updatedStorageAccountName = "$(StorageAccountName" - replace '-', ''
+            ##vso[task.setvariable variable=StorageAccountName;]$updatedStorageAccountName"
+          condition: and(succeeded(), contains(variables['StorageAccountName'], '-'))
+
+      - task: AzureCLI@2
+        displayName: Empty Storage Container Contents
+        inputs:
+          azureSubscription: $(devServiceConnection)
+          scriptType: pscore
+          scriptLocation: inlineScript
+          inlineScript: |
+            az storage account network-rule add -g $(ShdRecourceGroupName) --account-name $(StorageAccountName) --ip-address $publicIp
+
+            Start-Sleep 180
+
+            az storage blob delete-batch --account-name $(StorageAccountName) --source $(UIContainerName)
+
+            Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
+
+      - task: AzureFileCopy@2
+        displayName: Copy Content to Storage Account Container
+        inputs:
+          SourcePath: $(System.DefaultWorkingDirectory)/dfe.ui.toolkit/drop/dist
+          azureSubscription: $(devServiceConnection)
+          Destination: AzureBlob
+          storage: $(StorageAccountName)
+          ContainerName: $(UIContainerName)
+
+      - task: AzurePowerShell@5
+        displayName: Set Container Public Access Level to Blob (Public)
+        inputs:
+          azureSubscription: $(devServiceConnection)
+          ScriptType: 'InlineScript'
+          Inline: >
+            Get-AzureRmStorageAccount -ResourceGroupName $(ShdResourceGroupName)
+            -Name $(StorageAccountName) | Set-AzureStorageComntainerAcl 
+            -Name $(UIContainerName) -Permission Blob
+
+      - task: AzurePowerShell@5
+        displayName: Purge CDN Content
+        inputs:
+          azureSubscription: $(devServiceConnection)
+          azurePowerShellVersion: LatestVersion
+          ScriptType: 'InlineScript'
+          Inline: >
+            Get -AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName)
+            -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) 
+
+      - task: AzureCLI@2
+        displayName: Remove IP Address From Storage Account
+        inputs:
+          azureSubscription: $(devServiceConnection)
+          scriptType: pscore
+          scriptLocation: inlineScript
+          inlineScript: >
+            az storage account network-rule remove -g $(ShdResourceGroupName) 
+            --account-name $(StorageAccountName) --ip-address $(agentIp)
+
+      - task: AzureKeyVault@2
+        displayName: Read Secrets
+        inputs:
+          azureSubscribtion: $(devServiceConnection)
+          KeyVaultName: $(KeyVaultName)
+          SecretsFilter: 'cdnAssetsVersion'
+
+      - task: PowerShell@2
+        displayName: Inline Powershell
+        inputs:
+          targetType: 'inline'
+          script: |
+            $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
+            $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+            Write-Host "vso[task.setvariable variable=newCdnVersion;]$newCdnVersion"
+
+      - task: AzureCLI@2
+        displayName: 'WriteSecrets: cdnAssetsVersion'
+        inputs:
+          azureSubscription: '${{parameters.serviceConnection}}'
+          scriptType: 'pscore'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            $secretValue = $(Get-ChildItem -Path Env: | Where-Object -Property Name -eq $secretName).value 
+            az keyvault secret set --name $secretName --vault-name $keyVaultName --value $secretValue
+          arguments: '-keyVaultName $(keyVaultName) -taskPrefix "armOutput" -secretPrefix "secret"'
+          workingDirectory: $(System.DefaultWorkingDirectory)
+
+#      - task: cboroson.cboroson.WriteSecrets.cboroson-WriteSecrets.cboroson-WriteSecrets@1
+#        displayName: 'WriteSecrets: cdnAssetsVersion'
+#        inputs:
+#          ConnectedServiceName: $(devServiceConnection)
+#          resourceGroupName: $(resourceGroupName)
+#          KeyVaultName: $(KeyVaultName)
+#          SecretName: cdnAssetsVersion
+#          SecretValue: $(newCdnAssetsVersion)
+
