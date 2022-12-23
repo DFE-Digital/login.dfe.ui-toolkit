@@ -1,6 +1,4 @@
 name: Release-$(rev:r)
-resources:
-  repositories:
 
 trigger:
   branches:
@@ -9,49 +7,22 @@ trigger:
     - feature/*
 
 parameters:
-- name: StorageAccountName
+- name: SubShortName
   type: string
-- name: 
-  type: 
-- name: 
-  type: 
-- name: 
-  type: 
-- name: 
-  type: 
-- name: 
-  type: 
-- name: 
-  type: 
-- name: 
-  type: 
-- name: 
-  type: 
+  default: 's141d01'
 
-
-- name:
-  type:
-  displayName:
-  default:
 
 variables:
 - group: variables-dev-cip
 - group: variables-cip
+- group: variables-default
 - group: dsi-global
-- name: StorageAccountName
-  value: parameters.StorageAccountName
+- name: SubShortName
+  value: parameters.SubShortName
 - name: updatedStorageAccountName
-  value: 
-- name:
-  value:
-- name:
-  value:
-- name:
-  value:
-- name:
-  value:
-- name:
-  value:
+  value: ''
+
+
 
 stages:
 - stage: dev-cip
@@ -65,9 +36,9 @@ stages:
         inputs:
           targetType: 'inline'
           script: |
-            $updatedStorageAccountName = "$(StorageAccountName" - replace '-', ''
-            ##vso[task.setvariable variable=StorageAccountName;]$updatedStorageAccountName"
-          condition: and(succeeded(), contains(variables['StorageAccountName'], '-'))
+            $updatedStorageAccountName = "$(storageAccountName)" - replace '-', ''
+            ##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
+          condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
 
       - task: AzureCLI@2
         displayName: Empty Storage Container Contents
@@ -76,11 +47,11 @@ stages:
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: |
-            az storage account network-rule add -g $(ShdRecourceGroupName) --account-name $(StorageAccountName) --ip-address $publicIp
+            az storage account network-rule add -g $(ShdRecourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
 
             Start-Sleep 180
 
-            az storage blob delete-batch --account-name $(StorageAccountName) --source $(UIContainerName)
+            az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
 
             Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
@@ -90,7 +61,7 @@ stages:
           SourcePath: $(System.DefaultWorkingDirectory)/dfe.ui.toolkit/drop/dist
           azureSubscription: $(devServiceConnection)
           Destination: AzureBlob
-          storage: $(StorageAccountName)
+          storage: $(storageAccountName)
           ContainerName: $(UIContainerName)
 
       - task: AzurePowerShell@5
@@ -100,7 +71,7 @@ stages:
           ScriptType: 'InlineScript'
           Inline: >
             Get-AzureRmStorageAccount -ResourceGroupName $(ShdResourceGroupName)
-            -Name $(StorageAccountName) | Set-AzureStorageComntainerAcl 
+            -Name $(storageAccountName) | Set-AzureStorageComntainerAcl 
             -Name $(UIContainerName) -Permission Blob
 
       - task: AzurePowerShell@5
@@ -121,14 +92,23 @@ stages:
           scriptLocation: inlineScript
           inlineScript: >
             az storage account network-rule remove -g $(ShdResourceGroupName) 
-            --account-name $(StorageAccountName) --ip-address $(agentIp)
+            --account-name $(storageAccountName) --ip-address $(agentIp)
 
-      - task: AzureKeyVault@2
-        displayName: Read Secrets
+#      - task: AzureKeyVault@2
+#        displayName: Read Secrets
+#        inputs:
+#          azureSubscribtion: $(devServiceConnection)
+#          KeyVaultName: $(keyVaultName)
+#          SecretsFilter: 'cdnAssetsVersion'
+      
+      - task: cboroson.cboroson-ReadSecrets.cboroson-ReadSecrets.cboroson-ReadSecrets@1
+        displayName: 'Read Secrets: '
         inputs:
-          azureSubscribtion: $(devServiceConnection)
-          KeyVaultName: $(KeyVaultName)
-          SecretsFilter: 'cdnAssetsVersion'
+          ConnectedServiceName: $(devServiceConnection)
+          resourceGroupName: $(ShdResourceGroupName)
+          KeyVaultName: $(keyVaultName)
+          secretOption: single
+          secretName: $(secretName)
 
       - task: PowerShell@2
         displayName: Inline Powershell
@@ -139,24 +119,24 @@ stages:
             $newCdnAssetsVersion = $cdnAssetsVersion+0.1
             Write-Host "vso[task.setvariable variable=newCdnVersion;]$newCdnVersion"
 
-      - task: AzureCLI@2
-        displayName: 'WriteSecrets: cdnAssetsVersion'
-        inputs:
-          azureSubscription: '${{parameters.serviceConnection}}'
-          scriptType: 'pscore'
-          scriptLocation: 'inlineScript'
-          inlineScript: |
-            $secretValue = $(Get-ChildItem -Path Env: | Where-Object -Property Name -eq $secretName).value 
-            az keyvault secret set --name $secretName --vault-name $keyVaultName --value $secretValue
-          arguments: '-keyVaultName $(keyVaultName) -taskPrefix "armOutput" -secretPrefix "secret"'
-          workingDirectory: $(System.DefaultWorkingDirectory)
-
-#      - task: cboroson.cboroson.WriteSecrets.cboroson-WriteSecrets.cboroson-WriteSecrets@1
+#      - task: AzureCLI@2
 #        displayName: 'WriteSecrets: cdnAssetsVersion'
 #        inputs:
-#          ConnectedServiceName: $(devServiceConnection)
-#          resourceGroupName: $(resourceGroupName)
-#          KeyVaultName: $(KeyVaultName)
-#          SecretName: cdnAssetsVersion
-#          SecretValue: $(newCdnAssetsVersion)
+#          azureSubscription: '${{parameters.serviceConnection}}'
+#          scriptType: 'pscore'
+#          scriptLocation: 'inlineScript'
+#          inlineScript: |
+#            $secretValue = $(Get-ChildItem -Path Env: | Where-Object -Property Name -eq $secretName).value 
+#            az keyvault secret set --name $secretName --vault-name $keyVaultName --value $secretValue
+#          arguments: '-keyVaultName $(keyVaultName) -taskPrefix "armOutput" -secretPrefix "secret"'
+#          workingDirectory: $(System.DefaultWorkingDirectory)
+
+      - task: cboroson.cboroson.WriteSecrets.cboroson-WriteSecrets.cboroson-WriteSecrets@1
+        displayName: 'WriteSecrets: cdnAssetsVersion'
+        inputs:
+          ConnectedServiceName: $(devServiceConnection)
+          resourceGroupName: $(resourceGroupName)
+          KeyVaultName: $(keyVaultName)
+          SecretName: cdnAssetsVersion
+          SecretValue: $(newCdnAssetsVersion)
 
