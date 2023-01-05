@@ -31,22 +31,29 @@ stages:
   - job: agentJob
     displayname: Agent Job
     steps:
-      - task: PowerShell@2
-        displayName: Fix Storage Account Name
-        inputs:
-          targetType: 'inline'
-          script: |
-            $updatedStorageAccountName = "$(storageAccountName)" - replace '-', ''
-            ##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
-          condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
+#      - task: PowerShell@2
+#        displayName: Fix Storage Account Name
+#        inputs:
+#          targetType: 'inline'
+#          script: |
+#            $updatedStorageAccountName = "$(storageAccountName)" - replace '-', ''
+#            ##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
+#          condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
+      - powershell: |
+          $updatedStorageAccountName = "$(storageAccountName)" -replace '-', ''
+          "##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
+        displayName: 'Fix Storage Account Name'
+        condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
 
       - task: AzureCLI@2
-        displayName: Empty Storage Container Contents
+        displayName: 'Empty Storage Container Contents'
         inputs:
           azureSubscription: $(devServiceConnection)
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: |
+            $publicIp = Invoke-RestMethod -uri https://api.ipify.org
+
             az storage account network-rule add -g $(ShdRecourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
 
             Start-Sleep 180
@@ -55,17 +62,18 @@ stages:
 
             Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
+
       - task: AzureFileCopy@2
         displayName: Copy Content to Storage Account Container
         inputs:
           SourcePath: $(System.DefaultWorkingDirectory)/dfe.ui.toolkit/drop/dist
           azureSubscription: $(devServiceConnection)
           Destination: AzureBlob
-          storage: $(storageAccountName)
-          ContainerName: $(UIContainerName)
+          storage: '$(storageAccountName)'
+          ContainerName: '$(UIContainerName)'
 
       - task: AzurePowerShell@5
-        displayName: Set Container Public Access Level to Blob (Public)
+        displayName: 'Set Container Public Access Level to Blob (Public)'
         inputs:
           azureSubscription: $(devServiceConnection)
           ScriptType: 'InlineScript'
@@ -73,16 +81,18 @@ stages:
             Get-AzureRmStorageAccount -ResourceGroupName $(ShdResourceGroupName)
             -Name $(storageAccountName) | Set-AzureStorageComntainerAcl 
             -Name $(UIContainerName) -Permission Blob
+          azurePowerShellVersion: LatesstVersion
 
       - task: AzurePowerShell@5
-        displayName: Purge CDN Content
+        displayName: 'Purge CDN Content'
         inputs:
           azureSubscription: $(devServiceConnection)
           azurePowerShellVersion: LatestVersion
-          ScriptType: 'InlineScript'
+          ScriptType: InlineScript
           Inline: >
             Get -AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName)
-            -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) 
+            -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent '/*'
+          azurePowerShellVersion: LatestVersion
 
       - task: AzureCLI@2
         displayName: Remove IP Address From Storage Account
@@ -90,9 +100,7 @@ stages:
           azureSubscription: $(devServiceConnection)
           scriptType: pscore
           scriptLocation: inlineScript
-          inlineScript: >
-            az storage account network-rule remove -g $(ShdResourceGroupName) 
-            --account-name $(storageAccountName) --ip-address $(agentIp)
+          inlineScript: 'az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)'
 
 #      - task: AzureKeyVault@2
 #        displayName: Read Secrets
