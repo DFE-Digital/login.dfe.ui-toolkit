@@ -7,144 +7,204 @@ trigger:
     - feature/*
 
 parameters:
-- name: SubShortName
-  type: string
-  default: 's141d01'
-
+- name: tran 
+  type: boolean
+  displayName: 'Transformation Deployment'
+  default: false
+- name: dev
+  type: boolean
+  displayName: 'Dev Deployment'
+  default: false
+- name: test
+  type: boolean
+  displayName: 'Test Deployment'
+  default: false
+- name: int
+  type: boolean
+  displayName: 'INT Deployment'
+  default: false
+- name: pp
+  type: boolean
+  displayName: 'Pre-Prod Deployment'
+  default: false
+- name: pr
+  type: boolean
+  displayName: 'Prod Deployment'
+  default: false
 
 variables:
-- group: variables-dev-cip
-- group: variables-cip
-- group: variables-default
 - group: dsi-global
-- name: SubShortName
-  value: parameters.SubShortName
+- name: serviceConnection
+  value: ''
 - name: updatedStorageAccountName
   value: ''
-
+- name: publicIp
+  value: ''
+- name: agentIp
+  value: ''
+- name: newCdnAssetsVersion
+  value: ''
+- name: tran
+  ${{ if eq(parameters.tran, 'true') }}: 
+    value: true
+  ${{ else }}:
+    value: false
+- name: dev
+  ${{ if eq(parameters.dev, 'true') }}:
+    value: true
+  ${{ else }}:
+    value: false
+- name: test
+  ${{ if or(eq(parameters.test, 'true'), contains(variables['Build.SourceBranch'],'develop')) }}:
+    value: true
+  ${{ else }}:
+    value: false
+- name: int
+  ${{ if or(eq(parameters.int, 'true'), contains(variables['Build.SourceBranch'],'release')) }}:
+    value: true
+  ${{ else }}:
+    value: false
+- name: pp
+  ${{ if or(eq(parameters.pp, 'true'), contains(variables['Build.SourceBranch'],'release')) }}:
+    value: true
+  ${{ else }}:
+    value: false
+- name: pr
+  ${{ if or(eq(parameters.pr, 'true'), contains(variables['Build.SourceBranch'],'release')) }}:
+    value: true
+  ${{ else }}:
+    value: false
 
 
 stages:
-- stage: dev-cip
-  displayName: dev-cip
-  jobs:
-  - job: agentJob
-    displayname: Agent Job
-    steps:
-#      - task: PowerShell@2
-#        displayName: Fix Storage Account Name
-#        inputs:
-#          targetType: 'inline'
-#          script: |
-#            $updatedStorageAccountName = "$(storageAccountName)" - replace '-', ''
-#            ##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
-#          condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
-      - powershell: |
-          $updatedStorageAccountName = "$(storageAccountName)" -replace '-', ''
-          "##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
-        displayName: 'Fix Storage Account Name'
-        condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
+- stage: scanBuildApp
+  displayName: Build Artifact
+  - task: CopyFiles@2
+    displayName: Copy files for staging
+    inputs:
+      SourceFolder: $(Build.Repository.LocalPath)/$(Build.DefinitionName)
+      Contents: | 
+        dist/**
+      TargetFolder: $(System.DefaultWorkingDirectory)/Publish
+      CleanTargetFolder: true
 
-      - task: AzureCLI@2
-        displayName: 'Empty Storage Container Contents'
-        inputs:
-          azureSubscription: $(devServiceConnection)
-          scriptType: pscore
-          scriptLocation: inlineScript
-          inlineScript: |
-            $publicIp = Invoke-RestMethod -uri https://api.ipify.org
+- ${{ each var in variables }}:
+  - ${{ if in(var.key, 'tran','dev','test','int','pp','pr') }}:
+    - ${{ if eq(var.value, 'true') }}:
+      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+        serviceConnection: $(devServiceConnection)
+      ${{ elseif eq(var.key, 'pr') }}:
+        serviceConnection: $(prodServiceConnection)
+      ${{ else }}:
+        serviceConnection: $(testServiceConnection)
+      - stage: ${{var.Key}}-cip
+        variables:
+        - group: dsi-${{var.key}}-kv
+        displayName: ${{var.Key}}-cip
+        dependsOn:
+        - scanBuildApp
+        condition: in(dependencies.scanBuildApp.result, 'Succeeded', 'Skipped')
+        jobs:
+        - job: agentJob
+          displayname: Agent Job
+          steps:
+      #      - task: PowerShell@2
+      #        displayName: Fix Storage Account Name
+      #        inputs:
+      #          targetType: 'inline'
+      #          script: |
+      #            $updatedStorageAccountName = "$(storageAccountName)" - replace '-', ''
+      #            ##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
+      #          condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
+            - powershell: |
+                $updatedStorageAccountName = "$(storageAccountName)" -replace '-', ''
+                "##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
+              displayName: 'Fix Storage Account Name'
+              condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
 
-            az storage account network-rule add -g $(ShdRecourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
+            - task: AzureCLI@2
+              displayName: 'Empty Storage Container Contents'
+              inputs:
+                azureSubscription: $(serviceConnection)
+                scriptType: pscore
+                scriptLocation: inlineScript
+                inlineScript: |
+                  $publicIp = Invoke-RestMethod -uri https://api.ipify.org
 
-            Start-Sleep 180
+                  az storage account network-rule add -g $(ShdRecourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
 
-            az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
+                  Start-Sleep 180
 
-            Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
+                  az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
+
+                  Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
 
-      - task: AzureFileCopy@2
-        displayName: Copy Content to Storage Account Container
-        inputs:
-          SourcePath: $(System.DefaultWorkingDirectory)/dfe.ui.toolkit/drop/dist
-          azureSubscription: $(devServiceConnection)
-          Destination: AzureBlob
-          storage: '$(storageAccountName)'
-          ContainerName: '$(UIContainerName)'
+            - task: AzureFileCopy@2
+              displayName: Copy Content to Storage Account Container
+              inputs:
+                SourcePath: $(System.DefaultWorkingDirectory)/dfe.ui.toolkit/drop/dist
+                azureSubscription: $(serviceConnection)
+                Destination: AzureBlob
+                storage: '$(storageAccountName)'
+                ContainerName: '$(UIContainerName)'
 
-      - task: AzurePowerShell@5
-        displayName: 'Set Container Public Access Level to Blob (Public)'
-        inputs:
-          azureSubscription: $(devServiceConnection)
-          ScriptType: 'InlineScript'
-          Inline: >
-            Get-AzureRmStorageAccount -ResourceGroupName $(ShdResourceGroupName)
-            -Name $(storageAccountName) | Set-AzureStorageComntainerAcl 
-            -Name $(UIContainerName) -Permission Blob
-          azurePowerShellVersion: LatesstVersion
+            - task: AzurePowerShell@5
+              displayName: 'Set Container Public Access Level to Blob (Public)'
+              inputs:
+                azureSubscription: $(serviceConnection)
+                ScriptType: 'InlineScript'
+                Inline: >
+                  Get-AzureRmStorageAccount -ResourceGroupName $(ShdResourceGroupName)
+                  -Name $(storageAccountName) | Set-AzureStorageComntainerAcl 
+                  -Name $(UIContainerName) -Permission Blob
+                azurePowerShellVersion: LatesstVersion
 
-      - task: AzurePowerShell@5
-        displayName: 'Purge CDN Content'
-        inputs:
-          azureSubscription: $(devServiceConnection)
-          azurePowerShellVersion: LatestVersion
-          ScriptType: InlineScript
-          Inline: >
-            Get -AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName)
-            -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent '/*'
-          azurePowerShellVersion: LatestVersion
+            - task: AzurePowerShell@5
+              displayName: 'Purge CDN Content'
+              inputs:
+                azureSubscription: $(serviceConnection)
+                azurePowerShellVersion: LatestVersion
+                ScriptType: InlineScript
+                Inline: >
+                  Get -AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName)
+                  -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent '/*'
+                azurePowerShellVersion: LatestVersion
 
-      - task: AzureCLI@2
-        displayName: Remove IP Address From Storage Account
-        inputs:
-          azureSubscription: $(devServiceConnection)
-          scriptType: pscore
-          scriptLocation: inlineScript
-          inlineScript: 'az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)'
+            - task: AzureCLI@2
+              displayName: Remove IP Address From Storage Account
+              inputs:
+                azureSubscription: $(serviceConnection)
+                scriptType: pscore
+                scriptLocation: inlineScript
+                inlineScript: 'az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)'
 
-#      - task: AzureKeyVault@2
-#        displayName: Read Secrets
-#        inputs:
-#          azureSubscribtion: $(devServiceConnection)
-#          KeyVaultName: $(keyVaultName)
-#          SecretsFilter: 'cdnAssetsVersion'
-      
-      - task: cboroson.cboroson-ReadSecrets.cboroson-ReadSecrets.cboroson-ReadSecrets@1
-        displayName: 'Read Secrets: '
-        inputs:
-          ConnectedServiceName: $(devServiceConnection)
-          resourceGroupName: $(ShdResourceGroupName)
-          KeyVaultName: $(keyVaultName)
-          secretOption: single
-          secretName: $(secretName)
+            - ${{ if eq(var.key, 'dev') }}: # Only runs the following tasks if running the "dev-cip" stage.
+              
+        #      - task: cboroson.cboroson-ReadSecrets.cboroson-ReadSecrets.cboroson-ReadSecrets@1
+        #        displayName: 'Read Secrets: '
+        #        inputs:
+        #          ConnectedServiceName: $(serviceConnection)
+        #          resourceGroupName: $(ShdResourceGroupName)
+        #          KeyVaultName: $(keyVaultName)
+        #          secretOption: single
+        #          secretName: $(secretName)
 
-      - task: PowerShell@2
-        displayName: Inline Powershell
-        inputs:
-          targetType: 'inline'
-          script: |
-            $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
-            $newCdnAssetsVersion = $cdnAssetsVersion+0.1
-            Write-Host "vso[task.setvariable variable=newCdnVersion;]$newCdnVersion"
+              - task: PowerShell@2
+                displayName: Inline Powershell
+                inputs:
+                  targetType: 'inline'
+                  script: |
+                    $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
+                    $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+                    Write-Host "vso[task.setvariable variable=cdnAssetsVersion;]$newCdnAssetsVersion"
 
-#      - task: AzureCLI@2
-#        displayName: 'WriteSecrets: cdnAssetsVersion'
-#        inputs:
-#          azureSubscription: '${{parameters.serviceConnection}}'
-#          scriptType: 'pscore'
-#          scriptLocation: 'inlineScript'
-#          inlineScript: |
-#            $secretValue = $(Get-ChildItem -Path Env: | Where-Object -Property Name -eq $secretName).value 
-#            az keyvault secret set --name $secretName --vault-name $keyVaultName --value $secretValue
-#          arguments: '-keyVaultName $(keyVaultName) -taskPrefix "armOutput" -secretPrefix "secret"'
-#          workingDirectory: $(System.DefaultWorkingDirectory)
-
-      - task: cboroson.cboroson.WriteSecrets.cboroson-WriteSecrets.cboroson-WriteSecrets@1
-        displayName: 'WriteSecrets: cdnAssetsVersion'
-        inputs:
-          ConnectedServiceName: $(devServiceConnection)
-          resourceGroupName: $(resourceGroupName)
-          KeyVaultName: $(keyVaultName)
-          SecretName: cdnAssetsVersion
-          SecretValue: $(newCdnAssetsVersion)
+        #      - task: cboroson.cboroson.WriteSecrets.cboroson-WriteSecrets.cboroson-WriteSecrets@1
+        #        displayName: 'WriteSecrets: cdnAssetsVersion'
+        #        inputs:
+        #          ConnectedServiceName: $(serviceConnection)
+        #          resourceGroupName: $(resourceGroupName)
+        #          KeyVaultName: $(keyVaultName)
+        #          SecretName: cdnAssetsVersion
+        #          SecretValue: $(newCdnAssetsVersion)
 
