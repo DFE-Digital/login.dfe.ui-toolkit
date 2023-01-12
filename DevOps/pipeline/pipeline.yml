@@ -91,14 +91,14 @@ stages:
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','int','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
-      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-        serviceConnection: $(devServiceConnection)
-      ${{ elseif eq(var.key, 'pr') }}:
-        serviceConnection: $(prodServiceConnection)
-      ${{ else }}:
-        serviceConnection: $(testServiceConnection)
       - stage: ${{var.Key}}-cip
         variables:
+          ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+            serviceConnection: $(devServiceConnection)
+          ${{ elseif eq(var.key, 'pr') }}:
+            serviceConnection: $(prodServiceConnection)
+          ${{ else }}:
+        serviceConnection: $(testServiceConnection)
         - group: dsi-${{var.key}}-kv
         displayName: ${{var.Key}}-cip
         dependsOn:
