@@ -76,22 +76,6 @@ variables:
     value: false
 
 
-stages:
-- stage: scanBuildApp
-  displayName: Build Artifact
-  jobs:
-  - job: scanBuildApp
-    displayName: Build Artifact
-    steps:
-      - task: CopyFiles@2
-        displayName: Copy files for staging
-        inputs:
-          SourceFolder: $(Build.Repository.LocalPath)/$(Build.SourceBranch)
-          Contents: | 
-            dist/**
-          TargetFolder: $(System.DefaultWorkingDirectory)/Publish
-          CleanTargetFolder: true
-
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','int','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
@@ -117,9 +101,6 @@ stages:
           value: $(subShortName)-signin-shd-cdnep
         
         displayName: ${{var.Key}}-cip
-        dependsOn:
-        - scanBuildApp
-        condition: in(dependencies.scanBuildApp.result, 'Succeeded', 'Skipped')
         jobs:
         - job: agentJob
           displayname: Agent Job
@@ -159,7 +140,7 @@ stages:
             - task: AzureFileCopy@2
               displayName: Copy Content to Storage Account Container
               inputs:
-                SourcePath: $(System.DefaultWorkingDirectory)/dfe.ui.toolkit/drop/dist
+                SourcePath: $(System.DefaultWorkingDirectory)/dist
                 azureSubscription: $(serviceConnection)
                 Destination: AzureBlob
                 storage: '$(storageAccountName)'
