@@ -34,6 +34,16 @@ parameters:
 
 variables:
 - group: dsi-global
+- name: serviceConnection
+  value: ''
+- name: updatedStorageAccountName
+  value: ''
+- name: publicIp
+  value: ''
+- name: agentIp
+  value: ''
+- name: newCdnAssetsVersion
+  value: ''
 - name: tran
   ${{ if eq(parameters.tran, 'true') }}: 
     value: true
@@ -89,14 +99,6 @@ stages:
           value: $(SubShortName)-signin-shd-cdn
         - name: cdnEndpointName
           value: $(subShortName)-signin-shd-cdnep
-        - name: updatedStorageAccountName
-          value: ''
-        - name: publicIp
-          value: ''
-        - name: agentIp
-          value: ''
-        - name: newCdnAssetsVersion
-          value: ''
         displayName: ${{var.Key}}-cip
         jobs:
         - job: agentJob
