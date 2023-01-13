@@ -99,7 +99,6 @@ variables:
           value: $(SubShortName)-signin-shd-cdn
         - name: cdnEndpointName
           value: $(subShortName)-signin-shd-cdnep
-        
         displayName: ${{var.Key}}-cip
         jobs:
         - job: agentJob
@@ -122,7 +121,7 @@ variables:
             - task: AzureCLI@2
               displayName: 'Empty Storage Container Contents'
               inputs:
-                azureSubscription: $(serviceConnection)
+                azureSubscription: $(serviceConnectionrety)
                 scriptType: pscore
                 scriptLocation: inlineScript
                 inlineScript: |
