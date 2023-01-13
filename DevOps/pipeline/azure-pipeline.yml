@@ -80,7 +80,7 @@ stages:
       - stage: ${{var.Key}}cip
         variables:
         - name: serviceConnection
-          - ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+          ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
             value: $(devServiceConnection)
           ${{ elseif eq(var.key, 'pr') }}:
             value: $(prodServiceConnection)
