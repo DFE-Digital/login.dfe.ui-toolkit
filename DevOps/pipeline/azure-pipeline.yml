@@ -121,7 +121,7 @@ stages:
             - task: AzureCLI@2
               displayName: 'Empty Storage Container Contents'
               inputs:
-                azureSubscription: "$(devServiceConnection)"
+                azureSubscription: "$(serviceConnection)"
                 scriptType: pscore
                 scriptLocation: inlineScript
                 inlineScript: |
@@ -140,7 +140,7 @@ stages:
               displayName: Copy Content to Storage Account Container
               inputs:
                 SourcePath: $(System.DefaultWorkingDirectory)/dist
-                azureSubscription: $(serviceConnection)
+                azureSubscription: '$(serviceConnection)'
                 Destination: AzureBlob
                 storage: '$(storageAccountName)'
                 ContainerName: '$(UIContainerName)'
@@ -148,20 +148,20 @@ stages:
             - task: AzurePowerShell@5
               displayName: 'Set Container Public Access Level to Blob (Public)'
               inputs:
-                azureSubscription: $(serviceConnection)
+                azureSubscription: '$(serviceConnection)'
                 ScriptType: 'InlineScript'
                 Inline: >
                   Get-AzureRmStorageAccount -ResourceGroupName $(ShdResourceGroupName)
                   -Name $(storageAccountName) | Set-AzureStorageComntainerAcl 
                   -Name $(UIContainerName) -Permission Blob
-                azurePowerShellVersion: LatesstVersion
+                azurePowerShellVersion: LatestVersion
 
             - task: AzurePowerShell@5
               displayName: 'Purge CDN Content'
               inputs:
-                azureSubscription: $(serviceConnection)
+                azureSubscription: '$(serviceConnection)'
                 azurePowerShellVersion: LatestVersion
-                ScriptType: InlineScript
+                ScriptType: 'InlineScript'
                 Inline: >
                   Get -AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName)
                   -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent '/*'
@@ -169,7 +169,7 @@ stages:
             - task: AzureCLI@2
               displayName: Remove IP Address From Storage Account
               inputs:
-                azureSubscription: $(serviceConnection)
+                azureSubscription: '$(serviceConnection)'
                 scriptType: pscore
                 scriptLocation: inlineScript
                 inlineScript: 'az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)'
