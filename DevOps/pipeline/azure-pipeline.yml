@@ -103,7 +103,7 @@ stages:
         displayName: ${{var.Key}}-cip
         jobs:
         - job: agentJob
-          displayname: Agent Job
+          displayName: Agent Job
           steps:
       #      - task: PowerShell@2
       #        displayName: Fix Storage Account Name
