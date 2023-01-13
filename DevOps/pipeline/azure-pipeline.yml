@@ -75,7 +75,7 @@ variables:
   ${{ else }}:
     value: false
 
-
+stages:
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','int','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
