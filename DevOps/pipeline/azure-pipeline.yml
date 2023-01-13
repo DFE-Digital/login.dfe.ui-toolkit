@@ -79,13 +79,6 @@ stages:
     - ${{ if eq(var.value, 'true') }}:
       - stage: ${{var.Key}}cip
         variables:
-        - name: serviceConnection
-          ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-            value: $(devServiceConnection)
-          ${{ elseif eq(var.key, 'pr') }}:
-            value: $(prodServiceConnection)
-          ${{ else }}:
-            value: $(testServiceConnection)
         - group: dsi-${{var.key}}-kv
         - name: SubShortName
           value: $(platformGlobalIdentifier)$(environmentId)
@@ -119,7 +112,12 @@ stages:
             - task: AzureCLI@2
               displayName: 'Empty Storage Container Contents'
               inputs:
-                azureSubscription: "$(serviceConnection)"
+                ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                  azureSubscription: $(devServiceConnection)
+                ${{ elseif eq(var.key, 'pr') }}:
+                  azureSubscription: $(prodServiceConnection)
+                ${{ else }}:
+                  azureSubscription: $(testServiceConnection)
                 scriptType: pscore
                 scriptLocation: inlineScript
                 inlineScript: |
@@ -138,7 +136,12 @@ stages:
               displayName: Copy Content to Storage Account Container
               inputs:
                 SourcePath: $(System.DefaultWorkingDirectory)/dist
-                azureSubscription: '$(serviceConnection)'
+                ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                  azureSubscription: $(devServiceConnection)
+                ${{ elseif eq(var.key, 'pr') }}:
+                  azureSubscription: $(prodServiceConnection)
+                ${{ else }}:
+                  azureSubscription: $(testServiceConnection)
                 Destination: AzureBlob
                 storage: '$(storageAccountName)'
                 ContainerName: '$(UIContainerName)'
@@ -146,7 +149,12 @@ stages:
             - task: AzurePowerShell@5
               displayName: 'Set Container Public Access Level to Blob (Public)'
               inputs:
-                azureSubscription: '$(serviceConnection)'
+                ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                  azureSubscription: $(devServiceConnection)
+                ${{ elseif eq(var.key, 'pr') }}:
+                  azureSubscription: $(prodServiceConnection)
+                ${{ else }}:
+                  azureSubscription: $(testServiceConnection)
                 ScriptType: 'InlineScript'
                 Inline: >
                   Get-AzureRmStorageAccount -ResourceGroupName $(ShdResourceGroupName)
@@ -157,7 +165,12 @@ stages:
             - task: AzurePowerShell@5
               displayName: 'Purge CDN Content'
               inputs:
-                azureSubscription: '$(serviceConnection)'
+                ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                  azureSubscription: $(devServiceConnection)
+                ${{ elseif eq(var.key, 'pr') }}:
+                  azureSubscription: $(prodServiceConnection)
+                ${{ else }}:
+                  azureSubscription: $(testServiceConnection)
                 azurePowerShellVersion: LatestVersion
                 ScriptType: 'InlineScript'
                 Inline: >
@@ -167,7 +180,12 @@ stages:
             - task: AzureCLI@2
               displayName: Remove IP Address From Storage Account
               inputs:
-                azureSubscription: '$(serviceConnection)'
+                ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                  azureSubscription: $(devServiceConnection)
+                ${{ elseif eq(var.key, 'pr') }}:
+                  azureSubscription: $(prodServiceConnection)
+                ${{ else }}:
+                  azureSubscription: $(testServiceConnection)
                 scriptType: pscore
                 scriptLocation: inlineScript
                 inlineScript: 'az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)'
