@@ -1,4 +1,4 @@
-name: Release-$(rev:r)
+name: $(BuildDefinitionName)_tag-$(BuildID)_at-$(Date:yyyyMMdd)$(Rev:.r)
 
 trigger:
   branches:
