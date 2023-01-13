@@ -75,11 +75,11 @@ variables:
   ${{ else }}:
     value: false
 
-
+stages:
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','int','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
-      - stage: ${{var.Key}}-cip
+      - stage: ${{var.Key}}cip
         variables:
         - name: serviceConnection
           ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
@@ -102,7 +102,7 @@ variables:
         displayName: ${{var.Key}}-cip
         jobs:
         - job: agentJob
-          displayname: Agent Job
+          displayName: Agent Job
           steps:
       #      - task: PowerShell@2
       #        displayName: Fix Storage Account Name
@@ -127,7 +127,7 @@ variables:
                 inlineScript: |
                   $publicIp = Invoke-RestMethod -uri https://api.ipify.org
 
-                  az storage account network-rule add -g $(ShdRecourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
+                  az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
 
                   Start-Sleep 180
 
