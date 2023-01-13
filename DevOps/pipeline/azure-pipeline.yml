@@ -185,7 +185,6 @@ stages:
                 Inline: >
                   Get -AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName)
                   -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent '/*'
-                azurePowerShellVersion: LatestVersion
 
             - task: AzureCLI@2
               displayName: Remove IP Address From Storage Account
