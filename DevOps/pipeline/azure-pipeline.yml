@@ -79,14 +79,18 @@ variables:
 stages:
 - stage: scanBuildApp
   displayName: Build Artifact
-  - task: CopyFiles@2
-    displayName: Copy files for staging
-    inputs:
-      SourceFolder: $(Build.Repository.LocalPath)/$(Build.SourceBranch)
-      Contents: | 
-        dist/**
-      TargetFolder: $(System.DefaultWorkingDirectory)/Publish
-      CleanTargetFolder: true
+  jobs:
+  - job: scanBuildApp
+    displayName: Build Artifact
+    steps:
+      - task: CopyFiles@2
+        displayName: Copy files for staging
+        inputs:
+          SourceFolder: $(Build.Repository.LocalPath)/$(Build.SourceBranch)
+          Contents: | 
+            dist/**
+          TargetFolder: $(System.DefaultWorkingDirectory)/Publish
+          CleanTargetFolder: true
 
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','int','pp','pr') }}:
