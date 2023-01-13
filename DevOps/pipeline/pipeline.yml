@@ -93,13 +93,25 @@ stages:
     - ${{ if eq(var.value, 'true') }}:
       - stage: ${{var.Key}}-cip
         variables:
-          ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-            serviceConnection: $(devServiceConnection)
-          ${{ elseif eq(var.key, 'pr') }}:
-            serviceConnection: $(prodServiceConnection)
-          ${{ else }}:
-        serviceConnection: $(testServiceConnection)
+        - name: serviceConnection
+            ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+              value: $(devServiceConnection)
+            ${{ elseif eq(var.key, 'pr') }}:
+              value: $(prodServiceConnection)
+            ${{ else }}:
+              value: $(testServiceConnection)
         - group: dsi-${{var.key}}-kv
+        - name: SubShortName
+          value: $(platformGlobalIdentifier)$(environmentId)
+        - name: storageAccountName
+          value: $(SubShortName)signinshdstr
+        - name: ShdResourceGroupName
+          value: $(SubShortName)-shd
+        - name: azureCdnName
+          value: $(SubShortName)-signin-shd-cdn
+        - name: cdnEndpointName
+          value: $(subShortName)-signin-shd-cdnep
+        
         displayName: ${{var.Key}}-cip
         dependsOn:
         - scanBuildApp
@@ -179,7 +191,7 @@ stages:
                 scriptLocation: inlineScript
                 inlineScript: 'az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)'
 
-            - ${{ if eq(var.key, 'dev') }}: # Only runs the following tasks if running the "dev-cip" stage.
+
               
         #      - task: cboroson.cboroson-ReadSecrets.cboroson-ReadSecrets.cboroson-ReadSecrets@1
         #        displayName: 'Read Secrets: '
@@ -190,14 +202,14 @@ stages:
         #          secretOption: single
         #          secretName: $(secretName)
 
-              - task: PowerShell@2
-                displayName: Inline Powershell
-                inputs:
-                  targetType: 'inline'
-                  script: |
-                    $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
-                    $newCdnAssetsVersion = $cdnAssetsVersion+0.1
-                    Write-Host "vso[task.setvariable variable=cdnAssetsVersion;]$newCdnAssetsVersion"
+            - task: PowerShell@2
+              displayName: Inline Powershell
+              inputs:
+                targetType: 'inline'
+                script: |
+                  $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
+                  $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+                  Write-Host "vso[task.setvariable variable=cdnAssetsVersion;]$newCdnAssetsVersion"
 
         #      - task: cboroson.cboroson.WriteSecrets.cboroson-WriteSecrets.cboroson-WriteSecrets@1
         #        displayName: 'WriteSecrets: cdnAssetsVersion'
