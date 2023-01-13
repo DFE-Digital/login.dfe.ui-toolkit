@@ -34,8 +34,6 @@ parameters:
 
 variables:
 - group: dsi-global
-- name: serviceConnection
-  value: ''
 - name: updatedStorageAccountName
   value: ''
 - name: publicIp
@@ -81,8 +79,8 @@ stages:
     - ${{ if eq(var.value, 'true') }}:
       - stage: ${{var.Key}}cip
         variables:
-        - ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-            name: serviceConnection
+        - name: serviceConnection
+          ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
             value: $(devServiceConnection)
           ${{ elseif eq(var.key, 'pr') }}:
             value: $(prodServiceConnection)
