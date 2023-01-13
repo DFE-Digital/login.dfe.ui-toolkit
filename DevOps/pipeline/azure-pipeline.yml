@@ -81,8 +81,8 @@ stages:
     - ${{ if eq(var.value, 'true') }}:
       - stage: ${{var.Key}}cip
         variables:
-        - name: serviceConnection
-          ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+        - ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+            name: serviceConnection
             value: $(devServiceConnection)
           ${{ elseif eq(var.key, 'pr') }}:
             value: $(prodServiceConnection)
