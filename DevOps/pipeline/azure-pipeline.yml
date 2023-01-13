@@ -128,7 +128,7 @@ stages:
                 inlineScript: |
                   $publicIp = Invoke-RestMethod -uri https://api.ipify.org
 
-                  az storage account network-rule add -g $(ShdRecourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
+                  az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
 
                   Start-Sleep 180
 
