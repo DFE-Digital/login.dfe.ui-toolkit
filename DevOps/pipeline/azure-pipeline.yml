@@ -121,7 +121,7 @@ stages:
             - task: AzureCLI@2
               displayName: 'Empty Storage Container Contents'
               inputs:
-                azureSubscription: $(serviceConnection)
+                azureSubscription: "$(devServiceConnection)"
                 scriptType: pscore
                 scriptLocation: inlineScript
                 inlineScript: |
