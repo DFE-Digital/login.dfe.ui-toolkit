@@ -98,12 +98,12 @@ stages:
       - stage: ${{var.Key}}-cip
         variables:
         - name: serviceConnection
-            ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-              value: $(devServiceConnection)
-            ${{ elseif eq(var.key, 'pr') }}:
-              value: $(prodServiceConnection)
-            ${{ else }}:
-              value: $(testServiceConnection)
+          ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+            value: $(devServiceConnection)
+          ${{ elseif eq(var.key, 'pr') }}:
+            value: $(prodServiceConnection)
+          ${{ else }}:
+            value: $(testServiceConnection)
         - group: dsi-${{var.key}}-kv
         - name: SubShortName
           value: $(platformGlobalIdentifier)$(environmentId)
