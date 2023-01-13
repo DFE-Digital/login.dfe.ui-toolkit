@@ -82,7 +82,7 @@ stages:
   - task: CopyFiles@2
     displayName: Copy files for staging
     inputs:
-      SourceFolder: $(Build.Repository.LocalPath)/$(Build.DefinitionName)
+      SourceFolder: $(Build.Repository.LocalPath)/$(Build.SourceBranch)
       Contents: | 
         dist/**
       TargetFolder: $(System.DefaultWorkingDirectory)/Publish
