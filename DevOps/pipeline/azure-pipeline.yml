@@ -173,7 +173,7 @@ stages:
                   azureSubscription: $(testServiceConnection)
                 scriptType: pscore
                 scriptLocation: inlineScript
-                inlineScript: 'az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroup) -n $(cdnEndpointName)'
+                inlineScript: 'az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName)'
 
             - task: AzureCLI@2
               displayName: Remove IP Address From Storage Account
@@ -186,7 +186,7 @@ stages:
                   azureSubscription: $(testServiceConnection)
                 scriptType: pscore
                 scriptLocation: inlineScript
-                inlineScript: 'az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)'
+                inlineScript: 'az storage account network-rule remove -g '$(ShdResourceGroupName)' --account-name '$(storageAccountName)' --ip-address $(agentIp)'
 
 
               
