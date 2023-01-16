@@ -173,7 +173,7 @@ stages:
                   azureSubscription: $(testServiceConnection)
                 scriptType: pscore
                 scriptLocation: inlineScript
-                inlineScript: 'Get-AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName) -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent '/*''
+                inlineScript: 'Get-AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName) -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent /*'
 
 
             - task: AzureCLI@2
