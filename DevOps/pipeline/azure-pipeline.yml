@@ -10,7 +10,7 @@ parameters:
 - name: tran 
   type: boolean
   displayName: 'Transformation Deployment'
-  default: false
+  default: true
 - name: dev
   type: boolean
   displayName: 'Dev Deployment'
@@ -132,21 +132,21 @@ stages:
                 storage: '$(storageAccountName)'
                 ContainerName: '$(UIContainerName)'
 
-            - task: AzurePowerShell@5
-              displayName: 'Set Container Public Access Level to Blob (Public)'
-              inputs:
-                ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-                  azureSubscription: $(devServiceConnection)
-                ${{ elseif eq(var.key, 'pr') }}:
-                  azureSubscription: $(prodServiceConnection)
-                ${{ else }}:
-                  azureSubscription: $(testServiceConnection)
-                ScriptType: 'InlineScript'
-                Inline: >
-                  Get-AzureRmStorageAccount -ResourceGroupName $(ShdResourceGroupName)
-                  -Name $(storageAccountName) | Set-AzStorageContainerAcl 
-                  -Name $(UIContainerName) -Permission Blob
-                azurePowerShellVersion: LatestVersion
+            # - task: AzurePowerShell@5
+            #   displayName: 'Set Container Public Access Level to Blob (Public)'
+            #   inputs:
+            #     ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+            #       azureSubscription: $(devServiceConnection)
+            #     ${{ elseif eq(var.key, 'pr') }}:
+            #       azureSubscription: $(prodServiceConnection)
+            #     ${{ else }}:
+            #       azureSubscription: $(testServiceConnection)
+            #     ScriptType: 'InlineScript'
+            #     Inline: >
+            #       Get-AzureRmStorageAccount -ResourceGroupName $(ShdResourceGroupName)
+            #       -Name $(storageAccountName) | Set-AzStorageContainerAcl 
+            #       -Name $(UIContainerName) -Permission Blob
+            #     azurePowerShellVersion: LatestVersion
 
             - task: AzurePowerShell@5
               displayName: 'Purge CDN Content'
