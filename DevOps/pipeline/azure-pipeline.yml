@@ -148,7 +148,21 @@ stages:
             #       -Name $(UIContainerName) -Permission Blob
             #     azurePowerShellVersion: LatestVersion
 
-            - task: AzurePowerShell@5
+          #  - task: AzurePowerShell@5
+          #    displayName: 'Purge CDN Content'
+          #    inputs:
+          #      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+          #        azureSubscription: $(devServiceConnection)
+          #      ${{ elseif eq(var.key, 'pr') }}:
+          #        azureSubscription: $(prodServiceConnection)
+          #      ${{ else }}:
+          #        azureSubscription: $(testServiceConnection)
+          #      azurePowerShellVersion: LatestVersion
+          #      ScriptType: 'InlineScript'
+          #      Inline: >
+          #        Get-AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName) -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent '/*'
+
+            - task: AzureCLI@2
               displayName: 'Purge CDN Content'
               inputs:
                 ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
@@ -157,11 +171,10 @@ stages:
                   azureSubscription: $(prodServiceConnection)
                 ${{ else }}:
                   azureSubscription: $(testServiceConnection)
-                azurePowerShellVersion: LatestVersion
-                ScriptType: 'InlineScript'
-                Inline: >
-                  Get-AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName) 
-                  -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent '/*'
+                scriptType: pscore
+                scriptLocation: inlineScript
+                inlineScript: 'Get-AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName) -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent '/*''
+
 
             - task: AzureCLI@2
               displayName: Remove IP Address From Storage Account
