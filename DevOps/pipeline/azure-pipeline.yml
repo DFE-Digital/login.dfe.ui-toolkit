@@ -69,7 +69,7 @@ stages:
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','int','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
-      - stage: ${{var.Key}}cip
+      - stage: Deployment_${{var.Key}}${{var.Key}}
         variables:
         - group: dsi-${{var.key}}-kv
         - name: SubShortName
@@ -82,12 +82,12 @@ stages:
           value: $(SubShortName)-signin-shd-cdn
         - name: cdnEndpointName
           value: $(subShortName)-signin-shd-cdnep
-        displayName: ${{var.Key}}-cip
+        displayName: "Deployment [${{var.Key}}]"
         jobs:
-        - job: agentJob
+        - job: upConCnd
           pool:
             vmImage: 'windows-latest'
-          displayName: Agent Job
+          displayName: Updated content of CDN
           steps:
             - powershell: |
                 $updatedStorageAccountName = "$(storageAccountName)" -replace '-', ''
