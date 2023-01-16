@@ -81,7 +81,7 @@ stages:
         - name: azureCdnName
           value: $(SubShortName)-signin-shd-cdn
         - name: cdnEndpointName
-          value: $(subShortName)-signin-shd-cdnep
+          value: $(SubShortName)-signin-shd-cdnep
         displayName: "Deployment [${{var.Key}}]"
         jobs:
         - job: upConCnd
@@ -173,8 +173,7 @@ stages:
                   azureSubscription: $(testServiceConnection)
                 scriptType: pscore
                 scriptLocation: inlineScript
-                inlineScript: 'Get-AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName) -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent /*'
-
+                inlineScript: 'az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroup) -n $(cdnEndpointName)'
 
             - task: AzureCLI@2
               displayName: Remove IP Address From Storage Account
