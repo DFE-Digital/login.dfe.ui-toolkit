@@ -34,14 +34,6 @@ parameters:
 
 variables:
 - group: dsi-global
-- name: updatedStorageAccountName
-  value: ''
-- name: publicIp
-  value: ''
-- name: agentIp
-  value: ''
-- name: newCdnAssetsVersion
-  value: ''
 - name: tran
   ${{ if eq(parameters.tran, 'true') }}: 
     value: true
@@ -95,14 +87,6 @@ stages:
         - job: agentJob
           displayName: Agent Job
           steps:
-      #      - task: PowerShell@2
-      #        displayName: Fix Storage Account Name
-      #        inputs:
-      #          targetType: 'inline'
-      #          script: |
-      #            $updatedStorageAccountName = "$(storageAccountName)" - replace '-', ''
-      #            ##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
-      #          condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
             - powershell: |
                 $updatedStorageAccountName = "$(storageAccountName)" -replace '-', ''
                 "##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
