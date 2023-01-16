@@ -69,7 +69,7 @@ stages:
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','int','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
-      - stage: Deployment_${{var.Key}}${{var.Key}}
+      - stage: Deployment_${{var.Key}}
         variables:
         - group: dsi-${{var.key}}-kv
         - name: SubShortName
@@ -144,7 +144,7 @@ stages:
                 ScriptType: 'InlineScript'
                 Inline: >
                   Get-AzureRmStorageAccount -ResourceGroupName $(ShdResourceGroupName)
-                  -Name $(storageAccountName) | Set-AzureStorageComntainerAcl 
+                  -Name $(storageAccountName) | Set-AzStorageContainerAcl 
                   -Name $(UIContainerName) -Permission Blob
                 azurePowerShellVersion: LatestVersion
 
