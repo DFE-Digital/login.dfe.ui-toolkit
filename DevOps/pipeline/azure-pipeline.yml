@@ -186,7 +186,7 @@ stages:
                   azureSubscription: $(testServiceConnection)
                 scriptType: pscore
                 scriptLocation: inlineScript
-                inlineScript: 'az storage account network-rule remove -g '$(ShdResourceGroupName)' --account-name '$(storageAccountName)' --ip-address $(agentIp)'
+                inlineScript: 'az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)'
 
 
               
