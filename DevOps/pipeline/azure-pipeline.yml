@@ -85,6 +85,8 @@ stages:
         displayName: ${{var.Key}}-cip
         jobs:
         - job: agentJob
+          pool:
+            vmImage: 'windows-latest'
           displayName: Agent Job
           steps:
             - powershell: |
