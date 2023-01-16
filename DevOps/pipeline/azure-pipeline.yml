@@ -159,8 +159,8 @@ stages:
                   azureSubscription: $(testServiceConnection)
                 azurePowerShellVersion: LatestVersion
                 ScriptType: 'InlineScript'
-                Inline: |
-                  Get-AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName)
+                Inline: >
+                  Get-AzureRmCdnEndpoint -ResourceGroupName $(ShdResourceGroupName) 
                   -ProfileName $(azureCdnName) -EndpointName $(cdnEndpointName) | Unpublish-AzureRmCdnEndpointContent -PurgeContent '/*'
 
             - task: AzureCLI@2
