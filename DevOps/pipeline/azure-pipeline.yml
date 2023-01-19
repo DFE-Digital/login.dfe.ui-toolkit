@@ -117,9 +117,14 @@ stages:
                         az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
                         Write-Host $publicIp
 
+                        Start-Sleep 30
+                        $results = az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
+
                         do {
                           Start-Sleep 30
                           $results = az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
+                          $publicIp = Invoke-RestMethod -uri https://api.ipify.org
+                          Write-Host $publicIp
                         } until ($results -NotLike "*blocked by network rules*")
                         
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
