@@ -116,9 +116,11 @@ stages:
                         $publicIp = Invoke-RestMethod -uri https://api.ipify.org
                         az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
 
-                        Start-Sleep 240
-
-                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
+                        do {
+                          Start-Sleep 30
+                          $results = az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
+                        } until ($results -NotLike "*blocked by network rules*")
+                        
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
 
@@ -138,7 +140,8 @@ stages:
                         
                   - task: AzureCLI@2
                     displayName: Purge content & Updated CDN Version
-                    condition: ${{ parameters.cdn }}
+                    env:
+                      newCdnV: ${{ parameters.cdn }}
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -150,10 +153,12 @@ stages:
                       scriptLocation: inlineScript
                       inlineScript: |
                         az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
-
-                        $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
-                        $newCdnAssetsVersion = $cdnAssetsVersion+0.1
-                        az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                        
+                        if($env:newCdnV){
+                          $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
+                          $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+                          az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                        }
 
                         az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
 
