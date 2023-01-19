@@ -121,7 +121,7 @@ stages:
                           $results = az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
                           $test = $results -NotLike "*blocked by network rules*"
                           Write-Host $test 
-                        } until ($results -NotLike "*blocked by network rules*")
+                        } until ($results -like "*blocked by network rules*")
                         
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
