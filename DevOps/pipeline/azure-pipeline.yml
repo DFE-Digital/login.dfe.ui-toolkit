@@ -113,7 +113,7 @@ stages:
                       ScriptType: 'InlineScript'
                       azurePowerShellVersion: 'LatestVersion'
                       Inline: |
-                        $publicIp = Invoke-RestMethod -uri https://api.ipify.org/json | Select -exp ip
+                        $publicIp = Invoke-RestMethod -uri https://api.ipify.org
                         
                         Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$publicIp"
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
