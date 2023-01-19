@@ -14,7 +14,7 @@ parameters:
 - name: tran 
   type: boolean
   displayName: 'Transformation Deployment'
-  default: true
+  default: false
 - name: dev
   type: boolean
   displayName: 'Dev Deployment'
