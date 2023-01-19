@@ -117,9 +117,8 @@ stages:
                         az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
 
                         do {
-                          Start-Sleep 30
-                          $results=$(az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName))
-                        } until ($results -like "*blocked*")
+                          Start-Sleep 30                          
+                        } until ($(az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors) -like "*blocked*")
                         
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
