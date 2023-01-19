@@ -94,6 +94,7 @@ stages:
           pool:
             vmImage: 'windows-latest'
           displayName: Updated content of CDN
+          environment: ${{var.Key}}
           steps:
             - powershell: |
                 $updatedStorageAccountName = "$(storageAccountName)" -replace '-', ''
