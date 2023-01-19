@@ -114,8 +114,8 @@ stages:
                       scriptLocation: inlineScript
                       inlineScript: |
                         az storage account update --resource-group $(ShdResourceGroupName) --name $(storageAccountName) --default-action Allow
+                        Start-Sleep 40
                         az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
-
 
                   - task: AzureFileCopy@2
                     displayName: Copy Content to Storage Account Container
