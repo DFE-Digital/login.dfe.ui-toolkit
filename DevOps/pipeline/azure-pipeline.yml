@@ -119,8 +119,6 @@ stages:
                           Start-Sleep 30
                           $results = az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
                         } until ($results -NotLike "*blocked by network rules*")
-                        
-                        Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
 
                   - task: AzureFileCopy@2
@@ -152,7 +150,7 @@ stages:
                       scriptLocation: inlineScript
                       inlineScript: |
                         az storage account update -g $(ShdResourceGroupName) --account-name $(storageAccountName) --default-action deny
-                        
+
                         az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
 
                         if($env:newCdnV){
