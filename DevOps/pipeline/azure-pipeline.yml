@@ -113,7 +113,7 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        az storage account update -g $(ShdResourceGroupName) --account-name $(storageAccountName) --default-action Allow
+                        az storage account update --resource-group $(ShdResourceGroupName) --name $(storageAccountName) --default-action Allow
 
                         do {
                           Start-Sleep 30
@@ -149,7 +149,7 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        az storage account update -g $(ShdResourceGroupName) --account-name $(storageAccountName) --default-action deny
+                        az storage account update --resource-group $(ShdResourceGroupName) --name $(storageAccountName) --default-action deny
 
                         az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
 
