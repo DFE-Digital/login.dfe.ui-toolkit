@@ -98,13 +98,8 @@ stages:
           strategy:
             runOnce:
               deploy:
-          
                 steps:
-                  - powershell: |
-                      $updatedStorageAccountName = "$(storageAccountName)" -replace '-', ''
-                      "##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
-                    displayName: 'Fix Storage Account Name'
-                    condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
+                  - checkout: self
 
                   - task: AzureCLI@2
                     displayName: 'Empty Storage Container Contents'
@@ -119,13 +114,11 @@ stages:
                       scriptLocation: inlineScript
                       inlineScript: |
                         $publicIp = Invoke-RestMethod -uri https://api.ipify.org
-
                         az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
 
                         Start-Sleep 240
 
                         az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
-
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
 
