@@ -101,6 +101,23 @@ stages:
                 steps:
                   - checkout: self
 
+                  - task: AzurePowerShell@5
+                    displayName: Enable Access
+                    inputs:
+                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                        azureSubscription: $(devServiceConnection)
+                      ${{ elseif eq(var.key, 'pr') }}:
+                        azureSubscription: $(prodServiceConnection)
+                      ${{ else }}:
+                        azureSubscription: $(testServiceConnection)
+                      ScriptType: 'InlineScript'
+                      azurePowerShellVersion: 'LatestVersion'
+                      Inline: |
+                        $publicIp = Invoke-RestMethod -uri https://api.ipify.org/json | Select -exp ip
+                        
+                        Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$publicIp"
+                        Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
+
                   - task: AzureCLI@2
                     displayName: 'Empty Storage Container Contents'
                     inputs:
@@ -112,17 +129,8 @@ stages:
                         azureSubscription: $(testServiceConnection)
                       scriptType: pscore
                       scriptLocation: inlineScript
-                      inlineScript: |
-                        $publicIp = Invoke-RestMethod -uri https://api.ipify.org
-                        az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
-
-                        do {
-                          Start-Sleep 30
-                          $results=$(az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors) 
-                          write-output $($results -like "*blocked*"), $results           
-                        } until ($results -like "*blocked*")
+                      inlineScript: az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors
                         
-                        Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
 
                   - task: AzureFileCopy@2
