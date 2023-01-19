@@ -89,74 +89,78 @@ stages:
         - name: keyVaultName
           value: $(SubShortName)-signin-kv
         displayName: "Deployment [${{var.Key}}]"
-        environment: ${{var.Key}}
         jobs:
-        - job: upConCnd
+        - deployment: 'Deploy_${{var.Key}}'
           pool:
             vmImage: 'windows-latest'
           displayName: Updated content of CDN
-          steps:
-            - powershell: |
-                $updatedStorageAccountName = "$(storageAccountName)" -replace '-', ''
-                "##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
-              displayName: 'Fix Storage Account Name'
-              condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
+          environment: ${{var.Key}}
+          strategy:
+            runOnce:
+              deploy:
+          
+                steps:
+                  - powershell: |
+                      $updatedStorageAccountName = "$(storageAccountName)" -replace '-', ''
+                      "##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
+                    displayName: 'Fix Storage Account Name'
+                    condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
 
-            - task: AzureCLI@2
-              displayName: 'Empty Storage Container Contents'
-              inputs:
-                ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-                  azureSubscription: $(devServiceConnection)
-                ${{ elseif eq(var.key, 'pr') }}:
-                  azureSubscription: $(prodServiceConnection)
-                ${{ else }}:
-                  azureSubscription: $(testServiceConnection)
-                scriptType: pscore
-                scriptLocation: inlineScript
-                inlineScript: |
-                  $publicIp = Invoke-RestMethod -uri https://api.ipify.org
+                  - task: AzureCLI@2
+                    displayName: 'Empty Storage Container Contents'
+                    inputs:
+                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                        azureSubscription: $(devServiceConnection)
+                      ${{ elseif eq(var.key, 'pr') }}:
+                        azureSubscription: $(prodServiceConnection)
+                      ${{ else }}:
+                        azureSubscription: $(testServiceConnection)
+                      scriptType: pscore
+                      scriptLocation: inlineScript
+                      inlineScript: |
+                        $publicIp = Invoke-RestMethod -uri https://api.ipify.org
 
-                  az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
+                        az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
 
-                  Start-Sleep 240
+                        Start-Sleep 240
 
-                  az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
+                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
 
-                  Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
+                        Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
 
-            - task: AzureFileCopy@2
-              displayName: Copy Content to Storage Account Container
-              inputs:
-                SourcePath: $(System.DefaultWorkingDirectory)/dist
-                ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-                  azureSubscription: $(devServiceConnection)
-                ${{ elseif eq(var.key, 'pr') }}:
-                  azureSubscription: $(prodServiceConnection)
-                ${{ else }}:
-                  azureSubscription: $(testServiceConnection)
-                Destination: AzureBlob
-                storage: '$(storageAccountName)'
-                ContainerName: '$(UIContainerName)'
-                  
-            - task: AzureCLI@2
-              displayName: Purge content & Updated CDN Version
-              condition: ${{ parameters.cdn }}
-              inputs:
-                ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-                  azureSubscription: $(devServiceConnection)
-                ${{ elseif eq(var.key, 'pr') }}:
-                  azureSubscription: $(prodServiceConnection)
-                ${{ else }}:
-                  azureSubscription: $(testServiceConnection)
-                scriptType: pscore
-                scriptLocation: inlineScript
-                inlineScript: |
-                  az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
+                  - task: AzureFileCopy@2
+                    displayName: Copy Content to Storage Account Container
+                    inputs:
+                      SourcePath: $(System.DefaultWorkingDirectory)/dist
+                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                        azureSubscription: $(devServiceConnection)
+                      ${{ elseif eq(var.key, 'pr') }}:
+                        azureSubscription: $(prodServiceConnection)
+                      ${{ else }}:
+                        azureSubscription: $(testServiceConnection)
+                      Destination: AzureBlob
+                      storage: '$(storageAccountName)'
+                      ContainerName: '$(UIContainerName)'
+                        
+                  - task: AzureCLI@2
+                    displayName: Purge content & Updated CDN Version
+                    condition: ${{ parameters.cdn }}
+                    inputs:
+                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                        azureSubscription: $(devServiceConnection)
+                      ${{ elseif eq(var.key, 'pr') }}:
+                        azureSubscription: $(prodServiceConnection)
+                      ${{ else }}:
+                        azureSubscription: $(testServiceConnection)
+                      scriptType: pscore
+                      scriptLocation: inlineScript
+                      inlineScript: |
+                        az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
 
-                  $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
-                  $newCdnAssetsVersion = $cdnAssetsVersion+0.1
-                  az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                        $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
+                        $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+                        az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
 
-                  az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
+                        az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
 
