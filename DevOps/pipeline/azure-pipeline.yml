@@ -114,11 +114,7 @@ stages:
                       scriptLocation: inlineScript
                       inlineScript: |
                         az storage account update --resource-group $(ShdResourceGroupName) --name $(storageAccountName) --default-action Allow
-
-                        do {
-                          Start-Sleep 30
-                          $results = az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
-                        } until ($results -NotLike "*blocked by network rules*")
+                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
 
 
                   - task: AzureFileCopy@2
