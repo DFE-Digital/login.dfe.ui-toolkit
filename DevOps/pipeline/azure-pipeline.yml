@@ -90,11 +90,11 @@ stages:
           value: $(SubShortName)-signin-kv
         displayName: "Deployment [${{var.Key}}]"
         jobs:
+        environment: ${{var.Key}}
         - job: upConCnd
           pool:
             vmImage: 'windows-latest'
           displayName: Updated content of CDN
-          environment: ${{var.Key}}
           steps:
             - powershell: |
                 $updatedStorageAccountName = "$(storageAccountName)" -replace '-', ''
