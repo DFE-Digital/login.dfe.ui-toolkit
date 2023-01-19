@@ -131,7 +131,9 @@ stages:
                         azureSubscription: $(testServiceConnection)
                       scriptType: pscore
                       scriptLocation: inlineScript
-                      inlineScript: az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors
+                      inlineScript: |
+                        Start-Sleep 60
+                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors
                         
 
 
