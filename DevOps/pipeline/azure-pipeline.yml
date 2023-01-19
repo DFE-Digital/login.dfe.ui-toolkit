@@ -89,8 +89,8 @@ stages:
         - name: keyVaultName
           value: $(SubShortName)-signin-kv
         displayName: "Deployment [${{var.Key}}]"
-        jobs:
         environment: ${{var.Key}}
+        jobs:
         - job: upConCnd
           pool:
             vmImage: 'windows-latest'
