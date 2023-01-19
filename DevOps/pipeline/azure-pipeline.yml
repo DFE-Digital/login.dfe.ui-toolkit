@@ -118,7 +118,8 @@ stages:
 
                         do {
                           Start-Sleep 30
-                          $results=$(az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors)                  
+                          $results=$(az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors) 
+                          write-output $($results -like "*blocked*"), $results           
                         } until ($results -like "*blocked*")
                         
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
