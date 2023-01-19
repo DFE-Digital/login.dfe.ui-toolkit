@@ -113,18 +113,11 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        $publicIp = Invoke-RestMethod -uri https://api.ipify.org
-                        az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
-                        Write-Host $publicIp
-
-                        Start-Sleep 30
-                        $results = az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
+                        az storage account update -g $(ShdResourceGroupName) --account-name $(storageAccountName) --default-action Allow
 
                         do {
                           Start-Sleep 30
                           $results = az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
-                          $publicIp = Invoke-RestMethod -uri https://api.ipify.org
-                          Write-Host $publicIp
                         } until ($results -NotLike "*blocked by network rules*")
                         
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
@@ -166,5 +159,5 @@ stages:
                           az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
                         }
 
-                        az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
+                        az storage account update -g $(ShdResourceGroupName) --account-name $(storageAccountName) --default-action deny
 
