@@ -113,9 +113,18 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        az storage account update --resource-group $(ShdResourceGroupName) --name $(storageAccountName) --default-action Allow
-                        Start-Sleep 40
-                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
+                        $publicIp = Invoke-RestMethod -uri https://api.ipify.org
+                        az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
+
+                        do {
+                          Start-Sleep 30
+                          $results = az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
+                          $test = $results -NotLike "*blocked by network rules*"
+                          Write-Host $test 
+                        } until ($results -NotLike "*blocked by network rules*")
+                        
+                        Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
+
 
                   - task: AzureFileCopy@2
                     displayName: Copy Content to Storage Account Container
@@ -145,7 +154,7 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        az storage account update --resource-group $(ShdResourceGroupName) --name $(storageAccountName) --default-action deny
+                        az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
 
                         az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
 
@@ -154,6 +163,4 @@ stages:
                           $newCdnAssetsVersion = $cdnAssetsVersion+0.1
                           az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
                         }
-
-                        
 
