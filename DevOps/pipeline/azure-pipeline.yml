@@ -72,7 +72,7 @@ variables:
 stages:
 
 # Code Scans & Build the artifact for deployment
-- stage: scanBuildApp
+- stage: scanApp
   displayName: "Scan tools & Build"
   jobs:
   # Code scaning tools
@@ -82,6 +82,8 @@ stages:
   - ${{ if in(var.key, 'tran','dev','test','int','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
       - stage: Deployment_${{var.Key}}
+        dependsOn: 
+        - scanApp
         variables:
         - group: dsi-${{var.key}}-kv
         - name: SubShortName
