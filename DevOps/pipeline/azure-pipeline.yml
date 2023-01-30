@@ -116,13 +116,27 @@ stages:
           strategy:
             runOnce:
               deploy:
-          
                 steps:
-                  - powershell: |
-                      $updatedStorageAccountName = "$(storageAccountName)" -replace '-', ''
-                      "##vso[task.setvariable variable=storageAccountName;]$updatedStorageAccountName"
-                    displayName: 'Fix Storage Account Name'
-                    condition: and(succeeded(), contains(variables['storageAccountName'], '-'))
+                  - checkout: self
+
+                  - task: AzurePowerShell@5
+                    displayName: Enable Access
+                    inputs:
+                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                        azureSubscription: $(devServiceConnection)
+                      ${{ elseif eq(var.key, 'pr') }}:
+                        azureSubscription: $(prodServiceConnection)
+                      ${{ else }}:
+                        azureSubscription: $(testServiceConnection)
+                      ScriptType: 'InlineScript'
+                      azurePowerShellVersion: 'LatestVersion'
+                      Inline: |
+                        $publicIp = Invoke-RestMethod -uri https://api.ipify.org
+                        
+                        Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$publicIp"
+                        Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
+
+                        Start-Sleep 60
 
                   - task: AzureCLI@2
                     displayName: 'Empty Storage Container Contents'
@@ -136,15 +150,9 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        $publicIp = Invoke-RestMethod -uri https://api.ipify.org
-
-                        az storage account network-rule add -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $publicIp
-
-                        Start-Sleep 240
-
-                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName)
-
-                        Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
+                        Start-Sleep 60
+                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors
+                        
 
 
                   - task: AzureFileCopy@2
@@ -163,7 +171,8 @@ stages:
                         
                   - task: AzureCLI@2
                     displayName: Purge content & Updated CDN Version
-                    condition: ${{ parameters.cdn }}
+                    env:
+                      newCdnV: ${{ parameters.cdn }}
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -174,11 +183,13 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
+                        az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
+
                         az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
 
-                        $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
-                        $newCdnAssetsVersion = $cdnAssetsVersion+0.1
-                        az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
-
-                        az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
+                        if($env:newCdnV){
+                          $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
+                          $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+                          az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                        }
 
