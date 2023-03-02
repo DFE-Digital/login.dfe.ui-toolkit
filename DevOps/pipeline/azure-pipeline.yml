@@ -117,7 +117,6 @@ stages:
             runOnce:
               deploy:
                 steps:
-                  - checkout: self
 
                   - task: AzurePowerShell@5
                     displayName: Enable Access
