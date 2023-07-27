@@ -155,7 +155,7 @@ stages:
                         
 
 
-                  - task: AzureFileCopy@2
+                  - task: AzureFileCopy@5
                     displayName: Copy Content to Storage Account Container
                     inputs:
                       SourcePath: $(System.DefaultWorkingDirectory)/dist
