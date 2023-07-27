@@ -151,7 +151,7 @@ stages:
                       scriptLocation: inlineScript
                       inlineScript: |
                         Start-Sleep 60
-                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors
+                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
                         
 
 
@@ -183,7 +183,7 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
+                        az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp) --auth-mode=login
 
                         az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
 
