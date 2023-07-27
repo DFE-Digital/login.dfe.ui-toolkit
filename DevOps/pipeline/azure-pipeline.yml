@@ -165,7 +165,7 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        az storage azcopy blob upload -c $(UIContainerName) --account-name $(storageAccountName) -s $(UIContainerName) --recursive --auth-mode=login
+                        az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
                        
                         
                   - task: AzureCLI@2
