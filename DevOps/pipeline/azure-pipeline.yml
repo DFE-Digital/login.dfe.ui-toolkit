@@ -136,7 +136,7 @@ stages:
                         Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$publicIp"
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
-                        Start-Sleep 60
+                        Start-Sleep -Seconds 60
 
                   - task: AzureCLI@2
                     displayName: 'Empty Storage Container Contents'
