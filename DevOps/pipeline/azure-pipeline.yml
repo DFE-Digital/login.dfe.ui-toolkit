@@ -132,11 +132,11 @@ stages:
                       azurePowerShellVersion: 'LatestVersion'
                       Inline: |
                         $publicIp = Invoke-RestMethod -uri https://api.ipify.org
-                        
+                        Write-Host "Public Ip : $publicIp "
                         Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$publicIp"
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
-                        Start-Sleep 60
+                        Start-Sleep -Seconds 60
 
                   - task: AzureCLI@2
                     displayName: 'Empty Storage Container Contents'
