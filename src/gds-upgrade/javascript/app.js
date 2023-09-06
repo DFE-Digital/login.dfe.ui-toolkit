@@ -119,42 +119,63 @@ if (searchFields.length > 0) {
   });
 }
 
-var redirect = $('#redirect-url');
+function createServiceConfigUrlSections(sectionId, formGroupSelector) {
+  $(`#${sectionId}-add`).on('click', function() {
+    let counter = parseInt($(`${formGroupSelector}`).data(`${sectionId}-counter`), 10);
+    const newInputId = `${sectionId}-${counter}`;
 
-$('#add-redirect').on('click', function() {
-  $('<p class="govuk-body"><label for="redirect-url"><input class="form-control inputConfig govuk-input" name="redirect_uris"></label></p>').appendTo(redirect);
-  return false;
-});
+    const newElement = `
+    <div class="govuk-body dfe-flex-container" id="${sectionId}-input-group-${counter}">
+      <label for="${newInputId}" class="govuk-label govuk-label--s govuk-visually-hidden">
+        Logout redirect URL
+      </label>
+      <input
+        class="form-control dfe-flex-input-grow govuk-input"
+        id="${newInputId}"
+        name="${sectionId}"
+      />
+      <a href="#" class="govuk-link govuk-link--no-visited-state remove-redirect" id="${sectionId}-remove-${counter}" data-group-id="${counter}">Remove</a>
+    </div>`;
+
+    $(newElement).appendTo(`${formGroupSelector}`);
+    counter++;
+    $(this).blur();
+    return false;
+  });
+
+  $(`${formGroupSelector}`).on('click', '.remove-redirect', function(e) {
+    e.preventDefault();
+    const groupId = $(this).data('group-id');
+    $(`#${sectionId}-input-group-${groupId}`).remove();
+    $(this).blur();
+  });
+}
+
+
+createServiceConfigUrlSections('redirect_uris', '#redirect_uris-form-group');
+createServiceConfigUrlSections('post_logout_redirect_uris', '#post_logout_redirect_uris-form-group');
+
 
 var logout = $('#logout-url');
 
-$('#add-logout').on('click', function() {
-  $('<p class="govuk-body"><label for="logout-url"><input class="form-control inputConfig govuk-input" name="post_logout_redirect_uris"></label></p>').appendTo(logout);
-  return false;
-});
 
+function handleSecretGeneration(eventId, inputId, confirmMessage) {
+  $(eventId).on('click', function() {
+    var secretArray = window.niceware.generatePassphrase(8);
+    var secret = secretArray.join('-');
+    var isConfirm = confirm(confirmMessage);
+    if (isConfirm) {
+      $(`input#${inputId}`).attr('value', secret);
+      $("#saveButton").prop('disabled', false);
+    }
+    $(this).blur();
+    return false;
+  });
+}
 
-$('#generate-client-secret').on('click', function() {
-  var secretArray = window.niceware.generatePassphrase(8);
-  var secret = secretArray.join('-');
-  var isConfirm = confirm('Are you sure you want to regenerate the client secret?');
-  if (isConfirm) {
-    $('input#clientSecret').attr('value', secret);
-    $("#saveButton").prop('disabled', false);
-  }
-  return false;
-});
+handleSecretGeneration('#generate-clientSecret', 'clientSecret', 'Are you sure you want to regenerate the client secret?');
+handleSecretGeneration('#generate-apiSecret', 'apiSecret', 'Are you sure you want to regenerate the API secret?');
 
-$('#generate-api-secret').on('click', function() {
-  var secretArray = window.niceware.generatePassphrase(8);
-  var secret = secretArray.join('-');
-  var isConfirm = confirm('Are you sure you want to regenerate the api secret?');
-  if (isConfirm) {
-    $('input#apiSecret').attr('value', secret);
-    $("#saveButton").prop('disabled', false);
-  }
-  return false;
-});
 
 var formRegister = $('.prevent-form-double-submission');
 
