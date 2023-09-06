@@ -26,7 +26,7 @@
 }
 
 .dfe-filter-scroll {
-  overflow: scroll;
+  overflow: auto;
   height: calc(95vh);
 }
 
@@ -91,4 +91,7 @@
 
 .dfe-filter-by-checkbox {
   padding-left: 10px;
+}
+.dfe-white-space-no-wrap {
+  white-space: nowrap;
 }
