@@ -119,6 +119,51 @@ if (searchFields.length > 0) {
   });
 }
 
+//Manage console service config functionality
+const initialFormValues = {};
+let dynamicChangesMade = false; // Flag to track whether dynamic changes have been made
+let removalChangesMade = false;  // Flag to track whether inputs have been removed
+
+const updateButtonState = () => {
+  let isChanged = false;
+  $('#form-service-config :input[id]').each(function () {
+    const id = $(this).attr('id');
+    const type = $(this).attr('type');
+    let currentValue;
+
+    if (type === 'checkbox') {
+      currentValue = $(this).prop('checked');
+    } else {
+      currentValue = $(this).val();
+    }
+
+    if (currentValue !== initialFormValues[id]) {
+      isChanged = true;
+      return false;
+    }
+  });
+
+  $('#continue-button').prop('disabled', !(isChanged || dynamicChangesMade || removalChangesMade));
+};
+
+const updateInitialValues = () => {
+  $('#form-service-config :input[id]').each(function () {
+    const id = $(this).attr('id');
+    const type = $(this).attr('type');
+    let initialValue;
+
+    if (type === 'checkbox') {
+      initialValue = $(this).prop('checked');
+    } else {
+      initialValue = $(this).val();
+    }
+
+    if (!initialFormValues.hasOwnProperty(id)) {
+      initialFormValues[id] = initialValue;
+    }
+  });
+};
+
 function createServiceConfigUrlSections(sectionId, formGroupSelector) {
   $(`#${sectionId}-add`).on('click', function() {
     let counter = parseInt($(`${formGroupSelector}`).data(`${sectionId}-counter`), 10);
@@ -140,6 +185,10 @@ function createServiceConfigUrlSections(sectionId, formGroupSelector) {
     $(newElement).appendTo(`${formGroupSelector}`);
     counter++;
     $(`${formGroupSelector}`).data(`${sectionId}-counter`, counter);
+
+    initialFormValues[newInputId] = "";
+    updateButtonState();
+
     $(this).blur();
     return false;
   });
@@ -147,12 +196,31 @@ function createServiceConfigUrlSections(sectionId, formGroupSelector) {
   $(`${formGroupSelector}`).on('click', '.remove-redirect', function(e) {
     e.preventDefault();
     const groupId = $(this).data('group-id');
+    const inputIdToRemove = `${sectionId}-input-${groupId}`;
     $(`#${sectionId}-input-group-${groupId}`).remove();
+
+    if (initialFormValues.hasOwnProperty(inputIdToRemove)) {
+
+      removalChangesMade = true;
+      delete initialFormValues[inputIdToRemove];
+    }
+
+    updateButtonState();
+
     $(this).blur();
     const newCounter = $(`${formGroupSelector} .dfe-flex-container`).length + 1;
     $(`${formGroupSelector}`).data(`${sectionId}-counter`, newCounter);
   });
+
 }
+
+updateInitialValues();
+updateButtonState();
+
+
+$('#form-service-config').on('input change', ':input[id]', function () {
+  updateButtonState();
+});
 
 
 createServiceConfigUrlSections('redirect_uris', '#redirect_uris-form-group');
@@ -169,7 +237,8 @@ function handleSecretGeneration(eventId, inputId, confirmMessage) {
     var isConfirm = confirm(confirmMessage);
     if (isConfirm) {
       $(`input#${inputId}`).attr('value', secret);
-      $("#saveButton").prop('disabled', false);
+      updateInitialValues();
+      updateButtonState();
     }
     $(this).blur();
     return false;
