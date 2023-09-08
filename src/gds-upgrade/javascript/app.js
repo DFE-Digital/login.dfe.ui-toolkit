@@ -139,6 +139,7 @@ function createServiceConfigUrlSections(sectionId, formGroupSelector) {
 
     $(newElement).appendTo(`${formGroupSelector}`);
     counter++;
+    $(`${formGroupSelector}`).data(`${sectionId}-counter`, counter);
     $(this).blur();
     return false;
   });
@@ -148,6 +149,8 @@ function createServiceConfigUrlSections(sectionId, formGroupSelector) {
     const groupId = $(this).data('group-id');
     $(`#${sectionId}-input-group-${groupId}`).remove();
     $(this).blur();
+    const newCounter = $(`${formGroupSelector} .dfe-flex-container`).length + 1;
+    $(`${formGroupSelector}`).data(`${sectionId}-counter`, newCounter);
   });
 }
 
