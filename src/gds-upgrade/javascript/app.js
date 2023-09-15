@@ -119,161 +119,58 @@ if (searchFields.length > 0) {
   });
 }
 
-//Manage console service config functionality
-const initialFormValues = {};
-let dynamicChangesMade = false; // Flag to track whether dynamic changes have been made
-let removalChangesMade = false;  // Flag to track whether inputs have been removed
-const removedValues = new Set();
+//Manage console service config form functionality
 
-const updateButtonState = () => {
-  let isChanged = false;
-  let hasRestoredValue = false;
+const createServiceConfigUrlSections = (sectionId, formGroupSelector, labelText ) => {
+  const addButton = $(`#${sectionId}-add`);
+  const formGroup = $(`${formGroupSelector}`);
 
-  $('#form-service-config :input[id]').each(function () {
-    const id = $(this).attr('id');
-    const type = $(this).attr('type');
-    let currentValue;
-
-    if (type === 'checkbox') {
-      currentValue = $(this).prop('checked');
-    } else {
-      currentValue = $(this).val();
-    }
-
-    if (removedValues.has(currentValue)) {
-      hasRestoredValue = true;
-      removedValues.delete(currentValue);
-    }
-
-    if (currentValue !== initialFormValues[id]) {
-      isChanged = true;
-      return false;
-    }
-  });
-
-  removalChangesMade = removedValues.size > 0;
-
-  // Check if the form should be considered changed
-  const shouldEnableButton = isChanged || dynamicChangesMade || removalChangesMade;
-
-  // Enable or disable the button
-  $('#continue-button').prop('disabled', !(shouldEnableButton && !hasRestoredValue));
-};
-
-const updateInitialValues = () => {
-  $('#form-service-config :input[id]').each(function () {
-    const id = $(this).attr('id');
-    const type = $(this).attr('type');
-    let initialValue;
-
-    if (type === 'checkbox') {
-      initialValue = $(this).prop('checked');
-    } else {
-      initialValue = $(this).val();
-    }
-
-    if (!initialFormValues.hasOwnProperty(id)) {
-      initialFormValues[id] = initialValue;
-    }
-  });
-};
-
-function createServiceConfigUrlSections(sectionId, formGroupSelector) {
-  $(`#${sectionId}-add`).on('click', function() {
-    let counter = parseInt($(`${formGroupSelector}`).data(`${sectionId}-counter`), 10);
+  addButton.on('click', function() {
+    let counter = parseInt(formGroup.data(`${sectionId}-counter`), 10);
     const newInputId = `${sectionId}-${counter}`;
-
     const newElement = `
-    <div class="govuk-body dfe-flex-container" id="${sectionId}-input-group-${counter}">
-      <label for="${newInputId}" class="govuk-label govuk-label--s govuk-visually-hidden">
-        Logout redirect URL
-      </label>
-      <input
-        class="form-control dfe-flex-input-grow govuk-input"
-        id="${newInputId}"
-        name="${sectionId}"
-      />
-      <a href="#" class="govuk-link govuk-link--no-visited-state remove-redirect" id="${sectionId}-remove-${counter}" data-group-id="${counter}">Remove</a>
-    </div>`;
+      <div class="govuk-body dfe-flex-container" id="${sectionId}-input-group-${counter}">
+        <label for="${newInputId}" class="govuk-label govuk-label--s govuk-visually-hidden">
+          ${labelText}
+        </label>
+        <input
+          class="form-control dfe-flex-input-grow govuk-input"
+          id="${newInputId}"
+          name="${sectionId}"
+        />
+        <a href="#" class="govuk-link govuk-link--no-visited-state remove-redirect" id="${sectionId}-remove-${counter}" data-group-id="${counter}">Remove</a>
+      </div>`;
 
-    $(newElement).appendTo(`${formGroupSelector}`);
+    $(newElement).appendTo(formGroup);
     counter++;
-    $(`${formGroupSelector}`).data(`${sectionId}-counter`, counter);
-
-    initialFormValues[newInputId] = "";
-    updateButtonState();
-
-    $(this).blur();
+    formGroup.data(`${sectionId}-counter`, counter);
+    $(this).trigger('blur');
     return false;
   });
 
-  $(`${formGroupSelector}`).on('click', '.remove-redirect', function(e) {
+  formGroup.on('click', '.remove-redirect', function(e) {
     e.preventDefault();
     const groupId = $(this).data('group-id');
-    const inputIdToRemove = `${sectionId}-input-${groupId}`;
-    const valueToRemove = $(`#${inputIdToRemove}`).val();
     $(`#${sectionId}-input-group-${groupId}`).remove();
+    $(this).trigger('blur');
 
-    if (initialFormValues.hasOwnProperty(inputIdToRemove)) {
-      removalChangesMade = true;
-      removedValues.add(valueToRemove);
-      delete initialFormValues[inputIdToRemove];
-    }
-
-    Object.keys(initialFormValues).forEach(key => {
-      const restoredValue = initialFormValues[key];
-      removedValues.delete(restoredValue);
-    });
-
-    updateButtonState();
-    $(this).blur();
-    const newCounter = $(`${formGroupSelector} .dfe-flex-container`).length + 1;
-    $(`${formGroupSelector}`).data(`${sectionId}-counter`, newCounter);
+    const newCounter = formGroup.find('.dfe-flex-container').length;
+    formGroup.data(`${sectionId}-counter`, newCounter);
   });
+};
 
-}
+createServiceConfigUrlSections('redirect_uris', '#redirect_uris-form-group', 'Redirect URL');
+createServiceConfigUrlSections('post_logout_redirect_uris', '#post_logout_redirect_uris-form-group', 'Logout redirect URL');
 
-updateInitialValues();
-updateButtonState();
-
-
-let focusedElementValue = '';
-
-// Handling focus for input fields
-$('#form-service-config').on('focus', ':input[id]:not(:checkbox)', function () {
-  focusedElementValue = $(this).val();
-});
-
-// Handling blur for input fields
-$('#form-service-config').on('blur', ':input[id]:not(:checkbox)', function () {
-  const currentValue = $(this).val();
-  if (focusedElementValue !== currentValue) {
-    updateButtonState();
-  }
-});
-
-// Handling change for checkboxes
-$('#form-service-config').on('change', ':input[id]:checkbox', function () {
-  updateButtonState();
-});
-
-
-createServiceConfigUrlSections('redirect_uris', '#redirect_uris-form-group');
-createServiceConfigUrlSections('post_logout_redirect_uris', '#post_logout_redirect_uris-form-group');
-
-
-var logout = $('#logout-url');
 
 
 function handleSecretGeneration(eventId, inputId, confirmMessage) {
   $(eventId).on('click', function() {
-    var secretArray = window.niceware.generatePassphrase(8);
-    var secret = secretArray.join('-');
-    var isConfirm = confirm(confirmMessage);
+    let secretArray = window.niceware.generatePassphrase(8);
+    let secret = secretArray.join('-');
+    let isConfirm = confirm(confirmMessage);
     if (isConfirm) {
       $(`input#${inputId}`).attr('value', secret);
-      updateInitialValues();
-      updateButtonState();
     }
     $(this).blur();
     return false;
