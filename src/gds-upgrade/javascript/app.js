@@ -123,9 +123,12 @@ if (searchFields.length > 0) {
 const initialFormValues = {};
 let dynamicChangesMade = false; // Flag to track whether dynamic changes have been made
 let removalChangesMade = false;  // Flag to track whether inputs have been removed
+const removedValues = new Set();
 
 const updateButtonState = () => {
   let isChanged = false;
+  let hasRestoredValue = false;
+
   $('#form-service-config :input[id]').each(function () {
     const id = $(this).attr('id');
     const type = $(this).attr('type');
@@ -137,13 +140,24 @@ const updateButtonState = () => {
       currentValue = $(this).val();
     }
 
+    if (removedValues.has(currentValue)) {
+      hasRestoredValue = true;
+      removedValues.delete(currentValue);
+    }
+
     if (currentValue !== initialFormValues[id]) {
       isChanged = true;
       return false;
     }
   });
 
-  $('#continue-button').prop('disabled', !(isChanged || dynamicChangesMade || removalChangesMade));
+  removalChangesMade = removedValues.size > 0;
+
+  // Check if the form should be considered changed
+  const shouldEnableButton = isChanged || dynamicChangesMade || removalChangesMade;
+
+  // Enable or disable the button
+  $('#continue-button').prop('disabled', !(shouldEnableButton && !hasRestoredValue));
 };
 
 const updateInitialValues = () => {
@@ -197,16 +211,21 @@ function createServiceConfigUrlSections(sectionId, formGroupSelector) {
     e.preventDefault();
     const groupId = $(this).data('group-id');
     const inputIdToRemove = `${sectionId}-input-${groupId}`;
+    const valueToRemove = $(`#${inputIdToRemove}`).val();
     $(`#${sectionId}-input-group-${groupId}`).remove();
 
     if (initialFormValues.hasOwnProperty(inputIdToRemove)) {
-
       removalChangesMade = true;
+      removedValues.add(valueToRemove);
       delete initialFormValues[inputIdToRemove];
     }
 
-    updateButtonState();
+    Object.keys(initialFormValues).forEach(key => {
+      const restoredValue = initialFormValues[key];
+      removedValues.delete(restoredValue);
+    });
 
+    updateButtonState();
     $(this).blur();
     const newCounter = $(`${formGroupSelector} .dfe-flex-container`).length + 1;
     $(`${formGroupSelector}`).data(`${sectionId}-counter`, newCounter);
@@ -218,7 +237,23 @@ updateInitialValues();
 updateButtonState();
 
 
-$('#form-service-config').on('input change', ':input[id]', function () {
+let focusedElementValue = '';
+
+// Handling focus for input fields
+$('#form-service-config').on('focus', ':input[id]:not(:checkbox)', function () {
+  focusedElementValue = $(this).val();
+});
+
+// Handling blur for input fields
+$('#form-service-config').on('blur', ':input[id]:not(:checkbox)', function () {
+  const currentValue = $(this).val();
+  if (focusedElementValue !== currentValue) {
+    updateButtonState();
+  }
+});
+
+// Handling change for checkboxes
+$('#form-service-config').on('change', ':input[id]:checkbox', function () {
   updateButtonState();
 });
 
