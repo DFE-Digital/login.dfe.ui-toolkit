@@ -12,7 +12,13 @@ trigger:
   branches:
     include:
     - release/*
+    - develop
     - feature/*
+
+pr:
+  branches:
+    include:
+    - develop
 
 parameters:
 - name: cdn 
@@ -31,10 +37,6 @@ parameters:
   type: boolean
   displayName: 'Test Deployment'
   default: false
-- name: int
-  type: boolean
-  displayName: 'INT Deployment'
-  default: false
 - name: pp
   type: boolean
   displayName: 'Pre-Prod Deployment'
@@ -52,17 +54,12 @@ variables:
   ${{ else }}:
     value: false
 - name: dev
-  ${{ if eq(parameters.dev, 'true') }}:
+  ${{ if or(eq(parameters.dev, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}:
     value: true
   ${{ else }}:
     value: false
 - name: test
   ${{ if or(eq(parameters.test, 'true'), contains(variables['Build.SourceBranch'],'develop')) }}:
-    value: true
-  ${{ else }}:
-    value: false
-- name: int
-  ${{ if or(eq(parameters.int, 'true'), contains(variables['Build.SourceBranch'],'release')) }}:
     value: true
   ${{ else }}:
     value: false
@@ -87,7 +84,7 @@ stages:
   - template:  pipeline/checkov.yml@devopsTemplates
 
 - ${{ each var in variables }}:
-  - ${{ if in(var.key, 'tran','dev','test','int','pp','pr') }}:
+  - ${{ if in(var.key, 'tran','dev','test','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
       - stage: Deployment_${{var.Key}}
         dependsOn: 
