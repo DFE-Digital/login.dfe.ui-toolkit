@@ -119,68 +119,6 @@ if (searchFields.length > 0) {
   });
 }
 
-//Manage console service config form functionality
-
-const createServiceConfigUrlSections = (sectionId, formGroupSelector, labelText ) => {
-  const addButton = $(`#${sectionId}-add`);
-  const formGroup = $(`${formGroupSelector}`);
-
-  addButton.on('click', function() {
-    let counter = parseInt(formGroup.data(`${sectionId}-counter`), 10);
-    const newInputId = `${sectionId}-${counter}`;
-    const newElement = `
-      <div class="govuk-body dfe-flex-container" id="${sectionId}-input-group-${counter}">
-        <label for="${newInputId}" class="govuk-label govuk-label--s govuk-visually-hidden">
-          ${labelText}
-        </label>
-        <input
-          class="form-control dfe-flex-input-grow govuk-input"
-          id="${newInputId}"
-          name="${sectionId}"
-        />
-        <a href="#" class="govuk-link govuk-link--no-visited-state remove-redirect" id="${sectionId}-remove-${counter}" data-group-id="${counter}">Remove</a>
-      </div>`;
-
-    $(newElement).appendTo(formGroup);
-    counter++;
-    formGroup.data(`${sectionId}-counter`, counter);
-    $(this).trigger('blur');
-    return false;
-  });
-
-  formGroup.on('click', '.remove-redirect', function(e) {
-    e.preventDefault();
-    const groupId = $(this).data('group-id');
-    $(`#${sectionId}-input-group-${groupId}`).remove();
-    $(this).trigger('blur');
-
-    const newCounter = formGroup.find('.dfe-flex-container').length;
-    formGroup.data(`${sectionId}-counter`, newCounter);
-  });
-};
-
-createServiceConfigUrlSections('redirect_uris', '#redirect_uris-form-group', 'Redirect URL');
-createServiceConfigUrlSections('post_logout_redirect_uris', '#post_logout_redirect_uris-form-group', 'Logout redirect URL');
-
-
-
-function handleSecretGeneration(eventId, inputId, confirmMessage) {
-  $(eventId).on('click', function() {
-    let secretArray = window.niceware.generatePassphrase(8);
-    let secret = secretArray.join('-');
-    let isConfirm = confirm(confirmMessage);
-    if (isConfirm) {
-      $(`input#${inputId}`).attr('value', secret);
-    }
-    $(this).blur();
-    return false;
-  });
-}
-
-handleSecretGeneration('#generate-clientSecret', 'clientSecret', 'Are you sure you want to regenerate the client secret?');
-handleSecretGeneration('#generate-apiSecret', 'apiSecret', 'Are you sure you want to regenerate the API secret?');
-
-
 var formRegister = $('.prevent-form-double-submission');
 
 if (formRegister.length > 0) {
