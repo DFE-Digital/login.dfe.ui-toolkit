@@ -1,5 +1,14 @@
 /* global window */
 /* global $ */
+
+const RESPONSE_TYPE_CODE = 'code';
+const RESPONSE_TYPE_ID_TOKEN = 'ID token';
+const RESPONSE_TYPE_TOKEN = 'token';
+
+const FLOW_TYPE_IMPLICIT = 'implicit';
+const FLOW_TYPE_AUTHORISATION = 'authorisation';
+const FLOW_TYPE_HYBRID = 'hybrid';
+
 $(() => {
   const createServiceConfigUrlSections = (sectionId, formGroupSelector, labelText) => {
     const addButton = $(`#${sectionId}-add`);
@@ -64,35 +73,37 @@ $(() => {
     const selectedTypes = [];
 
     if ($('#response_types-id_token').is(':checked')) {
-      selectedTypes.push('ID token');
+      selectedTypes.push(RESPONSE_TYPE_ID_TOKEN);
     }
 
     if ($('#response_types-token').is(':checked')) {
-      selectedTypes.push('Token');
+      selectedTypes.push(RESPONSE_TYPE_TOKEN);
     }
 
     if ($('#response_types-code').is(':checked')) {
-      selectedTypes.push('Code');
+      selectedTypes.push(RESPONSE_TYPE_CODE);
     }
 
     let warningMessage = '';
 
     if (selectedTypes.length > 0) {
       selectedTypes.sort((a, b) => {
-        const order = ['Code', 'ID token', 'Token'];
+        const order = [RESPONSE_TYPE_CODE, RESPONSE_TYPE_ID_TOKEN, RESPONSE_TYPE_TOKEN];
         return order.indexOf(a) - order.indexOf(b);
       });
 
-      let flowType = 'Implicit';
+      let flowType = FLOW_TYPE_IMPLICIT;
 
-      if (selectedTypes.length === 1 && selectedTypes.includes('Code')) {
-        flowType = 'Authorisation';
-      } else if ((selectedTypes.includes('Code') && selectedTypes.includes('Token')) ||
-            (selectedTypes.includes('Code') && selectedTypes.includes('ID token'))) {
-        flowType = 'Hybrid';
+      if (selectedTypes.length === 1 && selectedTypes.includes(RESPONSE_TYPE_CODE)) {
+        flowType = FLOW_TYPE_AUTHORISATION;
+      } else if ((selectedTypes.includes(RESPONSE_TYPE_CODE) &&
+      selectedTypes.includes(RESPONSE_TYPE_TOKEN)) ||
+            (selectedTypes.includes(RESPONSE_TYPE_CODE) &&
+            selectedTypes.includes(RESPONSE_TYPE_ID_TOKEN))) {
+        flowType = FLOW_TYPE_HYBRID;
       }
 
-      if (selectedTypes.length === 1 && selectedTypes.includes('Token')) {
+      if (selectedTypes.length === 1 && selectedTypes.includes(RESPONSE_TYPE_TOKEN)) {
         warningMessage = '';
       } else {
         let selectedTypesDisplay;
