@@ -117,7 +117,7 @@ $(() => {
         }
 
         warningMessage = `
-            <div class="govuk-warning-text govuk-!-margin-top-5 govuk-!-margin-bottom-0">
+            <div class="govuk-warning-text govuk-!-margin-top-5 govuk-!-margin-bottom-0" id="warning-response-types">
                 <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                 <strong class="govuk-warning-text__text">
                     <span class="govuk-warning-text__assistive">Warning</span>
@@ -129,7 +129,7 @@ $(() => {
     }
 
     // Remove existing warning, if any
-    $('.govuk-warning-text').remove();
+    $('#warning-response-types').remove();
 
     // Add the new warning
     if (warningMessage) {
