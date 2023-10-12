@@ -119,43 +119,6 @@ if (searchFields.length > 0) {
   });
 }
 
-var redirect = $('#redirect-url');
-
-$('#add-redirect').on('click', function() {
-  $('<p class="govuk-body"><label for="redirect-url"><input class="form-control inputConfig govuk-input" name="redirect_uris"></label></p>').appendTo(redirect);
-  return false;
-});
-
-var logout = $('#logout-url');
-
-$('#add-logout').on('click', function() {
-  $('<p class="govuk-body"><label for="logout-url"><input class="form-control inputConfig govuk-input" name="post_logout_redirect_uris"></label></p>').appendTo(logout);
-  return false;
-});
-
-
-$('#generate-client-secret').on('click', function() {
-  var secretArray = window.niceware.generatePassphrase(8);
-  var secret = secretArray.join('-');
-  var isConfirm = confirm('Are you sure you want to regenerate the client secret?');
-  if (isConfirm) {
-    $('input#clientSecret').attr('value', secret);
-    $("#saveButton").prop('disabled', false);
-  }
-  return false;
-});
-
-$('#generate-api-secret').on('click', function() {
-  var secretArray = window.niceware.generatePassphrase(8);
-  var secret = secretArray.join('-');
-  var isConfirm = confirm('Are you sure you want to regenerate the api secret?');
-  if (isConfirm) {
-    $('input#apiSecret').attr('value', secret);
-    $("#saveButton").prop('disabled', false);
-  }
-  return false;
-});
-
 var formRegister = $('.prevent-form-double-submission');
 
 if (formRegister.length > 0) {

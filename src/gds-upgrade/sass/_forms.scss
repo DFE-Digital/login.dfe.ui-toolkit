@@ -286,6 +286,26 @@ form#form-service-config {
     .inputConfig, #secret-input {
       width: 75%
     }
+    .dfe-secret-input {
+      width: 85%;
+    }
+  }
+  .dfe-flex-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .dfe-flex-input-grow {
+    flex-grow: 1;
+    margin-right: 10px;
+  }
+
+  .dfe-flex-show-password-grow {
+    flex-grow: 1;
+  }
+
+  .dfe-flex-regenerate-link {
+    margin-left: 10px;
   }
 }
 
@@ -300,3 +320,4 @@ form#form-new-banner {
 input.read-only-input {
   background: #EEEEEE;
 }
+
