@@ -5,13 +5,17 @@ var filterBoxes = $('.filter-box');
 
 NSA.filters = {
   init: function () {
+    function checkCountText(checkboxes) {
+      return checkboxes.filter(':checked').length > 0 ? `${checkboxes.filter(':checked').length} selected` : '';
+    }
+
     filterBoxes.each(function () {
       var $that = $(this),
           header = $that.find('.container-head'),
           title = header.find('.option-select-label'),
           checkboxes = $that.find('input:checkbox'),
           button = $('<button />').addClass('js-container-head'),
-          checkCount = $('<div />').addClass('js-selected-counter');
+          checkCount = $('<div />').addClass('js-selected-counter').text(() => checkCountText(checkboxes));
 
       button.on('click', function (e) {
         var options = $(this).next();
@@ -32,9 +36,7 @@ NSA.filters = {
       header.replaceWith(button);
 
       checkboxes.on('change', function () {
-        checkCount.text(function() {
-          return checkboxes.filter(':checked').length > 0 ? checkboxes.filter(':checked').length + ' selected' : '';
-        });
+        checkCount.text(() => checkCountText(checkboxes));
       });
     });
   }
