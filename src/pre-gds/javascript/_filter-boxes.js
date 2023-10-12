@@ -1,32 +1,35 @@
-"use strict";
+/* global $ */
 
+// ESLint rules disabled for this line as let/const do not allow for the same functionality.
+// eslint-disable-next-line no-var, no-use-before-define
 var NSA = NSA || {};
-var filterBoxes = $('.filter-box');
+const filterBoxes = $('.filter-box');
 
 NSA.filters = {
-  init: function () {
+  init() {
     function checkCountText(checkboxes) {
       return checkboxes.filter(':checked').length > 0 ? `${checkboxes.filter(':checked').length} selected` : '';
     }
 
-    filterBoxes.each(function () {
-      var $that = $(this),
-          header = $that.find('.container-head'),
-          title = header.find('.option-select-label'),
-          checkboxes = $that.find('input:checkbox'),
-          button = $('<button />').addClass('js-container-head'),
-          checkCount = $('<div />').addClass('js-selected-counter').text(() => checkCountText(checkboxes));
+    filterBoxes.each((_, element) => {
+      const filterBox = $(element);
+      const header = filterBox.find('.container-head');
+      const title = header.find('.option-select-label');
+      const checkboxes = filterBox.find('input:checkbox');
+      const button = $('<button />').addClass('js-container-head');
+      const checkCount = $('<div />').addClass('js-selected-counter').text(() => checkCountText(checkboxes));
 
-      button.on('click', function (e) {
-        var options = $(this).next();
-        if ($(this).hasClass('closed')) {
+      button.on('click', (e) => {
+        const target = $(e.currentTarget);
+        const options = target.next();
+        if (target.hasClass('closed')) {
           options.show();
-          $(this)
+          target
             .removeClass('closed')
             .attr('aria-expanded', true);
         } else {
           options.hide();
-          $(this)
+          target
             .addClass('closed')
             .attr('aria-expanded', false);
         }
@@ -35,12 +38,12 @@ NSA.filters = {
 
       header.replaceWith(button);
 
-      checkboxes.on('change', function () {
+      checkboxes.on('change', () => {
         checkCount.text(() => checkCountText(checkboxes));
       });
     });
-  }
-}
+  },
+};
 
 if (filterBoxes.length > 0) {
   NSA.filters.init();
