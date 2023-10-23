@@ -135,26 +135,29 @@ $(() => {
     if (warningMessage) {
       $('#response_types-fieldset').append(warningMessage);
     }
+    const responseTypesCodeElement = $('#response_types-code');
+    if (responseTypesCodeElement.length) {
+      const initialOffset = $('#response_types-code').offset().top;
 
-    const initialOffset = $('#response_types-code').offset().top;
-    const initialScrollPosition = $(window).scrollTop();
+      const initialScrollPosition = $(window).scrollTop();
 
-    if ($('#response_types-code').is(':checked')) {
-      $('#refresh_token-wrapper :input, #clientSecret-wrapper :input, #tokenEndpointAuthMethod-wrapper select').prop('disabled', false);
-      $('#refresh_token-wrapper, #clientSecret-wrapper, #tokenEndpointAuthMethod-wrapper').slideDown(500);
-    } else {
-      $('#refresh_token-wrapper, #clientSecret-wrapper, #tokenEndpointAuthMethod-wrapper').slideUp(500, () => {
-        $('#refresh_token-wrapper :input, #clientSecret-wrapper :input, #tokenEndpointAuthMethod-wrapper select').prop('disabled', true);
-      });
+      if ($('#response_types-code').is(':checked')) {
+        $('#refresh_token-wrapper :input, #clientSecret-wrapper :input, #tokenEndpointAuthMethod-wrapper select').prop('disabled', false);
+        $('#refresh_token-wrapper, #clientSecret-wrapper, #tokenEndpointAuthMethod-wrapper').slideDown(500);
+      } else {
+        $('#refresh_token-wrapper, #clientSecret-wrapper, #tokenEndpointAuthMethod-wrapper').slideUp(500, () => {
+          $('#refresh_token-wrapper :input, #clientSecret-wrapper :input, #tokenEndpointAuthMethod-wrapper select').prop('disabled', true);
+        });
+      }
+
+
+      const newOffset = $('#response_types-code').offset().top;
+      const offsetDifference = newOffset - initialOffset;
+
+      $('html, body').animate({
+        scrollTop: initialScrollPosition + offsetDifference,
+      }, 50, 'linear');
     }
-
-
-    const newOffset = $('#response_types-code').offset().top;
-    const offsetDifference = newOffset - initialOffset;
-
-    $('html, body').animate({
-      scrollTop: initialScrollPosition + offsetDifference,
-    }, 50, 'linear');
   }
   updateSections();
 
