@@ -32,6 +32,7 @@ function extractFirstPartFromId(id) {
 function updateCount(categoryName) {
   const safeCategoryName = toKebabCase(categoryName);
   const checkedCount = $(`.${safeCategoryName} .govuk-checkboxes__input:checked`).length;
+
   $(`#${safeCategoryName}-count`).text(checkedCount);
 }
 
@@ -62,7 +63,6 @@ function showMe(boxId, categoryName, checkedElementId) {
 
 
 function filterAndPerformAction(firstPartOfListId, listIdStartingNumber, performAction) {
-
   const elementsToProcess = $(`[id^="${firstPartOfListId}"]`).filter(function () {
     const id = parseInt(this.id.split('-').pop(), 10);
     return !Number.isNaN(id) && id > listIdStartingNumber;
@@ -96,6 +96,7 @@ function hideMe(listId, categoryName, checkboxId) {
 function initializeFilters() {
   $('.govuk-checkboxes__input.dfe-filter-input').each(function () {
     const isChecked = $(this).prop('checked');
+
     if (isChecked) {
       const checkboxId = $(this).attr('id');
       const parts = checkboxId.match(/show-hide-(.+)-(\d+)/);
@@ -104,6 +105,10 @@ function initializeFilters() {
         const index = parts[2];
         const boxId = `${categoryName}-option-${index}`;
 
+        if (categoryName === 'last-login' && index === '6') {
+          const lastLoginCheckboxes = $('.last-login-checkboxes-input');
+          lastLoginCheckboxes.slice(0, index - 1).prop('disabled', true);
+        }
         showMe(boxId, categoryName, checkboxId);
         updateCount(categoryName);
         updateCategoryHeader(categoryName);
@@ -115,7 +120,6 @@ function initializeFilters() {
 
 
 function handleLastLoginCheckboxChange(checkboxes, lastLoginListTags) {
-
   checkboxes.on('change', function () {
     const index = checkboxes.index(this);
     let firstPartOfCheckboxId;
@@ -135,10 +139,11 @@ function handleLastLoginCheckboxChange(checkboxes, lastLoginListTags) {
       }
     } else {
       firstPartOfCheckboxId = extractFirstPartFromId(this.id);
-      filterAndPerformAction(firstPartOfCheckboxId, index, uncheckCheckbox);
+      filterAndPerformAction(firstPartOfCheckboxId, index + 1, uncheckCheckbox);
       checkboxes.slice(0, index).prop('disabled', false);
-      filterAndPerformAction('last-login-option-', index, hideElement);
-      initializeFilters();
+      filterAndPerformAction('last-login-option-', index + 1, hideElement);
+      updateCount('last-login');
+      updateCategoryHeader('last-login');
     }
   });
 }
