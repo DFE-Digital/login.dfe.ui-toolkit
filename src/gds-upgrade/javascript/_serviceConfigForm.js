@@ -6,7 +6,7 @@ const RESPONSE_TYPE_ID_TOKEN = 'ID token';
 const RESPONSE_TYPE_TOKEN = 'token';
 
 const FLOW_TYPE_IMPLICIT = 'implicit';
-const FLOW_TYPE_AUTHORISATION = 'authorisation';
+const FLOW_TYPE_AUTHORIZATION = 'authorization';
 const FLOW_TYPE_HYBRID = 'hybrid';
 
 $(() => {
@@ -95,7 +95,7 @@ $(() => {
       let flowType = FLOW_TYPE_IMPLICIT;
 
       if (selectedTypes.length === 1 && selectedTypes.includes(RESPONSE_TYPE_CODE)) {
-        flowType = FLOW_TYPE_AUTHORISATION;
+        flowType = FLOW_TYPE_AUTHORIZATION;
       } else if ((selectedTypes.includes(RESPONSE_TYPE_CODE) &&
       selectedTypes.includes(RESPONSE_TYPE_TOKEN)) ||
             (selectedTypes.includes(RESPONSE_TYPE_CODE) &&
