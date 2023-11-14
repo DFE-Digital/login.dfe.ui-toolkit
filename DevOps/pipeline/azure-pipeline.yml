@@ -6,7 +6,7 @@ resources:
       type: github
       endpoint: DfE-Digital
       name: DFE-Digital/login.dfe.devops
-      ref: main
+      ref: feature/DSI-6485
 
 trigger:
   branches:
@@ -21,6 +21,13 @@ pr:
     - develop
 
 parameters:
+- name: location
+  type: string
+  displayName: 'Select Deploy location'
+  default: westeurope
+  values:
+    - westeurope
+    - northeurope
 - name: cdn 
   type: boolean
   displayName: 'New Version of CDN'
@@ -91,12 +98,17 @@ stages:
         - scanApp
         variables:
         - group: dsi-${{var.key}}-kv
+        - name: neuProjectId
+          ${{ if eq(parameters.location, 'westeurope') }}:
+            value: ""
+          ${{ else }}:
+            value: "neu-"
         - name: SubShortName
           value: $(platformGlobalIdentifier)$(environmentId)
         - name: storageAccountName
-          value: $(SubShortName)signinshdstr
+          value: $(SubShortName)$(neuProjectId)signinshdstr
         - name: ShdResourceGroupName
-          value: $(SubShortName)-shd
+          value: $(SubShortName)-$(neuProjectId)shd
         - name: azureCdnName
           value: $(SubShortName)-signin-shd-cdn
         - name: cdnEndpointName
@@ -181,11 +193,13 @@ stages:
                       inlineScript: |
                         az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
 
-                        az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
+                        if($ShdResourceGroupName -NotLike '*neu*'){
+                          az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
 
-                        if($env:newCdnV){
-                          $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
-                          $newCdnAssetsVersion = $cdnAssetsVersion+0.1
-                          az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                          if($env:newCdnV){
+                            $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
+                            $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+                            az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                          }
                         }
 
