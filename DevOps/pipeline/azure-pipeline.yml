@@ -142,7 +142,7 @@ stages:
                       Inline: |
                         $publicIp = Invoke-RestMethod -uri https://api.ipify.org
                         Write-Host "Public Ip : $publicIp "
-                        Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$publicIp"
+                        Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName).replace('-','') -IPAddressOrRange "$publicIp"
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
                         Start-Sleep -Seconds 60
@@ -160,7 +160,7 @@ stages:
                       scriptLocation: inlineScript
                       inlineScript: |
                         Start-Sleep 60
-                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
+                        az storage blob delete-batch --account-name $(storageAccountName).replace('-','') --source $(UIContainerName) --only-show-errors --auth-mode=login
                         
                   - task: AzureCLI@2
                     displayName: 'Copy Content to Storage Account Container'
@@ -174,7 +174,7 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
+                        az storage blob upload-batch  --account-name $(storageAccountName).replace('-','') --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
                        
                         
                   - task: AzureCLI@2
@@ -191,7 +191,7 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
+                        az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName).replace('-','') --ip-address $(agentIp)
 
                         if($ShdResourceGroupName -NotLike '*neu*'){
                           az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
