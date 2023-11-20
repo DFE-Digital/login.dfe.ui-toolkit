@@ -148,36 +148,42 @@ stages:
                         Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$publicIp"
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
-                        Start-Sleep -Seconds 60
+                  - task: AzureCLI@2
+                    displayName: 'Empty Storage Container Contents & upload Content'
+                    inputs:
+                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                        azureSubscription: $(devServiceConnection)
+                      ${{ elseif eq(var.key, 'pr') }}:
+                        azureSubscription: $(prodServiceConnection)
+                      ${{ else }}:
+                        azureSubscription: $(testServiceConnection)
+                      scriptType: pscore
+                      scriptLocation: inlineScript
+                      inlineScript: |
+                        Write-Information "Waiting for FW rule to apply." -InformationAction Continue
 
-                  - task: AzureCLI@2
-                    displayName: 'Empty Storage Container Contents'
-                    inputs:
-                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-                        azureSubscription: $(devServiceConnection)
-                      ${{ elseif eq(var.key, 'pr') }}:
-                        azureSubscription: $(prodServiceConnection)
-                      ${{ else }}:
-                        azureSubscription: $(testServiceConnection)
-                      scriptType: pscore
-                      scriptLocation: inlineScript
-                      inlineScript: |
-                        Start-Sleep 60
-                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
-                        
-                  - task: AzureCLI@2
-                    displayName: 'Copy Content to Storage Account Container'
-                    inputs:
-                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-                        azureSubscription: $(devServiceConnection)
-                      ${{ elseif eq(var.key, 'pr') }}:
-                        azureSubscription: $(prodServiceConnection)
-                      ${{ else }}:
-                        azureSubscription: $(testServiceConnection)
-                      scriptType: pscore
-                      scriptLocation: inlineScript
-                      inlineScript: |
+                        $FWTestAttempt = 1
+                        $FWTestMax = 25
+
+                        do {
+                            try {
+                                az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
+                                $FWTest = $true
+                                Write-Information "Storage is now accessible upload data" -InformationAction Continue
+                            }
+                            catch {
+                                if ($FWTestAttempt -lt $FWTestMax) {
+                                    Write-Warning "Unable to access storage account $FWTestAttempt/$FWTestMax. Waiting for FW rule to take effect." -WarningAction Continue
+                                    $FWTestAttempt++
+                                    Start-Sleep -Seconds 20
+                                }
+                                else {
+                                    Write-Error "Unable to access storage account $FWTestAttempt/$FWTestMax."
+                                }
+                            }
+                        } while (-not $FWTest)
                         az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
+                     
                        
                         
                   - task: AzureCLI@2
