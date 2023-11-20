@@ -183,8 +183,6 @@ stages:
                             }
                         } while (-not $FWTest)
                         az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
-                     
-                       
                         
                   - task: AzureCLI@2
                     displayName: Purge content & Updated CDN Version
