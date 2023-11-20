@@ -94,7 +94,6 @@ stages:
   - ${{ if in(var.key, 'tran','dev','test','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
       - stage: Deployment_${{var.Key}}
-        displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
         dependsOn: 
         - scanApp
         variables:
@@ -119,7 +118,7 @@ stages:
           value: $(SubShortName)-signin-shd-cdnep
         - name: keyVaultName
           value: $(SubShortName)-signin-kv
-        displayName: "Deployment [${{var.Key}}]"
+        displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
         jobs:
         - deployment: 'Deploy_${{var.Key}}'
           pool:
