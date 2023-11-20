@@ -94,6 +94,7 @@ stages:
   - ${{ if in(var.key, 'tran','dev','test','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
       - stage: Deployment_${{var.Key}}
+        displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
         dependsOn: 
         - scanApp
         variables:
