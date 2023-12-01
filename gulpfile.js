@@ -64,6 +64,10 @@ gulp.task('copy-minify', async () => {
   ])
     .pipe(cleanCSS({ compatibility: 'ie8' }))
     .pipe(gulp.dest(`${output}govuk/`));
+  gulp.src([
+    'node_modules/govuk_template_jinja/assets/stylesheets/fonts/**/*',
+  ])
+    .pipe(gulp.dest(`${output}govuk/fonts`));
 });
 
 // /**
@@ -189,7 +193,7 @@ gulp.task('gdsUpgradeBuild', gulp.series('gds-upgrade-sass', 'gds-upgrade-script
 
 gulp.task('run-server', async () => {
   const server = child.spawn('node', ['server.js']);
-  const outputToConsole = data => console.log(data.toString());
+  const outputToConsole = (data) => console.log(data.toString());
   server.stdout.on('data', outputToConsole);
   server.stderr.on('data', outputToConsole);
   console.log('server is running...');
