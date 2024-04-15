@@ -97,7 +97,17 @@ stages:
         dependsOn: 
         - scanApp
         variables:
-        - group: dsi-${{var.key}}-kv
+        - name: environmentId
+          ${{ if eq(var.key, 'tran') }}:
+            value: d03
+          ${{ if eq(var.key, 'dev') }}:
+            value: d01
+          ${{ if eq(var.key, 'test') }}:
+            value: t01
+          ${{ if eq(var.key, 'pp') }}:
+            value: t02
+          ${{ if eq(var.key, 'pr') }}:
+            value: p01
         - name: neuProjectId
           ${{ if eq(parameters.location, 'westeurope') }}:
             value: ""
@@ -112,6 +122,8 @@ stages:
             value: $(SubShortName)neusigninshdstr          
         - name: ShdResourceGroupName
           value: $(SubShortName)-$(neuProjectId)shd
+        - name: UIContainerName
+          value: ui-assets
         - name: azureCdnName
           value: $(SubShortName)-signin-shd-cdn
         - name: cdnEndpointName
