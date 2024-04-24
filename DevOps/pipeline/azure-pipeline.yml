@@ -216,9 +216,13 @@ stages:
                           az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
 
                           if($env:newCdnV){
-                            $cdnAssetsVersion = [decimal]$(cdnAssetsVersion)
+                            $IpAddress = Invoke-RestMethod -uri https://api.ipify.org
+                            az keyvault network-rule add --name $(keyVaultName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
+                            $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
+                            $cdnAssetsVersion = [decimal]$cdnAssetsVersion
                             $newCdnAssetsVersion = $cdnAssetsVersion+0.1
                             az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                            az keyvault network-rule remove --name $(keyVaultName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
                           }
                         }
 
