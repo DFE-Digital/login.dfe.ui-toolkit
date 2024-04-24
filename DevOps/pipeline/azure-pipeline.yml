@@ -195,6 +195,7 @@ stages:
                                 }
                             }
                         } while (-not $FWTest)
+                        Write-Host "Content uploaded"
                         
                   - task: AzureCLI@2
                     displayName: Purge content & Updated CDN Version
