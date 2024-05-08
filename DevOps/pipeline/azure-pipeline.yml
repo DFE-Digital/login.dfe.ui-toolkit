@@ -183,6 +183,7 @@ stages:
                                 az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
                                 $FWTest = $true
                                 Write-Information "Storage is now accessible upload data" -InformationAction Continue
+                                exit 0
                             }
                             catch {
                                 if ($FWTestAttempt -lt $FWTestMax) {
@@ -195,7 +196,6 @@ stages:
                                 }
                             }
                         } while (-not $FWTest)
-                        Write-Host "Content uploaded"
                         
                   - task: AzureCLI@2
                     displayName: Purge content & Updated CDN Version
