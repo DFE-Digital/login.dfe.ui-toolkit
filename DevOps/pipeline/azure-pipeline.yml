@@ -90,6 +90,12 @@ stages:
   # Code scaning tools
   - template:  pipeline/checkov.yml@devopsTemplates
 
+  - template:  pipeline/eslint.yml@devopsTemplates
+
+  - template:  pipeline/dependencyCheck.yml@devopsTemplates
+    parameters:
+      npmInstCmd: 'install --force --json --no-package-lock'
+
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
