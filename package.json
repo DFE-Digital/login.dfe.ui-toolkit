@@ -1,6 +1,6 @@
 {
   "name": "dfe-frontend-toolkit",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "DfE front-end toolkit",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,7 @@
     "eslint": "^8.54.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.8.0",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
     "gulp-dart-sass": "^1.0.2",

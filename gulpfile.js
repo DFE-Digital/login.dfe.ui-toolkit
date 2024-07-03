@@ -58,15 +58,17 @@ gulp.task('gds-upgrade-sass', async () => gulp
  */
 
 gulp.task('copy-minify', async () => {
+  
   gulp.src([
     'node_modules/govuk_template_jinja/assets/stylesheets/fonts.css',
     'node_modules/govuk_template_jinja/assets/stylesheets/govuk-template.css',
   ])
     .pipe(cleanCSS({ compatibility: 'ie8' }))
     .pipe(gulp.dest(`${output}govuk/`));
-  gulp.src([
+  
+    gulp.src([
     'node_modules/govuk_template_jinja/assets/stylesheets/fonts/**/*',
-  ])
+  ], {encoding: false})
     .pipe(gulp.dest(`${output}govuk/fonts`));
 });
 
@@ -154,7 +156,7 @@ gulp.task('gds-upgrade-copy-assets', async () => {
   gulp.src([
     'node_modules/govuk-frontend/govuk/assets/**/*',
     'src/gds-upgrade/assets/**/*',
-  ])
+  ], {encoding: false})
     .pipe(gulp.dest('./dist/gds-upgrade/'));
 });
 
