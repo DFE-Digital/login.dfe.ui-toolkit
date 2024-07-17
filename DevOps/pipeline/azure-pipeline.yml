@@ -52,6 +52,10 @@ parameters:
   type: boolean
   displayName: 'Prod Deployment'
   default: false
+- name: gitCheck
+  type: boolean
+  displayName: 'Bypass Git Check in Test'
+  default: false  
 
 variables:
 - group: dsi-global
@@ -66,12 +70,12 @@ variables:
   ${{ else }}:
     value: false
 - name: test
-  ${{ if or(eq(parameters.test, 'true'), contains(variables['Build.SourceBranch'],'main')) }}:
+  ${{ if or(eq(parameters.test, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}:
     value: true
   ${{ else }}:
     value: false
 - name: pp
-  ${{ if or(eq(parameters.pp, 'true'), contains(variables['Build.SourceBranch'],'release')) }}:
+  ${{ if and(or(eq(parameters.pp, 'true'), contains(variables['Build.SourceBranch'],'main')), not(contains(variables['Build.SourceVersionMessage'],'Upgrade to version'))) }}:
     value: true
   ${{ else }}:
     value: false
@@ -80,6 +84,8 @@ variables:
     value: true
   ${{ else }}:
     value: false
+- name: applicationFullName
+  value: 'ui-toolkit'    
 
 stages:
 
@@ -88,9 +94,7 @@ stages:
   displayName: "Scan tools & Build"
   jobs:
   # Code scaning tools
-  - template:  pipeline/checkov.yml@devopsTemplates
-
-  - template:  pipeline/eslint.yml@devopsTemplates
+  - template:  pipeline/scanTools.yml@devopsTemplates
 
   # - template:  pipeline/dependencyCheck.yml@devopsTemplates
   #   parameters:
@@ -232,4 +236,13 @@ stages:
                             az keyvault network-rule remove --name $(keyVaultName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
                           }
                         }
+                  - ${{ if and(eq(var.key, 'pr'),eq(location, 'westeurope')) }}:
+                    - stage: branchPrTag
+                      displayName: "GitHub PR & Release Branch Tag"
+                      dependsOn: 
+                      - Deployment_${{var.key}}
+                      jobs:
+                      - template:  pipeline/tagCreation.yml@devopsTemplates
+                        parameters:
+                          applicationName: ${{variables.applicationFullName}}      
 
