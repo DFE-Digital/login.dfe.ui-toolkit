@@ -242,13 +242,13 @@ stages:
                             az keyvault network-rule remove --name $(keyVaultName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
                           }
                         }
-    - ${{ if and(eq(var.key, 'pr'),eq(parameters.location, 'westeurope')) }}:
-      - stage: branchPrTag
-        displayName: "GitHub PR & Release Branch Tag"
-        dependsOn: 
-        - Deployment_${{var.Key}}
-        jobs:
-        - template:  pipeline/tagCreation.yml@devopsTemplates
-          parameters:
-            applicationName: ${{variables.applicationFullName}}      
+      - ${{ if and(eq(var.key, 'pr'),eq(parameters.location, 'westeurope')) }}:
+        - stage: branchPrTag
+          displayName: "GitHub PR & Release Branch Tag"
+          dependsOn: 
+          - Deployment_${{var.Key}}
+          jobs:
+          - template:  pipeline/tagCreation.yml@devopsTemplates
+            parameters:
+              applicationName: ${{variables.applicationFullName}}      
 
