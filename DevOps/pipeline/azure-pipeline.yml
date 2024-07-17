@@ -56,6 +56,10 @@ parameters:
   type: boolean
   displayName: 'Bypass Git Check in Test'
   default: false  
+- name: InfrDeploy
+  type: boolean
+  displayName: 'Infrastrucure Deployment only'
+  default: false
 
 variables:
 - group: dsi-global
@@ -95,7 +99,9 @@ stages:
   jobs:
   # Code scaning tools
   - template:  pipeline/scanTools.yml@devopsTemplates
-
+    parameters:
+      npmInstCmd: 'install --force --json --no-package-lock'
+      AppDeploy: ${{ not(parameters.InfrDeploy) }}
   # - template:  pipeline/dependencyCheck.yml@devopsTemplates
   #   parameters:
   #     npmInstCmd: 'install --force --json --no-package-lock'
@@ -236,7 +242,7 @@ stages:
                             az keyvault network-rule remove --name $(keyVaultName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
                           }
                         }
-                  - ${{ if and(eq(var.key, 'pr'),eq(location, 'westeurope')) }}:
+                  - ${{ if and(eq(var.key, 'pr'),eq(parameters.location, 'westeurope')) }}:
                     - stage: branchPrTag
                       displayName: "GitHub PR & Release Branch Tag"
                       dependsOn: 
