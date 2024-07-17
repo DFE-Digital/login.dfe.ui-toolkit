@@ -109,7 +109,7 @@ stages:
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
-      - stage: Deployment_${{var.Key}}_{{parameters.location}}
+      - stage: Deployment_${{var.Key}}
         dependsOn: 
         - scanApp
         variables:
@@ -246,7 +246,7 @@ stages:
       - stage: branchPrTag
         displayName: "GitHub PR & Release Branch Tag"
         dependsOn: 
-        - Deployment_${{var.Key}}_{{parameters.location}}
+        - Deployment_${{var.Key}}
         jobs:
         - template:  pipeline/tagCreation.yml@devopsTemplates
           parameters:
