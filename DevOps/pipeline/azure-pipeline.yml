@@ -160,7 +160,7 @@ stages:
                   - checkout: self
 
                   - task: AzureCLI@2
-                    displayName: 'Empty Storage Container Contents & upload Content'
+                    displayName: 'Enable Access'
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -189,7 +189,8 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        Write-Information "Waiting for FW rule to apply." -InformationAction Continue
+                        $ErrorActionPreference = "Stop"
+                        write-output "Waiting for FW rule to apply." 
 
                         $FWTestAttempt = 1
                         $FWTestMax = 25
@@ -197,14 +198,21 @@ stages:
                         do {
                             try {
                                 az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
+                                if ($? -eq $false) {
+                                  throw 'Failed to  delete-batch on storage account'
+                                }
                                 az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
+                                if ($? -eq $false) {
+                                  throw 'Failed to  upload-batch on storage account'
+                                }
+
                                 $FWTest = $true
-                                Write-Information "Storage is now accessible upload data" -InformationAction Continue
+                               write-output "Storage is now accessible & and data is uploaded"
                                 exit 0
                             }
                             catch {
                                 if ($FWTestAttempt -lt $FWTestMax) {
-                                    Write-Warning "Unable to access storage account $FWTestAttempt/$FWTestMax. Waiting for FW rule to take effect." -WarningAction Continue
+                                    write-output "Unable to access storage account $FWTestAttempt/$FWTestMax. Waiting for FW rule to take effect."
                                     $FWTestAttempt++
                                     Start-Sleep -Seconds 20
                                 }
@@ -212,7 +220,7 @@ stages:
                                     Write-Error "Unable to access storage account $FWTestAttempt/$FWTestMax."
                                 }
                             }
-                        } while (-not $FWTest)
+                        } while ($FWTestAttempt -lt $FWTestMax)
                   - task: AzureCLI@2
                     displayName: Purge content & Updated CDN Version
                     env:
