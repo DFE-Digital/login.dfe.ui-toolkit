@@ -64,17 +64,17 @@ parameters:
 variables:
 - group: dsi-global
 - name: tran
-  ${{ if or(eq(parameters.dev, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}:
+  ${{ if eq(parameters.tran, 'true') }}: 
     value: true
   ${{ else }}:
     value: false
 - name: dev
-  ${{ if or(eq(parameters.dev, 'true'), contains(variables['Build.SourceBranch'],'main')) }}:
+  ${{ if or(eq(parameters.dev, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}:
     value: true
   ${{ else }}:
     value: false
 - name: test
-  ${{ if or(eq(parameters.test, 'true'), contains(variables['Build.SourceBranch'],'main')) }}:
+  ${{ if or(eq(parameters.test, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}:
     value: true
   ${{ else }}:
     value: false
@@ -94,24 +94,21 @@ variables:
 stages:
 
 # Code Scans & Build the artifact for deployment
-#- stage: scanApp
- # displayName: "Scan tools & Build"
-  #jobs:
+- stage: scanApp
+  displayName: "Scan tools & Build"
+  jobs:
   # Code scaning tools
-  #- template:  pipeline/scanTools.yml@devopsTemplates
-   # parameters:
-   #   npmInstCmd: 'install --force --json --no-package-lock'
-   #   AppDeploy: ${{ not(parameters.InfrDeploy) }}
-  # - template:  pipeline/dependencyCheck.yml@devopsTemplates
-  #   parameters:
-  #     npmInstCmd: 'install --force --json --no-package-lock'
+  - template:  pipeline/scanTools.yml@devopsTemplates
+    parameters:
+      npmInstCmd: 'install --force --json --no-package-lock'
+      AppDeploy: ${{ not(parameters.InfrDeploy) }}
 
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','pp','pr') }}:
     - ${{ if eq(var.value, 'true') }}:
       - stage: Deployment_${{var.Key}}
         dependsOn: 
-        #- scanApp
+        - scanApp
         variables:
         - name: environmentId
           ${{ if eq(var.key, 'tran') }}:
@@ -160,7 +157,7 @@ stages:
                   - checkout: self
 
                   - task: AzureCLI@2
-                    displayName: 'Enable Access'
+                    displayName: 'Enable Access to Storage Account'
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -173,7 +170,6 @@ stages:
                       inlineScript: |
                         $publicIp = Invoke-RestMethod -uri https://api.ipify.org
                         Write-Host "Public Ip : $publicIp "
-                        #Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$publicIp"
                         az storage account network-rule add --ip-address $publicIp --resource-group $(ShdResourceGroupName) --account-name $(storageAccountName)
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
