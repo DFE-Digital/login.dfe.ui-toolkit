@@ -64,17 +64,17 @@ parameters:
 variables:
 - group: dsi-global
 - name: tran
-  ${{ if eq(parameters.tran, 'true') }}: 
-    value: true
-  ${{ else }}:
-    value: false
-- name: dev
   ${{ if or(eq(parameters.dev, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}:
     value: true
   ${{ else }}:
     value: false
+- name: dev
+  ${{ if or(eq(parameters.dev, 'true'), contains(variables['Build.SourceBranch'],'main')) }}:
+    value: true
+  ${{ else }}:
+    value: false
 - name: test
-  ${{ if or(eq(parameters.test, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}:
+  ${{ if or(eq(parameters.test, 'true'), contains(variables['Build.SourceBranch'],'main')) }}:
     value: true
   ${{ else }}:
     value: false
