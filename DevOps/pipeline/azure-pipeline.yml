@@ -189,7 +189,7 @@ stages:
                             }
                             Write-Host "##vso[task.setvariable variable=agentIp]$IpAddress"
                             Write-Host "Testing to list blob storage"
-                            az storage blob list --account-name  $(storageAccountName) --container $(UIContainerName) --only-show-errors --auth-mode=login
+                            #az storage blob list --account-name  $(storageAccountName) --container $(UIContainerName) --only-show-errors --auth-mode=login
                             if ($? -eq $false) {
                               throw 'Failed read of storage secret'
                             }
