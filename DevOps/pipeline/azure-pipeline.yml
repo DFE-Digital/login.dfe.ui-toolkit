@@ -188,30 +188,50 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        Write-Information "Waiting for FW rule to apply." -InformationAction Continue
-
+                        $ErrorActionPreference = "Stop"
+                        $IpAddress = Invoke-RestMethod -uri https://ifconfig.me/ip
+                        Write-Host "##vso[task.setvariable variable=agentIp]$IpAddress"
+                        
                         $FWTestAttempt = 1
                         $FWTestMax = 25
 
                         do {
-                            try {
-                                az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
-                                az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
-                                $FWTest = $true
-                                Write-Information "Storage is now accessible upload data" -InformationAction Continue
-                                exit 0
+                          try {
+                            write-output "Adding IP to storage firewall - Loop attempt $FWTestAttempt/$FWTestMax."
+                            
+                            Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$IpAddress"
+
+                            if ($? -eq $false) {
+                              throw 'Failed to add IP to storage account firewall'
                             }
-                            catch {
-                                if ($FWTestAttempt -lt $FWTestMax) {
-                                    Write-Warning "Unable to access storage account $FWTestAttempt/$FWTestMax. Waiting for FW rule to take effect." -WarningAction Continue
-                                    $FWTestAttempt++
-                                    Start-Sleep -Seconds 20
-                                }
-                                else {
-                                    Write-Error "Unable to access storage account $FWTestAttempt/$FWTestMax."
-                                }
+                            
+                            write-output "Updating the Storage Content" 
+
+                            az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
+                            az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
+                      
+
+                            if ($? -eq $false) {
+                              throw 'Failed read of storage secret'
                             }
-                        } while (-not $FWTest)
+                            
+                            write-output "Access succeeded, exiting loop" 
+                            exit 0
+                          }
+                          catch {
+                            if ($FWTestAttempt -lt $FWTestMax) {
+                                write-output "Access failed $FWTestAttempt/$FWTestMax. "
+                                
+                                $FWTestAttempt++
+                                
+                                Start-Sleep -Seconds 20
+                            }
+                            else {
+                                Write-Error "Loop limit reached $FWTestAttempt/$FWTestMax."
+                            }
+                          }
+                        } while ($FWTestAttempt -lt $FWTestMax)         
+                        
                         
                   - task: AzureCLI@2
                     displayName: Purge content & Updated CDN Version
