@@ -171,23 +171,6 @@ stages:
                       ScriptType: 'InlineScript'
                       azurePowerShellVersion: 'LatestVersion'
                       Inline: |
-                        $publicIp = Invoke-RestMethod -uri https://api.ipify.org
-                        Write-Host "Public Ip : $publicIp "
-                        Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$publicIp"
-                        Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
-
-                  - task: AzureCLI@2
-                    displayName: 'Empty Storage Container Contents & upload Content'
-                    inputs:
-                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
-                        azureSubscription: $(devServiceConnection)
-                      ${{ elseif eq(var.key, 'pr') }}:
-                        azureSubscription: $(prodServiceConnection)
-                      ${{ else }}:
-                        azureSubscription: $(testServiceConnection)
-                      scriptType: pscore
-                      scriptLocation: inlineScript
-                      inlineScript: |
                         $ErrorActionPreference = "Stop"
                         $IpAddress = Invoke-RestMethod -uri https://ifconfig.me/ip
                         Write-Host "##vso[task.setvariable variable=agentIp]$IpAddress"
@@ -199,18 +182,14 @@ stages:
                           try {
                             write-output "Adding IP to storage firewall - Loop attempt $FWTestAttempt/$FWTestMax."
                             
-                            Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$IpAddress"
-
+                            #Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$IpAddress"
+                            az storage network-rule add --account-name $(storageAccountName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
                             if ($? -eq $false) {
                               throw 'Failed to add IP to storage account firewall'
                             }
-                            
-                            write-output "Updating the Storage Content" 
-
-                            az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
-                            az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
-                      
-
+                            Write-Host "##vso[task.setvariable variable=agentIp]$IpAddress"
+                            Write-Host "Testing to list blob storage"
+                            az storage blob list  $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
                             if ($? -eq $false) {
                               throw 'Failed read of storage secret'
                             }
@@ -231,7 +210,22 @@ stages:
                             }
                           }
                         } while ($FWTestAttempt -lt $FWTestMax)         
+
+                  - task: AzureCLI@2
+                    displayName: 'Empty Storage Container Contents & upload Content'
+                    inputs:
+                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                        azureSubscription: $(devServiceConnection)
+                      ${{ elseif eq(var.key, 'pr') }}:
+                        azureSubscription: $(prodServiceConnection)
+                      ${{ else }}:
+                        azureSubscription: $(testServiceConnection)
+                      scriptType: pscore
+                      scriptLocation: inlineScript
+                      inlineScript: |
                         
+                        az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
+                        az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
                         
                   - task: AzureCLI@2
                     displayName: Purge content & Updated CDN Version
