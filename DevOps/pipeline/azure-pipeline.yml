@@ -183,7 +183,7 @@ stages:
                             write-output "Adding IP to storage firewall - Loop attempt $FWTestAttempt/$FWTestMax."
                             
                             #Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$IpAddress"
-                            az storage network-rule add --account-name $(storageAccountName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
+                            az storage account network-rule add --account-name $(storageAccountName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
                             if ($? -eq $false) {
                               throw 'Failed to add IP to storage account firewall'
                             }
