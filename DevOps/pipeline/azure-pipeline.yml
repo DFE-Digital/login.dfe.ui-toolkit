@@ -159,8 +159,8 @@ stages:
                 steps:
                   - checkout: self
 
-                  - task: AzurePowerShell@5
-                    displayName: Enable Access
+                  - task: AzureCLI@2
+                    displayName: 'Enable Access to  Storage Account'
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -168,9 +168,9 @@ stages:
                         azureSubscription: $(prodServiceConnection)
                       ${{ else }}:
                         azureSubscription: $(testServiceConnection)
-                      ScriptType: 'InlineScript'
-                      azurePowerShellVersion: 'LatestVersion'
-                      Inline: |
+                      scriptType: pscore
+                      scriptLocation: inlineScript
+                      inlineScript: |
                         $ErrorActionPreference = "Stop"
                         $IpAddress = Invoke-RestMethod -uri https://ifconfig.me/ip
                         Write-Host "##vso[task.setvariable variable=agentIp]$IpAddress"
