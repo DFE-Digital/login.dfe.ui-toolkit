@@ -102,9 +102,6 @@ stages:
     parameters:
       npmInstCmd: 'install --force --json --no-package-lock'
       AppDeploy: ${{ not(parameters.InfrDeploy) }}
-  # - template:  pipeline/dependencyCheck.yml@devopsTemplates
-  #   parameters:
-  #     npmInstCmd: 'install --force --json --no-package-lock'
 
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','pp','pr') }}:
@@ -159,8 +156,8 @@ stages:
                 steps:
                   - checkout: self
 
-                  - task: AzurePowerShell@5
-                    displayName: Enable Access
+                  - task: AzureCLI@2
+                    displayName: 'Enable Access to Storage Account'
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -168,12 +165,12 @@ stages:
                         azureSubscription: $(prodServiceConnection)
                       ${{ else }}:
                         azureSubscription: $(testServiceConnection)
-                      ScriptType: 'InlineScript'
-                      azurePowerShellVersion: 'LatestVersion'
-                      Inline: |
+                      scriptType: pscore
+                      scriptLocation: inlineScript
+                      inlineScript: |
                         $publicIp = Invoke-RestMethod -uri https://api.ipify.org
                         Write-Host "Public Ip : $publicIp "
-                        Add-AzStorageAccountNetworkRule -ResourceGroupName $(ShdResourceGroupName) -AccountName $(storageAccountName) -IPAddressOrRange "$publicIp"
+                        az storage account network-rule add --ip-address $publicIp --resource-group $(ShdResourceGroupName) --account-name $(storageAccountName)
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
                   - task: AzureCLI@2
@@ -188,22 +185,30 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       inlineScript: |
-                        Write-Information "Waiting for FW rule to apply." -InformationAction Continue
+                        $ErrorActionPreference = "Stop"
+                        write-output "Waiting for FW rule to apply." 
 
                         $FWTestAttempt = 1
                         $FWTestMax = 25
-
+                        Start-Sleep -Seconds 35
                         do {
                             try {
                                 az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
+                                if ($? -eq $false) {
+                                  throw 'Failed to  delete-batch on storage account'
+                                }
                                 az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
+                                if ($? -eq $false) {
+                                  throw 'Failed to  upload-batch on storage account'
+                                }
+
                                 $FWTest = $true
-                                Write-Information "Storage is now accessible upload data" -InformationAction Continue
+                               write-output "Storage is now accessible & and data is uploaded"
                                 exit 0
                             }
                             catch {
                                 if ($FWTestAttempt -lt $FWTestMax) {
-                                    Write-Warning "Unable to access storage account $FWTestAttempt/$FWTestMax. Waiting for FW rule to take effect." -WarningAction Continue
+                                    write-output "Unable to access storage account $FWTestAttempt/$FWTestMax. Waiting for FW rule to take effect."
                                     $FWTestAttempt++
                                     Start-Sleep -Seconds 20
                                 }
@@ -211,8 +216,7 @@ stages:
                                     Write-Error "Unable to access storage account $FWTestAttempt/$FWTestMax."
                                 }
                             }
-                        } while (-not $FWTest)
-                        
+                        } while ($FWTestAttempt -lt $FWTestMax)
                   - task: AzureCLI@2
                     displayName: Purge content & Updated CDN Version
                     env:
@@ -240,6 +244,7 @@ stages:
                             $newCdnAssetsVersion = $cdnAssetsVersion+0.1
                             az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
                             az keyvault network-rule remove --name $(keyVaultName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
+                            az storage account network-rule remove --ip-address $IpAddress  --resource-group $(ShdResourceGroupName) --account-name $(storageAccountName)
                           }
                         }
       - ${{ if and(eq(var.key, 'pr'),eq(parameters.location, 'westeurope')) }}:
