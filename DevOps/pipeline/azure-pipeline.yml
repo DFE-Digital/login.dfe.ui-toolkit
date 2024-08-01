@@ -247,6 +247,30 @@ stages:
                             az storage account network-rule remove --ip-address $IpAddress  --resource-group $(ShdResourceGroupName) --account-name $(storageAccountName)
                           }
                         }
+                  
+                  - task: PowerShell@2
+                    displayName: 'Release Branch Creation'
+                    condition: and(contains(variables['Build.SourceBranch'],'main'),eq('${{parameters.deploymentLocation}}', 'westeurope'))
+                    inputs:
+                      targetType: 'inline'
+                      workingDirectory: $(Build.Repository.LocalPath)/${{variables.applicationRepoName}}
+                      script: |              
+                        git config --global user.email "pipeline@example.com"
+                        git config --global user.name "Azure Devops Pipeline"
+                        
+                        $version = $(node -p "require('./package.json').version")
+                        npm version major -m "Upgrade to version %s"
+                        $newVersion = $(node -p "require('./package.json').version")
+                        write-output "package.json Version Current: $version"
+                        write-output "package.json Version New: $newVersion"
+
+                        $branch = "release/$newVersion"
+                        git push origin --delete $branch  
+                        git checkout -b $branch
+
+                        git add *
+                        git push origin HEAD:$branch
+
       - ${{ if and(eq(var.key, 'pr'),eq(parameters.location, 'westeurope')) }}:
         - stage: branchPrTag
           displayName: "GitHub PR & Release Branch Tag"
