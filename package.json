@@ -1,6 +1,6 @@
 {
   "name": "dfe-frontend-toolkit",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "DfE front-end toolkit",
   "main": "index.js",
   "scripts": {
