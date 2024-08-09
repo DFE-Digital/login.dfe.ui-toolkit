@@ -17,6 +17,10 @@
 .js-hidden {
   display:none;
   visibility:hidden;
+  :not(.js-enabled &).show-when-js-disabled {
+    display: block;
+    visibility: visible;
+  }
 }
 
 // Lists without style by default
