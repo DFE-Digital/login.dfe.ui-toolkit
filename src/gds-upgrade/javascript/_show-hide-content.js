@@ -31,7 +31,6 @@
       if ($content.length) {
         $control.attr('aria-controls', $content.attr('id'))
         $control.attr('aria-expanded', 'false')
-        $content.attr('aria-hidden', 'true')
       }
     }
 
@@ -53,7 +52,6 @@
       // Show content
       if ($content.hasClass('js-hidden')) {
         $content.removeClass('js-hidden')
-        $content.attr('aria-hidden', 'false')
 
         // If the controlling input, update aria-expanded
         if ($control.attr('aria-controls')) {
@@ -69,7 +67,6 @@
       // Hide content
       if (!$content.hasClass('js-hidden')) {
         $content.addClass('js-hidden')
-        $content.attr('aria-hidden', 'true')
 
         // If the controlling input, update aria-expanded
         if ($control.attr('aria-controls')) {
