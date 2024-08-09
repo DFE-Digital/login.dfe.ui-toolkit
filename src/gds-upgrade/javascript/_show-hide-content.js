@@ -12,7 +12,8 @@
       namespace: 'ShowHideContent',
       radio: '[data-target] > input[type="radio"]',
       checkbox: '[data-target] > input[type="checkbox"]',
-      link: 'a.js-toggle-content'
+      link: 'a.js-toggle-content',
+      select: '[data-target] > select',
     }
 
     // Escape name attribute for use in DOM selector
@@ -115,6 +116,18 @@
       $event.preventDefault()
     }
 
+    function handleSelectContent ($control, $content) {
+      if ($control.val() === $control.data('option')) {
+        showToggledContent($control, $content);
+        return;
+      }
+
+      hideToggledContent($content, $content);
+      if ($control.data('clear')) {
+        $content.find(':input').each((_, element) => element.value = '');
+      }
+    }
+
     // Set up event handlers etc
     function init ($container, elementSelector, eventSelectors, handler) {
       $container = $container || $(document.body)
@@ -130,13 +143,21 @@
       $controls.each(initToggledContent)
 
       // Handle events
-      $.each(eventSelectors, function (idx, eventSelector) {
-        $container.on('click.' + selectors.namespace, eventSelector, deferred)
+      $.each(eventSelectors, function (_, eventSelector) {
+        if (handler === handleSelectContent) {
+          $container.on('change.' + selectors.namespace, eventSelector, deferred);
+        } else {
+          $container.on('click.' + selectors.namespace, eventSelector, deferred);
+        }
       })
 
       // Any already :checked on init?
-      if ($controls.is(':checked')) {
+      if (handler === handleCheckboxContent && $controls.is(':checked')) {
         $controls.filter(':checked').each(deferred)
+      }
+
+      if (handler === handleSelectContent) {
+        $controls.each(deferred);
       }
     }
 
@@ -171,6 +192,10 @@
       init($container, selectors.link, [selectors.link], handleLinkContent)
     }
 
+    self.showHideSelectToggledContent = function ($container) {
+      init($container, selectors.select, [selectors.select], handleSelectContent);
+    }
+
     // Remove event handlers
     self.destroy = function ($container) {
       $container = $container || $(document.body)
@@ -179,9 +204,10 @@
   }
 
   ShowHideContent.prototype.init = function ($container) {
-    this.showHideRadioToggledContent($container)
-    this.showHideCheckboxToggledContent($container)
-    this.showHideLinkToggledContent($container)
+    this.showHideRadioToggledContent($container);
+    this.showHideCheckboxToggledContent($container);
+    this.showHideLinkToggledContent($container);
+    this.showHideSelectToggledContent($container);
   }
 
   GOVUK.ShowHideContent = ShowHideContent
