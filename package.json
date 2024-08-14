@@ -4,7 +4,7 @@
   "description": "DfE front-end toolkit",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_ENV='development' gulp run-server build-gds",
+    "dev": "cross-env NODE_ENV='development' gulp run-server build-gds",
     "build": "gulp build-gds",
     "start": "node server.js"
   },
@@ -21,6 +21,7 @@
   "devDependencies": {
     "browserify": "^17.0.0",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "eslint": "^8.54.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.8.0",
