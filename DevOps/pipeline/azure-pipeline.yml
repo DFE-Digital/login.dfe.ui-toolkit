@@ -250,7 +250,7 @@ stages:
                   
                   - task: PowerShell@2
                     displayName: 'Release Branch Creation'
-                    condition: and(contains(variables['Build.SourceBranch'],'main'),eq('${{parameters.deploymentLocation}}', 'westeurope'))
+                    condition: and(contains(variables['Build.SourceBranch'],'main'),eq('${{parameters.location}}', 'westeurope'))
                     inputs:
                       targetType: 'inline'
                       workingDirectory: $(Build.Repository.LocalPath)/${{variables.applicationRepoName}}
