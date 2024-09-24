@@ -155,6 +155,7 @@ stages:
               deploy:
                 steps:
                   - checkout: self
+                    persistCredentials: true
 
                   - task: AzureCLI@2
                     displayName: 'Enable Access to Storage Account'
