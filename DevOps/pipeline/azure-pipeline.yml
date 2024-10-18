@@ -171,9 +171,9 @@ stages:
                         azureSubscription: $(testServiceConnection)
                       scriptType: 'pscore'
                       scriptLocation: 'scriptPath'
-                      scriptPath: 'scripts/keyvaultWhiteListCheck.ps1'
+                      scriptPath: 'login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1'
                       arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $True -NotSelfHost $True'
-                      workingDirectory: $(System.DefaultWorkingDirectory)/login.dfe.devops
+                      workingDirectory: $(System.DefaultWorkingDirectory)
 
                   - task: AzureCLI@2
                     displayName: 'Enable Access to Storage Account'
@@ -281,9 +281,9 @@ stages:
                         azureSubscription: $(testServiceConnection)
                       scriptType: 'pscore'
                       scriptLocation: 'scriptPath'
-                      scriptPath: 'scripts/keyvaultWhiteListCheck.ps1'
+                      scriptPath: 'login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1'
                       arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $False -NotSelfHost $True'
-                      workingDirectory: $(System.DefaultWorkingDirectory)/login.dfe.devops
+                      workingDirectory: $(System.DefaultWorkingDirectory)
                   
                   - task: PowerShell@2
                     displayName: 'Release Branch Creation'
