@@ -214,8 +214,6 @@ stages:
                         $ErrorActionPreference = "Stop"
                         write-output "Waiting for FW rule to apply." 
 
-                        cd login.dfe.ui-toolkit
-
                         $FWTestAttempt = 1
                         $FWTestMax = 25
                         Start-Sleep -Seconds 35
@@ -225,7 +223,7 @@ stages:
                                 if ($? -eq $false) {
                                   throw 'Failed to  delete-batch on storage account'
                                 }
-                                az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
+                                az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist --destination $(UIContainerName) --auth-mode=login
                                 if ($? -eq $false) {
                                   throw 'Failed to  upload-batch on storage account'
                                 }
