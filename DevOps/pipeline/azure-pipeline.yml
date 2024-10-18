@@ -28,6 +28,10 @@ parameters:
   values:
     - westeurope
     - northeurope
+- name: shaUse
+  type: string
+  displayName: 'Use Self Host agent'
+  default: true
 - name: cdn 
   type: boolean
   displayName: 'New Version of CDN'
@@ -52,18 +56,6 @@ parameters:
   type: boolean
   displayName: 'Prod Deployment'
   default: false
-- name: gitCheck
-  type: boolean
-  displayName: 'Bypass Git Check in Test'
-  default: false  
-- name: InfrDeploy
-  type: boolean
-  displayName: 'Infrastrucure Deployment only'
-  default: false
-- name: shaUse
-  type: string
-  displayName: 'Use Self Host agent'
-  default: true
 
 variables:
 - group: dsi-global
@@ -105,7 +97,6 @@ stages:
   - template:  pipeline/scanTools.yml@devopsTemplates
     parameters:
       npmInstCmd: 'install --force --json --no-package-lock'
-      AppDeploy: ${{ not(parameters.InfrDeploy) }}
 
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','pp','pr') }}:
@@ -148,6 +139,13 @@ stages:
         - name: keyVaultName
           value: $(SubShortName)-signin-kv
         displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
+        ${{ if eq(parameters.shaUse,'true') }}:
+          ${{ if or(eq(parameter.key, 'dev'), eq(parameter.key, 'tran')) }}:
+            pool: Self-hosted Dev
+          ${{ elseif eq(parameter.key, 'pr') }}:
+            pool: Self-hosted Prod
+          ${{ else }}:
+            pool: Self-hosted Test
         jobs:
         - deployment: 'Deploy_${{var.Key}}'
           pool:
