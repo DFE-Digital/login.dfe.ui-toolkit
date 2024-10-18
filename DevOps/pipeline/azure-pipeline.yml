@@ -149,8 +149,6 @@ stages:
             pool: Self-hosted Test
         jobs:
         - deployment: 'Deploy_${{var.Key}}'
-          pool:
-            vmImage: 'windows-latest'
           displayName: Updated content of CDN
           environment: ${{var.Key}}
           strategy:
