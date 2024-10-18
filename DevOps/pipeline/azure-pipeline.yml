@@ -60,6 +60,10 @@ parameters:
   type: boolean
   displayName: 'Infrastrucure Deployment only'
   default: false
+- name: shaUse
+  type: string
+  displayName: 'Use Self Host agent'
+  default: true
 
 variables:
 - group: dsi-global
@@ -158,7 +162,19 @@ stages:
                     persistCredentials: true
 
                   - task: AzureCLI@2
+                    displayName: 'White-list keyVault'
+                    condition: eq(parameters.shaUse, 'false')
+                    inputs:
+                      azureSubscription: ${{parameters.serviceConnection}}
+                      scriptType: 'pscore'
+                      scriptLocation: 'scriptPath'
+                      scriptPath: 'scripts/keyvaultWhiteListCheck.ps1'
+                      arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $True -NotSelfHost $True'
+                      workingDirectory: $(System.DefaultWorkingDirectory)
+
+                  - task: AzureCLI@2
                     displayName: 'Enable Access to Storage Account'
+                    condition: eq(parameters.shaUse, 'false')
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -175,7 +191,9 @@ stages:
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
                   - task: AzureCLI@2
-                    displayName: 'Empty Storage Container Contents & upload Content'
+                    displayName: 'Empty, upload & Purge Storage & CDN Contents & Updated CDN Version  '
+                    env:
+                      newCdnV: ${{ parameters.cdn }}
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -204,7 +222,19 @@ stages:
                                 }
 
                                 $FWTest = $true
-                               write-output "Storage is now accessible & and data is uploaded"
+                                write-output "Storage is now accessible & and data is uploaded"
+                                
+                                if($ShdResourceGroupName -NotLike '*neu*'){
+                                  az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
+
+                                  if($env:newCdnV){
+                                    $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
+                                    $cdnAssetsVersion = [decimal]$cdnAssetsVersion
+                                    $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+                                    az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                                  }
+                                }
+
                                 exit 0
                             }
                             catch {
@@ -218,10 +248,9 @@ stages:
                                 }
                             }
                         } while ($FWTestAttempt -lt $FWTestMax)
+
                   - task: AzureCLI@2
-                    displayName: Purge content & Updated CDN Version
-                    env:
-                      newCdnV: ${{ parameters.cdn }}
+                    displayName: Remove White-list of storage
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -234,20 +263,16 @@ stages:
                       inlineScript: |
                         az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
 
-                        if($ShdResourceGroupName -NotLike '*neu*'){
-                          az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
-
-                          if($env:newCdnV){
-                            $IpAddress = Invoke-RestMethod -uri https://api.ipify.org
-                            az keyvault network-rule add --name $(keyVaultName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
-                            $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
-                            $cdnAssetsVersion = [decimal]$cdnAssetsVersion
-                            $newCdnAssetsVersion = $cdnAssetsVersion+0.1
-                            az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
-                            az keyvault network-rule remove --name $(keyVaultName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
-                            az storage account network-rule remove --ip-address $IpAddress  --resource-group $(ShdResourceGroupName) --account-name $(storageAccountName)
-                          }
-                        }
+                  - task: AzureCLI@2
+                    displayName: 'Remove White-list keyVault'
+                    condition: eq(parameters.shaUse, 'false')
+                    inputs:
+                      azureSubscription: ${{parameters.serviceConnection}}
+                      scriptType: 'pscore'
+                      scriptLocation: 'scriptPath'
+                      scriptPath: 'scripts/keyvaultWhiteListCheck.ps1'
+                      arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $False -NotSelfHost $True'
+                      workingDirectory: $(System.DefaultWorkingDirectory)
                   
                   - task: PowerShell@2
                     displayName: 'Release Branch Creation'
