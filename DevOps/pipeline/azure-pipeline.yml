@@ -157,6 +157,7 @@ stages:
                 steps:
                   - checkout: self
                     persistCredentials: true
+                  - checkout: devopsTemplates
 
                   - task: AzureCLI@2
                     displayName: 'White-list keyVault'
@@ -165,7 +166,7 @@ stages:
                       azureSubscription: ${{parameters.serviceConnection}}
                       scriptType: 'pscore'
                       scriptLocation: 'scriptPath'
-                      scriptPath: 'scripts/keyvaultWhiteListCheck.ps1'
+                      scriptPath: 'login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1'
                       arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $True -NotSelfHost $True'
                       workingDirectory: $(System.DefaultWorkingDirectory)
 
@@ -200,6 +201,8 @@ stages:
                         azureSubscription: $(testServiceConnection)
                       scriptType: pscore
                       scriptLocation: inlineScript
+                      ${{ if not(parameters.shaUse) }}:
+                        workingDirectory: login.dfe.ui-toolkit
                       inlineScript: |
                         $ErrorActionPreference = "Stop"
                         write-output "Waiting for FW rule to apply." 
@@ -268,7 +271,7 @@ stages:
                       azureSubscription: ${{parameters.serviceConnection}}
                       scriptType: 'pscore'
                       scriptLocation: 'scriptPath'
-                      scriptPath: 'scripts/keyvaultWhiteListCheck.ps1'
+                      scriptPath: 'login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1'
                       arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $False -NotSelfHost $True'
                       workingDirectory: $(System.DefaultWorkingDirectory)
                   
