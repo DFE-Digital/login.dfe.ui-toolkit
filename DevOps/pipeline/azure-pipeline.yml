@@ -163,12 +163,17 @@ stages:
                     displayName: 'White-list keyVault'
                     condition: ${{not(parameters.shaUse)}}
                     inputs:
-                      azureSubscription: ${{parameters.serviceConnection}}
+                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                        azureSubscription: $(devServiceConnection)
+                      ${{ elseif eq(var.key, 'pr') }}:
+                        azureSubscription: $(prodServiceConnection)
+                      ${{ else }}:
+                        azureSubscription: $(testServiceConnection)
                       scriptType: 'pscore'
                       scriptLocation: 'scriptPath'
-                      scriptPath: 'login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1'
+                      scriptPath: 'scripts/keyvaultWhiteListCheck.ps1'
                       arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $True -NotSelfHost $True'
-                      workingDirectory: $(System.DefaultWorkingDirectory)
+                      workingDirectory: $(System.DefaultWorkingDirectory)/login.dfe.devops
 
                   - task: AzureCLI@2
                     displayName: 'Enable Access to Storage Account'
@@ -202,7 +207,7 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       ${{ if not(parameters.shaUse) }}:
-                        workingDirectory: login.dfe.ui-toolkit
+                        workingDirectory: $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit
                       inlineScript: |
                         $ErrorActionPreference = "Stop"
                         write-output "Waiting for FW rule to apply." 
@@ -268,12 +273,17 @@ stages:
                     displayName: 'Remove White-list keyVault'
                     condition:  ${{not(parameters.shaUse)}}
                     inputs:
-                      azureSubscription: ${{parameters.serviceConnection}}
+                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                        azureSubscription: $(devServiceConnection)
+                      ${{ elseif eq(var.key, 'pr') }}:
+                        azureSubscription: $(prodServiceConnection)
+                      ${{ else }}:
+                        azureSubscription: $(testServiceConnection)
                       scriptType: 'pscore'
                       scriptLocation: 'scriptPath'
-                      scriptPath: 'login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1'
+                      scriptPath: 'scripts/keyvaultWhiteListCheck.ps1'
                       arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $False -NotSelfHost $True'
-                      workingDirectory: $(System.DefaultWorkingDirectory)
+                      workingDirectory: $(System.DefaultWorkingDirectory)/login.dfe.devops
                   
                   - task: PowerShell@2
                     displayName: 'Release Branch Creation'
