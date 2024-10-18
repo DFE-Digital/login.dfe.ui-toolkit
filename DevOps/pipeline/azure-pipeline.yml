@@ -29,7 +29,7 @@ parameters:
     - westeurope
     - northeurope
 - name: shaUse
-  type: string
+  type: boolean
   displayName: 'Use Self Host agent'
   default: true
 - name: cdn 
@@ -139,7 +139,7 @@ stages:
         - name: keyVaultName
           value: $(SubShortName)-signin-kv
         displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
-        ${{ if eq(parameters.shaUse,'true') }}:
+        ${{ if parameters.shaUse }}:
           ${{ if or(eq(parameter.key, 'dev'), eq(parameter.key, 'tran')) }}:
             pool: Self-hosted Dev
           ${{ elseif eq(parameter.key, 'pr') }}:
@@ -161,7 +161,7 @@ stages:
 
                   - task: AzureCLI@2
                     displayName: 'White-list keyVault'
-                    condition: eq(parameters.shaUse, 'false')
+                    condition: parameters.shaUse
                     inputs:
                       azureSubscription: ${{parameters.serviceConnection}}
                       scriptType: 'pscore'
@@ -172,7 +172,7 @@ stages:
 
                   - task: AzureCLI@2
                     displayName: 'Enable Access to Storage Account'
-                    condition: eq(parameters.shaUse, 'false')
+                    condition: parameters.shaUse
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -263,7 +263,7 @@ stages:
 
                   - task: AzureCLI@2
                     displayName: 'Remove White-list keyVault'
-                    condition: eq(parameters.shaUse, 'false')
+                    condition: parameters.shaUse
                     inputs:
                       azureSubscription: ${{parameters.serviceConnection}}
                       scriptType: 'pscore'
