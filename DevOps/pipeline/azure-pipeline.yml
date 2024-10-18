@@ -139,6 +139,8 @@ stages:
           value: $(SubShortName)-signin-shd-cdnep
         - name: keyVaultName
           value: $(SubShortName)-signin-kv
+        - name: keyVaultResourceGroupName
+          value: "${{parameters.projectId}}$(environmentId)-shd"
         displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
         ${{ if eq(parameters.shaUse, 'true') }}:
           ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
