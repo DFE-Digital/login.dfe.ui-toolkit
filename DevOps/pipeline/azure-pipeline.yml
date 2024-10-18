@@ -140,7 +140,7 @@ stages:
         - name: keyVaultName
           value: $(SubShortName)-signin-kv
         displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
-        ${{ if eq(parameters.shaUse,'true') }}:
+        ${{ if parameters.shaUse }}:
           ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
             pool: Self-hosted Dev
           ${{ elseif eq(var.key, 'pr') }}:
@@ -162,7 +162,7 @@ stages:
 
                   - task: AzureCLI@2
                     displayName: 'White-list keyVault'
-                    condition: eq(parameters.shaUse, 'false')
+                    condition: ${{not(parameters.shaUse)}}
                     inputs:
                       azureSubscription: ${{parameters.serviceConnection}}
                       scriptType: 'pscore'
@@ -173,7 +173,7 @@ stages:
 
                   - task: AzureCLI@2
                     displayName: 'Enable Access to Storage Account'
-                    condition: eq(parameters.shaUse, 'false')
+                    condition: ${{not(parameters.shaUse)}}
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -250,7 +250,7 @@ stages:
 
                   - task: AzureCLI@2
                     displayName: Remove White-list of storage
-                    condition: eq(parameters.shaUse, 'false')
+                    condition: ${{not(parameters.shaUse)}}
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -265,7 +265,7 @@ stages:
 
                   - task: AzureCLI@2
                     displayName: 'Remove White-list keyVault'
-                    condition: eq(parameters.shaUse, 'false')
+                    condition:  ${{not(parameters.shaUse)}}
                     inputs:
                       azureSubscription: ${{parameters.serviceConnection}}
                       scriptType: 'pscore'
