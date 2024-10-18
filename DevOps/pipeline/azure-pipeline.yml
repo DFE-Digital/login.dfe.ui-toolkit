@@ -140,7 +140,7 @@ stages:
         - name: keyVaultName
           value: $(SubShortName)-signin-kv
         - name: keyVaultResourceGroupName
-          value: "${{parameters.projectId}}$(environmentId)-shd"
+          value: "$(SubShortName)$(environmentId)-shd"
         displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
         ${{ if eq(parameters.shaUse, 'true') }}:
           ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
@@ -209,10 +209,12 @@ stages:
                       scriptType: pscore
                       scriptLocation: inlineScript
                       ${{ if not(parameters.shaUse) }}:
-                        workingDirectory: $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit
+                        workingDirectory: $(System.DefaultWorkingDirectory)
                       inlineScript: |
                         $ErrorActionPreference = "Stop"
                         write-output "Waiting for FW rule to apply." 
+
+                        cd login.dfe.ui-toolkit
 
                         $FWTestAttempt = 1
                         $FWTestMax = 25
