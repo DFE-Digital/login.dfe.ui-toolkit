@@ -140,7 +140,7 @@ stages:
         - name: keyVaultName
           value: $(SubShortName)-signin-kv
         displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
-        ${{ if parameters.shaUse }}:
+        ${{ if eq(parameters.shaUse, 'true') }}:
           ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
             pool: Self-hosted Dev
           ${{ elseif eq(var.key, 'pr') }}:
