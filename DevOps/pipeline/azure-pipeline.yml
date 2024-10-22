@@ -28,6 +28,10 @@ parameters:
   values:
     - westeurope
     - northeurope
+- name: shaUse
+  type: boolean
+  displayName: 'Use Self Host agent'
+  default: true
 - name: cdn 
   type: boolean
   displayName: 'New Version of CDN'
@@ -51,14 +55,6 @@ parameters:
 - name: pr
   type: boolean
   displayName: 'Prod Deployment'
-  default: false
-- name: gitCheck
-  type: boolean
-  displayName: 'Bypass Git Check in Test'
-  default: false  
-- name: InfrDeploy
-  type: boolean
-  displayName: 'Infrastrucure Deployment only'
   default: false
 
 variables:
@@ -101,7 +97,7 @@ stages:
   - template:  pipeline/scanTools.yml@devopsTemplates
     parameters:
       npmInstCmd: 'install --force --json --no-package-lock'
-      AppDeploy: ${{ not(parameters.InfrDeploy) }}
+      AppDeploy: true
 
 - ${{ each var in variables }}:
   - ${{ if in(var.key, 'tran','dev','test','pp','pr') }}:
@@ -143,11 +139,18 @@ stages:
           value: $(SubShortName)-signin-shd-cdnep
         - name: keyVaultName
           value: $(SubShortName)-signin-kv
+        - name: keyVaultResourceGroupName
+          value: "$(SubShortName)-shd"
         displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
+        ${{ if eq(parameters.shaUse, 'true') }}:
+          ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+            pool: Self-hosted Dev
+          ${{ elseif eq(var.key, 'pr') }}:
+            pool: Self-hosted Prod
+          ${{ else }}:
+            pool: Self-hosted Test
         jobs:
         - deployment: 'Deploy_${{var.Key}}'
-          pool:
-            vmImage: 'windows-latest'
           displayName: Updated content of CDN
           environment: ${{var.Key}}
           strategy:
@@ -156,9 +159,27 @@ stages:
                 steps:
                   - checkout: self
                     persistCredentials: true
+                  - checkout: devopsTemplates
+
+                  - task: AzureCLI@2
+                    displayName: 'White-list keyVault'
+                    condition: ${{not(parameters.shaUse)}}
+                    inputs:
+                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                        azureSubscription: $(devServiceConnection)
+                      ${{ elseif eq(var.key, 'pr') }}:
+                        azureSubscription: $(prodServiceConnection)
+                      ${{ else }}:
+                        azureSubscription: $(testServiceConnection)
+                      scriptType: 'pscore'
+                      scriptLocation: 'scriptPath'
+                      scriptPath: 'login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1'
+                      arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $True -NotSelfHost $True'
+                      workingDirectory: $(System.DefaultWorkingDirectory)
 
                   - task: AzureCLI@2
                     displayName: 'Enable Access to Storage Account'
+                    condition: ${{not(parameters.shaUse)}}
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -175,7 +196,9 @@ stages:
                         Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
                   - task: AzureCLI@2
-                    displayName: 'Empty Storage Container Contents & upload Content'
+                    displayName: 'Empty, upload & Purge Storage & CDN Contents & Updated CDN Version  '
+                    env:
+                      newCdnV: ${{ parameters.cdn }}
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -185,6 +208,8 @@ stages:
                         azureSubscription: $(testServiceConnection)
                       scriptType: pscore
                       scriptLocation: inlineScript
+                      ${{ if not(parameters.shaUse) }}:
+                        workingDirectory: $(System.DefaultWorkingDirectory)
                       inlineScript: |
                         $ErrorActionPreference = "Stop"
                         write-output "Waiting for FW rule to apply." 
@@ -198,13 +223,25 @@ stages:
                                 if ($? -eq $false) {
                                   throw 'Failed to  delete-batch on storage account'
                                 }
-                                az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/dist --destination $(UIContainerName) --auth-mode=login
+                                az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist --destination $(UIContainerName) --auth-mode=login
                                 if ($? -eq $false) {
                                   throw 'Failed to  upload-batch on storage account'
                                 }
 
                                 $FWTest = $true
-                               write-output "Storage is now accessible & and data is uploaded"
+                                write-output "Storage is now accessible & and data is uploaded"
+                                
+                                if($ShdResourceGroupName -NotLike '*neu*'){
+                                  az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
+
+                                  if($env:newCdnV){
+                                    $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
+                                    $cdnAssetsVersion = [decimal]$cdnAssetsVersion
+                                    $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+                                    az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                                  }
+                                }
+
                                 exit 0
                             }
                             catch {
@@ -218,10 +255,10 @@ stages:
                                 }
                             }
                         } while ($FWTestAttempt -lt $FWTestMax)
+
                   - task: AzureCLI@2
-                    displayName: Purge content & Updated CDN Version
-                    env:
-                      newCdnV: ${{ parameters.cdn }}
+                    displayName: Remove White-list of storage
+                    condition: ${{not(parameters.shaUse)}}
                     inputs:
                       ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
                         azureSubscription: $(devServiceConnection)
@@ -234,20 +271,21 @@ stages:
                       inlineScript: |
                         az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
 
-                        if($ShdResourceGroupName -NotLike '*neu*'){
-                          az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
-
-                          if($env:newCdnV){
-                            $IpAddress = Invoke-RestMethod -uri https://api.ipify.org
-                            az keyvault network-rule add --name $(keyVaultName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
-                            $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
-                            $cdnAssetsVersion = [decimal]$cdnAssetsVersion
-                            $newCdnAssetsVersion = $cdnAssetsVersion+0.1
-                            az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
-                            az keyvault network-rule remove --name $(keyVaultName) --resource-group $(ShdResourceGroupName) --ip-address $IpAddress -o none
-                            az storage account network-rule remove --ip-address $IpAddress  --resource-group $(ShdResourceGroupName) --account-name $(storageAccountName)
-                          }
-                        }
+                  - task: AzureCLI@2
+                    displayName: 'Remove White-list keyVault'
+                    condition:  ${{not(parameters.shaUse)}}
+                    inputs:
+                      ${{ if or(eq(var.key, 'dev'), eq(var.key, 'tran')) }}:
+                        azureSubscription: $(devServiceConnection)
+                      ${{ elseif eq(var.key, 'pr') }}:
+                        azureSubscription: $(prodServiceConnection)
+                      ${{ else }}:
+                        azureSubscription: $(testServiceConnection)
+                      scriptType: 'pscore'
+                      scriptLocation: 'scriptPath'
+                      scriptPath: 'login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1'
+                      arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $False -NotSelfHost $True'
+                      workingDirectory: $(System.DefaultWorkingDirectory)
                   
                   - task: PowerShell@2
                     displayName: 'Release Branch Creation'
