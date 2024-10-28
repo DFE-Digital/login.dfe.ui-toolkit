@@ -292,7 +292,7 @@ stages:
                     condition: and(contains(variables['Build.SourceBranch'],'main'),eq('${{parameters.location}}', 'westeurope'))
                     inputs:
                       targetType: 'inline'
-                      workingDirectory: $(Build.Repository.LocalPath)/${{variables.applicationRepoName}}
+                      workingDirectory: $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit
                       script: |              
                         git config --global user.email "pipeline@example.com"
                         git config --global user.name "Azure Devops Pipeline"
