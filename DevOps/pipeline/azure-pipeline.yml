@@ -71,7 +71,7 @@ variables:
   - name: pr
     value: ${{ or(eq(parameters.pr, 'true'), contains(variables['Build.SourceBranch'],'release')) }}
   - name: applicationFullName
-    value: 'ui-toolkit'    
+    value: 'ui-toolkit'
 
 stages:
 
