@@ -94,10 +94,7 @@ stages:
         - name: environmentId
           value: $[variables['${{var.key}}EnvId']]
         - name: secRegionId
-          ${{ if eq(location, 'westeurope') }}:
-            value: ''
-          ${{ else }}:
-            value: $(secondRegionId)
+          value: $(${{ format('{0}{1}', parameters.location, 'Id') }})
         - name: SubShortName
           value: $(platformGlobalIdentifier)$(environmentId)
         - name: storageAccountName
