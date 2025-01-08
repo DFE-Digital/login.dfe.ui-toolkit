@@ -5,10 +5,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV='development' gulp run-server build-gds",
+    "dev:checks": "npm run lint",
     "format": "prettier . --write",
     "build": "gulp build-gds",
     "start": "node server.js",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:report": "eslint . -f junit -o eslint-results.xml"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
@@ -24,12 +28,14 @@
     "nunjucks": "^3.2.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.17.0",
     "browserify": "^17.0.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
-    "eslint": "^8.54.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.8.0",
+    "eslint": "^9.17.0",
+    "eslint-formatter-junit": "^8.40.0",
+    "eslint-plugin-jest": "^28.10.0",
+    "globals": "^15.14.0",
     "gulp": "^5.0.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
