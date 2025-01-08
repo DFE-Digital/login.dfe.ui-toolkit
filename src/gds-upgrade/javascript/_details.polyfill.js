@@ -7,8 +7,6 @@
 // http://www.sitepoint.com/fixing-the-details-element/
 
 (function (global) {
-  "use strict";
-
   var GOVUK = global.GOVUK || {};
 
   GOVUK.details = {

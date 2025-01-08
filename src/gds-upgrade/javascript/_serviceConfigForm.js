@@ -67,7 +67,7 @@ $(() => {
     $(eventId).on("click", function generateSecret() {
       const secretArray = window.niceware.generatePassphrase(8);
       const secret = secretArray.join("-");
-      // eslint-disable-next-line no-restricted-globals, no-alert
+
       const isConfirm = window.confirm(confirmMessage);
       if (isConfirm) {
         $(`input#${inputId}`).attr("value", secret);

@@ -64,7 +64,7 @@ var GovUKCookie = {
 
 function checkConditionForUsersBanner() {
   var lastSeen = GovUKCookie.getRaw(COOKIE_NAMES.USER_BANNER_LAST_SEEN);
-  if (!!lastSeen) {
+  if (lastSeen) {
     var numberOfDays = (new Date().getTime() - lastSeen) / (1000 * 3600 * 24);
     if (numberOfDays > 90) {
       // if the period is longer than 90 days show/update the banner

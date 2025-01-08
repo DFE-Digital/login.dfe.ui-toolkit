@@ -1,5 +1,3 @@
-"use strict";
-
 function sortTable(n) {
   var table,
     rows,

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable func-names */
+
 /* eslint-disable no-undef */
 
 function toKebabCase(str) {

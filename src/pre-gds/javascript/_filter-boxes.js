@@ -1,7 +1,7 @@
 /* global $ */
 
 // ESLint rules disabled for this line as let/const do not allow for the same functionality.
-// eslint-disable-next-line no-var, no-use-before-define
+
 var NSA = NSA || {};
 const filterBoxes = $(".filter-box");
 
