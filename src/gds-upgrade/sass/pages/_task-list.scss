@@ -15,7 +15,6 @@ $task-list-indent: 35px;
   padding-inline-start: 0;
 }
 
-
 .task-list-section {
   display: table;
   margin-bottom: 0;
@@ -32,7 +31,6 @@ $task-list-indent: 35px;
     padding-right: 0;
   }
 }
-
 
 .task-list-items {
   @include govuk-responsive-margin(9, "bottom");
@@ -52,7 +50,6 @@ $task-list-indent: 35px;
 .task-list-item:first-child {
   border-top: 1px solid map.get($govuk-colours, "mid-grey");
 }
-
 
 .task-name {
   @include govuk-grid-column(two-thirds);

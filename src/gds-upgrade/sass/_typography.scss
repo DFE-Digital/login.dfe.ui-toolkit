@@ -2,7 +2,8 @@
   font-style: italic;
 }
 
-b, strong {
+b,
+strong {
   font-weight: 700;
 }
 
@@ -24,7 +25,7 @@ ul.list-bullet {
 
 dl.simple {
   dt {
-    font-weight:bold;
+    font-weight: bold;
   }
   dd {
     margin-bottom: 15px;
@@ -37,7 +38,7 @@ dl.rows {
     font-size: 90%;
   }
   dt {
-    font-weight:bold;
+    font-weight: bold;
     @include govuk-media-query(tablet) {
       float: left;
       clear: left;
@@ -57,7 +58,7 @@ dl.rows {
   dd {
     margin-bottom: 5px;
     @include govuk-media-query(tablet) {
-      margin-left: 210px
+      margin-left: 210px;
     }
   }
 }
@@ -86,7 +87,7 @@ dl.inline {
 blockquote {
   background: govuk-colour("light-grey");
   padding: 15px;
-  border-left:5px solid map.get($govuk-colours, "light-grey");
+  border-left: 5px solid map.get($govuk-colours, "light-grey");
   margin: 15px 0;
 }
 

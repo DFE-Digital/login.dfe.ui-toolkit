@@ -1,12 +1,7 @@
-{% extends "layout.html" %}
-
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-xl">
-      Change password
-    </h1>
+    <h1 class="govuk-heading-xl">Change password</h1>
   </div>
 </div>
 
@@ -16,9 +11,18 @@
       <fieldset>
         <legend class="vh">Enter your current password</legend>
         <div class="govuk-form-group">
-          <label for="new-password" class="govuk-label">Create a secure password - <a href="#modal-password" class="modal-link">what is this?</a> </label>
+          <label for="new-password" class="govuk-label"
+            >Create a secure password -
+            <a href="#modal-password" class="modal-link">what is this?</a>
+          </label>
           <div class="show-password">
-            <input class="govuk-input govuk-!-width-one-half" id="new-password" name="new-password" type="password" required="required">
+            <input
+              class="govuk-input govuk-!-width-one-half"
+              id="new-password"
+              name="new-password"
+              type="password"
+              required="required"
+            />
           </div>
         </div>
         <div class="form-submit">
@@ -30,14 +34,26 @@
 </div>
 
 <div class="service-list">
-  <div class="modal" id="modal-password" style="display: none;">
+  <div class="modal" id="modal-password" style="display: none">
     <a href="#" class="close">Close</a>
     <h3 class="govuk-heading-l">Secure passwords</h3>
     <h4 class="govuk-heading-m">A secure password is:</h4>
     <ul class="govuk-list--bullet">
-      <li><b>Long</b> - the more characters the better, all DfE Sign-in passwords must be at least 12 characters long. Short passwords are simple to crack with modern equipment.</li>
-      <li><b>Memorable</b> - writing down or storing passwords unencrypted on your computer is not secure, it is better to make then easy to remember, or use a password manager.</li>
-      <li><b>Unique</b> - keeping passwords for each service unique means that if another service is compriomised you don't have to go about changing all your passwords at once.</li>
+      <li>
+        <b>Long</b> - the more characters the better, all DfE Sign-in passwords
+        must be at least 12 characters long. Short passwords are simple to crack
+        with modern equipment.
+      </li>
+      <li>
+        <b>Memorable</b> - writing down or storing passwords unencrypted on your
+        computer is not secure, it is better to make then easy to remember, or
+        use a password manager.
+      </li>
+      <li>
+        <b>Unique</b> - keeping passwords for each service unique means that if
+        another service is compriomised you don't have to go about changing all
+        your passwords at once.
+      </li>
     </ul>
     <h4 class="govuk-heading-m">Examples of strong passwords:</h4>
     <ul class="govuk-list--bullet">
@@ -48,13 +64,13 @@
   </div>
 </div>
 
-{% endblock %}
+{% endblock %} {% block js %}
 
-{% block js %}
-
-<script type="text/javascript" src="/static/wireframes/javascript/zxcvbn.js"></script>
+<script
+  type="text/javascript"
+  src="/static/wireframes/javascript/zxcvbn.js"
+></script>
 <script>
-
   $.fn.delayKeyup = function (callback, ms) {
     var timer = 0;
     var el = $(this);
@@ -62,78 +78,76 @@
     $(this).keyup(function () {
       clearTimeout(timer);
       timer = setTimeout(function () {
-        callback(el)
+        callback(el);
       }, ms);
     });
     return $(this);
   };
 
   $(function () {
-
-    var pwdField = $('#new-password'),
-      pwdStr = $('<p />').attr('class', 'password-strength'),
-      pwdSpn = $('<span />').attr({ 'id': 'pwd-score', 'aria-live': 'polite' }).appendTo(pwdStr);
-
+    var pwdField = $("#new-password"),
+      pwdStr = $("<p />").attr("class", "password-strength"),
+      pwdSpn = $("<span />")
+        .attr({ id: "pwd-score", "aria-live": "polite" })
+        .appendTo(pwdStr);
 
     pwdField.after(pwdStr).delayKeyup(function (el) {
-
       var pwd = el.val();
 
       if (pwd.length > 0) {
-
         var pwdTest = zxcvbn(pwd),
-          helperText = '';
+          helperText = "";
 
         console.log(pwdTest);
 
-        $('#password').text(pwdTest.password);
-        $('#score').text(pwdTest.score);
-        $('#warning').text(pwdTest.feedback.warning);
+        $("#password").text(pwdTest.password);
+        $("#score").text(pwdTest.score);
+        $("#warning").text(pwdTest.feedback.warning);
 
         if (pwdTest.score === 0) {
-          helperText = 'Very weak';
+          helperText = "Very weak";
         }
         if (pwdTest.score === 1) {
-          helperText = 'Weak';
+          helperText = "Weak";
         }
         if (pwdTest.score === 2) {
-          helperText = 'Good';
+          helperText = "Good";
         }
         if (pwdTest.score === 3) {
-          helperText = 'Strong';
+          helperText = "Strong";
         }
         if (pwdTest.score === 4) {
-          helperText = 'Very strong';
+          helperText = "Very strong";
         }
 
         //$('#pwd-score').text(helperText).parent().attr('class', 'score score-' + pwdTest.score);
 
         if (pwd.length < 12) {
-          $('#pwd-score').html('<span class="icon icon-error"></span> Your password needs to be at least 12 characters');
+          $("#pwd-score").html(
+            '<span class="icon icon-error"></span> Your password needs to be at least 12 characters',
+          );
         } else {
           if (pwdTest.score < 3) {
-            $('#pwd-score').html('<span class="icon icon-warning"></span> ' + pwdTest.feedback.warning);
+            $("#pwd-score").html(
+              '<span class="icon icon-warning"></span> ' +
+                pwdTest.feedback.warning,
+            );
           } else {
-            $('#pwd-score').html('<span class="icon icon-success"></span> Good password');
+            $("#pwd-score").html(
+              '<span class="icon icon-success"></span> Good password',
+            );
           }
         }
-
       } else {
         //$('#pwd-score').empty().parent().attr('class', 'password-strength');
       }
-
     }, 500);
   });
-
 </script>
 
-{% endblock %}
-
-
-{% block styles %}
+{% endblock %} {% block styles %}
 
 <style>
-
   .icon {
     background: url("/static/wireframes/images/icons.png");
   }
@@ -179,10 +193,9 @@
     border: 15px solid transparent;
     border-top-color: #005ea5;
     position: absolute;
-    top:100%;
+    top: 100%;
     content: "";
   }
-
 </style>
 
 {% endblock %}

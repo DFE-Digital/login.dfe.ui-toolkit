@@ -1,32 +1,47 @@
-{% extends "layout.html" %}
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <a href="step1" class="link-back">Back</a>
 <div class="govuk-grid-row">
   <div class="col-8">
-    <h1 class="govuk-heading-xl">
-      Enter your Secure Access sign-in details
-    </h1>
-    <p class="govuk-body-l">This will help us transfer your permissions from Secure Access to DfE Sign-in service.</p>
+    <h1 class="govuk-heading-xl">Enter your Secure Access sign-in details</h1>
+    <p class="govuk-body-l">
+      This will help us transfer your permissions from Secure Access to DfE
+      Sign-in service.
+    </p>
   </div>
 </div>
 <div class="govuk-grid-row">
   <div class="col-6 pull-right">
-    <img src="/gds-upgrade/images/secure-access.gif" alt="Secure access screenshot" class="responsive" />
+    <img
+      src="/gds-upgrade/images/secure-access.gif"
+      alt="Secure access screenshot"
+      class="responsive"
+    />
   </div>
   <div class="col-6">
     <form method="get" action="step3">
       <div class="govuk-form-group">
         <label class="govuk-label" for="username">Secure access username</label>
-        <input class="form-control full-width" type="text" name="username" id="username" required="required">
+        <input
+          class="form-control full-width"
+          type="text"
+          name="username"
+          id="username"
+          required="required"
+        />
       </div>
       <div class="govuk-form-group">
         <label class="govuk-label" for="password">Secure access password</label>
         <div class="show-password full-width">
-          <input class="govuk-input govuk-!-width-one-half" id="password" name="password" type="password" required="required">
+          <input
+            class="govuk-input govuk-!-width-one-half"
+            id="password"
+            name="password"
+            type="password"
+            required="required"
+          />
         </div>
       </div>
-      <input type="submit" class="button" class="button" value="Continue">
+      <input type="submit" class="button" class="button" value="Continue" />
     </form>
   </div>
 </div>

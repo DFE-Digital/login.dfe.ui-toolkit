@@ -1,45 +1,48 @@
-{% set showBanner = true %}
+{% set showBanner = true %} {% extends "layout.html" %} {% block content %}
 
-{% extends "layout.html" %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-s">User profile</h1>
+    <h2 class="govuk-heading-xl">Jane Murphy</h2>
+  </div>
+</div>
 
-
-{% block content %}
-
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-s">
-                    User profile
-                </h1>
-                <h2 class="govuk-heading-xl">
-                  Jane Murphy
-                </h2>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-8">
-                <h2 class="govuk-heading-m">User details</h2>
-                <dl class="inline">
-                    <dt>First name</dt>
-                    <dd>Jane</dd>
-                    <dt>Last name</dt>
-                    <dd>Murphy</dd>
-                    <dt>Email</dt>
-                    <dd>jane.murphy@stpatricksschool.co.uk</dd>
-                </dl>
-            </div>
-            <div class="col-4">
-                <aside>
-                    <h2 class="govuk-heading-m">Profile actions</h2>
-                    <nav class="subnav">
-                        <ul>
-                            <li><a href="user-profile-edit.html" class="govuk-link">Change my details</a></li>
-                            <li><a href="password-edit.html" class="govuk-link">Change my password</a></li>
-                            <li><a href="user-profile-delete.html" class="govuk-link">Delete my account</a></li>
-                        </ul>
-                    </nav>
-                </aside>
-            </div>
-        </div>
+<div class="row">
+  <div class="col-8">
+    <h2 class="govuk-heading-m">User details</h2>
+    <dl class="inline">
+      <dt>First name</dt>
+      <dd>Jane</dd>
+      <dt>Last name</dt>
+      <dd>Murphy</dd>
+      <dt>Email</dt>
+      <dd>jane.murphy@stpatricksschool.co.uk</dd>
+    </dl>
+  </div>
+  <div class="col-4">
+    <aside>
+      <h2 class="govuk-heading-m">Profile actions</h2>
+      <nav class="subnav">
+        <ul>
+          <li>
+            <a href="user-profile-edit.html" class="govuk-link"
+              >Change my details</a
+            >
+          </li>
+          <li>
+            <a href="password-edit.html" class="govuk-link"
+              >Change my password</a
+            >
+          </li>
+          <li>
+            <a href="user-profile-delete.html" class="govuk-link"
+              >Delete my account</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+</div>
 
 {% endblock %}

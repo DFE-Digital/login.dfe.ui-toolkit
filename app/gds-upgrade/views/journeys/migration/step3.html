@@ -1,13 +1,11 @@
-{% extends "layout.html" %}
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <a href="step2" class="link-back">Back</a>
 <div class="govuk-grid-row">
   <div class="col-8">
-    <h1 class="govuk-heading-xl">
-      Are these your details?
-    </h1>
-    <p class="govuk-body-l">Check the details below to see if they belong to you</p>
+    <h1 class="govuk-heading-xl">Are these your details?</h1>
+    <p class="govuk-body-l">
+      Check the details below to see if they belong to you
+    </p>
     <dl class="rows">
       <dt>First name</dt>
       <dd>Jane</dd>
@@ -23,16 +21,16 @@
       <dd>07777 123456</dd>
     </dl>
 
-
     <div class="panel panel-border-wide">
-      <p class="govuk-body">If you need to edit any of these details, you can do so once you are signed-in at the end of this process</p>
+      <p class="govuk-body">
+        If you need to edit any of these details, you can do so once you are
+        signed-in at the end of this process
+      </p>
     </div>
 
     <p class="govuk-body">
       <a href="step4" class="button">Continue</a>
     </p>
-
-
   </div>
 </div>
 {% endblock %}

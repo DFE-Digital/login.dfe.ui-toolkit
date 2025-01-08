@@ -9,7 +9,7 @@
       float: right;
 
       // except when we have the menu (small screens), then show aligned with the others
-      @include govuk-media-query ($until: desktop) {
+      @include govuk-media-query($until: desktop) {
         float: none;
       }
     }

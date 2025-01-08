@@ -2,7 +2,8 @@ table {
   border-top: 1px solid $black;
   border-bottom: 2px solid $black;
   margin-bottom: 20px;
-  th, td {
+  th,
+  td {
     vertical-align: top;
   }
   thead th {
@@ -15,13 +16,15 @@ table.no-borders {
 }
 
 table.condensed {
-  th, td {
+  th,
+  td {
     font-size: 14px;
     line-height: 1.1em;
   }
 }
 
-th.sorted, th a.sorted {
+th.sorted,
+th a.sorted {
   position: relative;
   padding-left: 15px;
   &:before {
@@ -51,7 +54,7 @@ th.sorted, th a.sorted {
 }
 
 th a {
-  color:$link-colour;
+  color: $link-colour;
   text-decoration: none;
   &:visited {
     color: $link-colour;
@@ -74,10 +77,11 @@ th a.sorted {
 }
 
 table.data {
-  th, td {
+  th,
+  td {
     font-size: 15px;
     line-height: 1.1em;
-    padding: 1em 1em .8em 0;
+    padding: 1em 1em 0.8em 0;
   }
   tr.sortable {
     th {
@@ -89,7 +93,7 @@ table.data {
 table tr th:last-child:not(:first-child),
 table tr td:last-child:not(:first-child) {
   text-align: right;
-  padding: 1em 0 .8em 1em;
+  padding: 1em 0 0.8em 1em;
 }
 
 tr.pending {

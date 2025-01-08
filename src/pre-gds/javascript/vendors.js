@@ -1,1 +1,1 @@
-window.Cookies = require('js-cookie');
+window.Cookies = require("js-cookie");

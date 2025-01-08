@@ -1,37 +1,15 @@
-{% set hideHeader = true %}
-{% set hideFooter = true %}
+{% set hideHeader = true %} {% set hideFooter = true %} {% extends "layout.html"
+%} {% block content %}
 
-{% extends "layout.html" %}
+<p class="toggle-help">This is a helpful tooltip</p>
 
-{% block content %}
-
-
-<p class="toggle-help">
-  This is a helpful tooltip
-</p>
-
-<hr>
+<hr />
 
 <p></p>
-<p class="toggle-help">
-  This is another tooltip
-</p>
+<p class="toggle-help">This is another tooltip</p>
 
+{% endblock %} {% block js %}
 
-
-{% endblock %}
-
-
-{% block js %}
-
-<script>
-
-
-
-
-
-
-
-</script>
+<script></script>
 
 {% endblock %}

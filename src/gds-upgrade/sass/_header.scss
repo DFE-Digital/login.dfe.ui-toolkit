@@ -4,7 +4,8 @@
   color: #fff;
   padding-bottom: govuk-spacing(4);
 
-  & .govuk-heading-xl, & .govuk-heading-m {
+  & .govuk-heading-xl,
+  & .govuk-heading-m {
     color: inherit;
   }
 }
@@ -15,7 +16,6 @@
 //     display: block;
 //   }
 // }
-
 
 .header-user {
   // border-bottom:1px solid map.get($govuk-colours, "mid-grey");
@@ -45,7 +45,8 @@
   }
 }
 
-.phase-banner-alpha, .phase-banner-beta {
+.phase-banner-alpha,
+.phase-banner-beta {
   margin-bottom: -1px;
 }
 
@@ -81,4 +82,3 @@
 //   border-right: none;
 //   padding-right: 0;
 // }
-

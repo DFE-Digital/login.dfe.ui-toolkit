@@ -3,7 +3,7 @@
 // $govuk-compatibility-govukfrontendtoolkit: true;
 $govuk-assets-path: "/gds-upgrade/";
 
-@import '../../../node_modules/govuk-frontend/govuk/all';
+@import "../../../node_modules/govuk-frontend/govuk/all";
 @import "../../../node_modules/select2/src/scss/core";
 @import "variables";
 @import "mixins";
@@ -33,7 +33,8 @@ $govuk-assets-path: "/gds-upgrade/";
 @import "pages/password";
 @import "components/_custom_grid_and_cell";
 
-html, body {
+html,
+body {
   background: govuk-colour("light-grey");
   &.white-bg {
     background: #fff;
@@ -84,7 +85,3 @@ nav.prototype {
     }
   }
 }
-
-
-
-

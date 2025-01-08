@@ -17,7 +17,6 @@ $task-list-indent: 35px;
   }
 }
 
-
 .task-list-section {
   display: table;
 
@@ -34,7 +33,6 @@ $task-list-indent: 35px;
     padding-right: 0;
   }
 }
-
 
 .task-list-items {
   margin-bottom: $gutter;
@@ -58,14 +56,15 @@ $task-list-indent: 35px;
   border-top: 1px solid $border-colour;
 }
 
-
 .task-name {
   width: $two-thirds;
   float: left;
   margin: 0 0;
 }
 
-.task-completed, .task-pending, .task-rejected {
+.task-completed,
+.task-pending,
+.task-rejected {
   @include phase-tag;
 
   float: right;

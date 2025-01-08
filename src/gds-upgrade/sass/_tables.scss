@@ -7,7 +7,10 @@
   }
 }
 
-.govuk-table.cell-align-top .govuk-table__body .govuk-table__row .govuk-table__cell {
+.govuk-table.cell-align-top
+  .govuk-table__body
+  .govuk-table__row
+  .govuk-table__cell {
   vertical-align: top;
 }
 .govuk-table.cell-align-top .govuk-table__row .govuk-table__cell {
@@ -19,7 +22,8 @@
   border-top: 1px solid map.get($govuk-colours, "black");
   border-bottom: 2px solid map.get($govuk-colours, "black");
   margin-bottom: 20px;
-  th, td {
+  th,
+  td {
     @include govuk-font(19);
     padding: em(12, 19) em(20, 19) em(9, 19) 0;
     text-align: left;
@@ -30,7 +34,8 @@
     border-bottom: 2px solid map.get($govuk-colours, "black");
   }
 
-  th.sorted, th a.sorted {
+  th.sorted,
+  th a.sorted {
     position: relative;
     padding-left: 15px;
     &:before {
@@ -60,7 +65,7 @@
   }
 
   th a {
-    color:map.get($govuk-colours, "blue");
+    color: map.get($govuk-colours, "blue");
     text-decoration: none;
     &:visited {
       color: govuk-colour("blue");
@@ -95,7 +100,7 @@
   tr th:last-child:not(:first-child),
   tr td:last-child:not(:first-child) {
     text-align: right;
-    padding: 1em 0 .8em 1em;
+    padding: 1em 0 0.8em 1em;
   }
 
   @for $i from 1 through 30 {
@@ -115,17 +120,19 @@
   }
 
   &.condensed {
-    th, td {
+    th,
+    td {
       font-size: 14px;
       line-height: 1.1em;
     }
   }
 
   &.data {
-    th, td {
+    th,
+    td {
       font-size: 15px;
       line-height: 1.1em;
-      padding: 1em 1em .8em 0;
+      padding: 1em 1em 0.8em 0;
     }
     tr.sortable {
       th {

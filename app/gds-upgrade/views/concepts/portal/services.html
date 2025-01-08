@@ -1,68 +1,68 @@
-{% extends "layout.html" %}
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-xl">
-      Access DfE services
-    </h1>
+    <h1 class="govuk-heading-xl">Access DfE services</h1>
   </div>
 </div>
 <div class="govuk-grid-row">
   <div class="col-9">
-    <h2 class="govuk-heading-m">
-      Your DfE services
-    </h2>
+    <h2 class="govuk-heading-m">Your DfE services</h2>
 
     <div class="cards">
       <a class="card service-k2s" href="#">
         <h2>Key to Success</h2>
-        <p class="govuk-body">Service approver is Greg Sanders (greg.sanders@stpatricks.co.uk)</p>
+        <p class="govuk-body">
+          Service approver is Greg Sanders (greg.sanders@stpatricks.co.uk)
+        </p>
       </a>
 
       <a class="card service-collect" href="#">
         <h2>COLLECT</h2>
-        <p class="govuk-body">Service approver is Greg Sanders (greg.sanders@stpatricks.co.uk)</p>
+        <p class="govuk-body">
+          Service approver is Greg Sanders (greg.sanders@stpatricks.co.uk)
+        </p>
       </a>
 
       <a class="card service-gias" href="#">
         <h2>Get information about schools</h2>
-        <p class="govuk-body">Service approver is Greg Sanders (greg.sanders@stpatricks.co.uk)</p>
+        <p class="govuk-body">
+          Service approver is Greg Sanders (greg.sanders@stpatricks.co.uk)
+        </p>
       </a>
     </div>
 
-    <h3 class="govuk-heading-m">You have requested access to the following services</h3>
+    <h3 class="govuk-heading-m">
+      You have requested access to the following services
+    </h3>
     <ul class="service-list">
       <li class="service-mtc">
         <p class="govuk-body">Multiplication tables check</p>
-        <span>Request sent to Steve Jones (steve.jones@stpatricks.co.uk) on 30th October 2017</span>
+        <span
+          >Request sent to Steve Jones (steve.jones@stpatricks.co.uk) on 30th
+          October 2017</span
+        >
       </li>
       <li class="service-eb">
         <p class="govuk-body">Edubase</p>
-        <span>Request sent to Steve Jones (steve.jones@stpatricks.co.uk) on 30th October 2017</span>
+        <span
+          >Request sent to Steve Jones (steve.jones@stpatricks.co.uk) on 30th
+          October 2017</span
+        >
       </li>
     </ul>
-
-
   </div>
-  <div class="col-3">
-    ALL SERVICES
-  </div>
+  <div class="col-3">ALL SERVICES</div>
 </div>
 
-{% endblock %}
-
-
-{% block styles %}
+{% endblock %} {% block styles %}
 
 <style>
-
   a.card {
     border-left: 5px solid #347ca9;
   }
 
   a.service-k2s {
-    border-left-color: #24651D;
+    border-left-color: #24651d;
   }
   a.service-gias {
     border-left-color: #005ea5;
@@ -75,7 +75,6 @@
   }
 
   ul.service-list {
-
   }
 
   ul.service-list li {
@@ -86,7 +85,7 @@
   }
 
   ul.service-list li p {
-    font-weight:bold;
+    font-weight: bold;
     margin: 0;
   }
 
@@ -98,7 +97,6 @@
   ul.service-list li.service-eb {
     border-left-color: #224c69;
   }
-
 </style>
 
 {% endblock %}

@@ -1,12 +1,8 @@
-{% extends "layout.html" %}
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <a href="step5" class="link-back">Back</a>
 <div class="govuk-grid-row">
   <div class="col-8">
-    <h1 class="govuk-heading-xl">
-      Edit welcome message
-    </h1>
+    <h1 class="govuk-heading-xl">Edit welcome message</h1>
   </div>
 </div>
 <div class="govuk-grid-row">
@@ -14,16 +10,23 @@
     <form method="get" action="step5">
       <div class="govuk-form-group">
         <label class="govuk-label" for="message">Message to the user</label>
-        <textarea class="govuk-input govuk-!-width-three-quarters" rows="8" name="message" id="message">Catherine,
+        <textarea
+          class="govuk-input govuk-!-width-three-quarters"
+          rows="8"
+          name="message"
+          id="message"
+        >
+Catherine,
 
 I've given you access to our DfE services. Follow the instructions below to start using them.
 
 Let me know if you have any questions,
 
-Keith</textarea>
+Keith</textarea
+        >
       </div>
       <div class="submit-buttons">
-        <input type="submit" class="button" value="Save">
+        <input type="submit" class="button" value="Save" />
         <a href="step5" class="button button-secondary">Cancel</a>
       </div>
     </form>

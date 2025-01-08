@@ -1,16 +1,16 @@
 var COOKIE_NAMES = {
-  PREFERENCES_SET: 'cookies_preferences_set',
-  POLICY: 'cookies_policy',
-  GA: '_ga',
-  GA_GID: '_gid',
-  GA_GAT: '_gat',
-  USER_BANNER_LAST_SEEN: 'user_banner_last_seen'
+  PREFERENCES_SET: "cookies_preferences_set",
+  POLICY: "cookies_policy",
+  GA: "_ga",
+  GA_GID: "_gid",
+  GA_GAT: "_gat",
+  USER_BANNER_LAST_SEEN: "user_banner_last_seen",
 };
 
 var GOVUK_COOKIE_OPTIONS = {
   expires: 365, // days
   secure: true,
-  domain: '.education.gov.uk'
+  domain: ".education.gov.uk",
 };
 
 var GovUKCookie = {
@@ -37,22 +37,15 @@ var GovUKCookie = {
       return;
     }
 
-    return window.Cookies.set(
-      name,
-      value,
-      GOVUK_COOKIE_OPTIONS
-    );
+    return window.Cookies.set(name, value, GOVUK_COOKIE_OPTIONS);
   },
   remove: function (name) {
     if (!window.Cookies) {
       return;
     }
 
-    return window.Cookies.remove(
-      name,
-      GOVUK_COOKIE_OPTIONS
-    );
-  }
+    return window.Cookies.remove(name, GOVUK_COOKIE_OPTIONS);
+  },
 };
 
 // function that will remove any existing tracking cookies on page load
@@ -63,7 +56,6 @@ var GovUKCookie = {
   GovUKCookie.remove(COOKIE_NAMES.GA_GAT);
   GovUKCookie.remove(COOKIE_NAMES.GA_GID);
 })();
-
 
 /**
  * Section to handle review users banner
@@ -86,7 +78,7 @@ function checkConditionForUsersBanner() {
 }
 
 function showReviewUsersBanner() {
-  $('#review-users-banner').show();
+  $("#review-users-banner").show();
 }
 
 function setReviewUsersBannerLastSeen() {

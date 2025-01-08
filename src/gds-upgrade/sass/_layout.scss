@@ -2,21 +2,21 @@
 .hidden-when-js-enabled {
   display: block;
   .js-enabled & {
-      display: none;
+    display: none;
   }
 }
 
 .hidden-when-js-disabled {
   display: none;
   .js-enabled & {
-      display: block;
+    display: block;
   }
 }
 
 // class to show/hide elements from JS
 .js-hidden {
-  display:none;
-  visibility:hidden;
+  display: none;
+  visibility: hidden;
   :not(.js-enabled &).show-when-js-disabled {
     display: block;
     visibility: visible;
@@ -24,11 +24,11 @@
 }
 
 // Lists without style by default
-ul, ol {
+ul,
+ol {
   list-style-type: none;
   padding-inline-start: 0;
 }
-
 
 // Grid layout
 
@@ -123,7 +123,8 @@ aside {
   @include govuk-media-query(tablet) {
     margin: 0 -15px;
   }
-  div.manage-card, div.manage-card-disabled {
+  div.manage-card,
+  div.manage-card-disabled {
     flex: 0 0 100%;
     box-sizing: border-box;
     margin-bottom: 15px;
@@ -142,15 +143,16 @@ aside {
     width: 100%;
     z-index: 1;
   }
-  .manage-card, .manage-card-disabled a {
+  .manage-card,
+  .manage-card-disabled a {
     position: relative;
     z-index: 1;
   }
 }
 
-
 dl.inline {
-  dt, dd {
+  dt,
+  dd {
     margin-inline-start: 0;
     display: inline;
   }
@@ -165,11 +167,11 @@ dl.inline {
   }
 }
 
-
 .heading-group {
   margin: 15px 0;
   @include govuk-clearfix;
-  h2, h3 {
+  h2,
+  h3 {
     margin: 0;
     float: left;
   }
@@ -180,14 +182,13 @@ dl.inline {
   padding-top: 10px;
 }
 
-
 ul.list-table {
   margin-bottom: 15px;
   li {
     padding: 10px 0;
     border-top: 1px solid map.get($govuk-colours, "mid-grey");
     p {
-      font-weight:bold;
+      font-weight: bold;
       margin: 0;
     }
     .meta {
@@ -243,7 +244,8 @@ img.spacing {
 }
 
 .inline-wrap {
-  form, p {
+  form,
+  p {
     display: inline;
   }
 }
@@ -251,10 +253,10 @@ img.spacing {
 .code {
   white-space: normal;
   line-height: 1.4em;
-  color: govuk-colour('dark-grey');
-  background-color: govuk-colour('light-grey');
+  color: govuk-colour("dark-grey");
+  background-color: govuk-colour("light-grey");
   text-shadow: 0 1px #fff;
-  font-family: Consolas,Monaco,"Andale Mono","Ubuntu Mono",monospace;
+  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
   font-size: 14px;
   direction: ltr;
   text-align: left;
@@ -284,6 +286,6 @@ img.spacing {
 // custom width
 @for $j from 1 through 100 {
   .width-#{$j} {
-      width: #{$j}#{"%"} !important;
+    width: #{$j}#{"%"} !important;
   }
 }

@@ -1,40 +1,28 @@
-{% set hideHeader = true %}
-{% set hideFooter = true %}
+{% set hideHeader = true %} {% set hideFooter = true %} {% extends "layout.html"
+%} {% block content %}
 
-{% extends "layout.html" %}
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <h1 class="heading-xlarge">Examples</h1>
 
-{% block content %}
+    <h2 class="heading-medium">Notifications</h2>
 
-        <div class="grid-row">
-          <div class="column-two-thirds">
+    <div class="notification notification-success" tabindex="0">
+      <h2>Success</h2>
+      <p>Your password has been reset</p>
+      <span class="icon">x</span>
+    </div>
 
-            <h1 class="heading-xlarge">
-              Examples
-            </h1>
+    <div class="notification notification-error" tabindex="0">
+      <h2>Error saving your account</h2>
+      <p>The passwords you entered did not match</p>
+      <span class="icon">x</span>
+    </div>
 
-            <h2 class="heading-medium">Notifications</h2>
+    <h2 class="heading-medium">Tooltips</h2>
 
-            <div class="notification notification-success" tabindex="0">
-              <h2>Success</h2>
-              <p>Your password has been reset</p>
-              <span class="icon">x</span>
-            </div>
-
-            <div class="notification notification-error" tabindex="0">
-              <h2>Error saving your account</h2>
-              <p>The passwords you entered did not match</p>
-              <span class="icon">x</span>
-            </div>
-
-            <h2 class="heading-medium">Tooltips</h2>
-
-            <p class="toggle-help">
-              This is another tooltip
-            </p>
-
-          </div>
-        </div>
-
-
+    <p class="toggle-help">This is another tooltip</p>
+  </div>
+</div>
 
 {% endblock %}

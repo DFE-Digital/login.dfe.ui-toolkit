@@ -1,12 +1,8 @@
-{% extends "layout.html" %}
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <a href="step1" class="link-back">Back</a>
 <div class="grid-row">
   <div class="col-8">
-    <h1 class="heading-xlarge">
-      Add a new user
-    </h1>
+    <h1 class="heading-xlarge">Add a new user</h1>
     <p class="lede">Enter the user's email address</p>
   </div>
 </div>
@@ -15,10 +11,17 @@
     <form method="get" action="step2">
       <div class="form-group">
         <label class="form-label" for="email">User's email address</label>
-        <input class="form-control" type="email" name="email" id="email" required="required" data-label="Email address">
+        <input
+          class="form-control"
+          type="email"
+          name="email"
+          id="email"
+          required="required"
+          data-label="Email address"
+        />
       </div>
       <div class="submit-buttons">
-        <input type="submit" class="button" value="Continue">
+        <input type="submit" class="button" value="Continue" />
         <a href="/" class="button button-secondary">Cancel</a>
       </div>
     </form>

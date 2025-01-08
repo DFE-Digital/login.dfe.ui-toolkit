@@ -10,7 +10,7 @@ $warning: map.get($govuk-colours, "orange");
   @include govuk-media-query(tablet) {
     padding: 15px;
   }
-  border:3px solid map.get($govuk-colours, "mid-grey");
+  border: 3px solid map.get($govuk-colours, "mid-grey");
   position: relative;
   @include govuk-media-query(tablet) {
     border-width: 5px;
@@ -44,18 +44,19 @@ $warning: map.get($govuk-colours, "orange");
   }
   .icon {
     position: absolute;
-    height:30px;
+    height: 30px;
     width: 30px;
     top: 10px;
-    right:10px;
+    right: 10px;
     overflow: hidden;
-    opacity: .5;
+    opacity: 0.5;
     text-indent: -9999px;
     cursor: pointer;
-    &:before, &:after {
+    &:before,
+    &:after {
       position: absolute;
       left: 15px;
-      content: ' ';
+      content: " ";
       height: 33px;
       width: 2px;
       background-color: #333;
@@ -67,7 +68,7 @@ $warning: map.get($govuk-colours, "orange");
       transform: rotate(-45deg);
     }
     &:hover {
-      opacity:1;
+      opacity: 1;
     }
   }
   &.with-icon {
@@ -93,7 +94,8 @@ $warning: map.get($govuk-colours, "orange");
   border-color: $success;
   background: $success;
   color: #fff;
-  .icon:before, .icon:after {
+  .icon:before,
+  .icon:after {
     background: #fff;
   }
   p a {
@@ -115,7 +117,7 @@ $warning: map.get($govuk-colours, "orange");
   border-color: map.get($govuk-colours, "blue");
   background: #fff;
   &.with-icon {
-    background-image: url('../images/icon-info.svg');
+    background-image: url("../images/icon-info.svg");
     background-repeat: no-repeat;
     background-position: 10px 10px;
     background-size: 30px 30px;
