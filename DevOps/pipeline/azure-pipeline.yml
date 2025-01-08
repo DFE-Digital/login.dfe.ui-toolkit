@@ -81,8 +81,8 @@ stages:
       # Code scaning tools
       - template: pipeline/scanTools.yml@devopsTemplates
         parameters:
-          npmInstCmd: "install --force --json --no-package-lock"
           AppDeploy: true
+          useRevisedLinting: true
 
       - ${{ each var in variables }}:
           - ${{ if and(in(var.key, 'tran','dev','test','pp','pr'), eq(var.value, 'true')) }}:
