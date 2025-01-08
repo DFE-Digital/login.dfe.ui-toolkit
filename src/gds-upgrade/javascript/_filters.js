@@ -1,7 +1,3 @@
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable no-undef */
-
 function toKebabCase(str) {
   return str.toLowerCase().replace(/\s+/g, "-");
 }
@@ -78,6 +74,7 @@ function filterAndPerformAction(
   elementsToProcess.each(performAction);
 }
 
+/* eslint-disable-next-line no-unused-vars */
 function hideMe(listId, categoryName, checkboxId) {
   if (categoryName === "Last login") {
     const listIdStartingNumber = extractStartingNumberFromId(listId);

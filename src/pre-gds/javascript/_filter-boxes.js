@@ -1,7 +1,3 @@
-/* global $ */
-
-// ESLint rules disabled for this line as let/const do not allow for the same functionality.
-
 var NSA = NSA || {};
 const filterBoxes = $(".filter-box");
 

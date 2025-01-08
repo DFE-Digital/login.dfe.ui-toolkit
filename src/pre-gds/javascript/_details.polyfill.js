@@ -38,8 +38,14 @@
 
     removeEvent: function (node, type) {
       if (node.removeEventListener) {
-        node.removeEventListener(type, function (e) {}, false);
+        node.removeEventListener(
+          type,
+          /* eslint-disable-next-line no-unused-vars */
+          function (e) {},
+          false,
+        );
       } else if (node.detachEvent) {
+        /* eslint-disable-next-line no-unused-vars */
         node.detachEvent("on" + type, function (e) {});
       }
     },
@@ -248,7 +254,7 @@
     // Bind two load events for modern and older browsers
     // If the first one fires it will set a flag to block the second one
     // but if it's not supported then the second one will fire
-    init: function ($container) {
+    init: function () {
       GOVUK.details.addEvent(
         document,
         "DOMContentLoaded",

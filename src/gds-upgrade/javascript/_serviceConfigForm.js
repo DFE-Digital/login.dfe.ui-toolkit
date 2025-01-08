@@ -1,6 +1,3 @@
-/* global window */
-/* global $ */
-
 const RESPONSE_TYPE_CODE = "code";
 const RESPONSE_TYPE_ID_TOKEN = "ID token";
 const RESPONSE_TYPE_TOKEN = "token";

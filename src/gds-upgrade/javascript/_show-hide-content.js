@@ -1,6 +1,3 @@
-/* global window */
-/* global document */
-
 ((global) => {
   const globalObject = global;
   const $ = global.jQuery;

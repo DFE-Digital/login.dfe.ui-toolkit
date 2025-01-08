@@ -9,7 +9,7 @@ function validatePassword() {
   );
 }
 
-$(".password-input-check").each(function (index, element) {
+$(".password-input-check").each(function () {
   var $passwordInput = $(this);
   var id = $passwordInput.attr("id");
   var validatePasswordHtml = $(`<div id='validation-feedback-${id}'>`).append(

@@ -85,12 +85,14 @@ function setReviewUsersBannerLastSeen() {
   GovUKCookie.set(COOKIE_NAMES.USER_BANNER_LAST_SEEN, new Date().getTime());
 }
 
+/* eslint-disable-next-line no-unused-vars */
 function loadReviewUsersBanner() {
   if (checkConditionForUsersBanner()) {
     showReviewUsersBanner();
   }
 }
 
+/* eslint-disable-next-line no-unused-vars */
 function updateCookieReviewUsersBanner() {
   if (checkConditionForUsersBanner()) {
     setReviewUsersBannerLastSeen();

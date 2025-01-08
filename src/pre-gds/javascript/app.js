@@ -87,7 +87,7 @@ if ($(".js-back-link")) {
 }
 
 $(".under-construction").on("click", function (e) {
-  alert("This functionality is not available yet");
+  window.alert("This functionality is not available yet");
   e.preventDefault();
 });
 
@@ -149,7 +149,7 @@ $("#add-logout").on("click", function () {
 $("#generate-client-secret").on("click", function () {
   var secretArray = window.niceware.generatePassphrase(8);
   var secret = secretArray.join("-");
-  var isConfirm = confirm(
+  var isConfirm = window.confirm(
     "Are you sure you want to regenerate the client secret?",
   );
   if (isConfirm) {
@@ -161,7 +161,7 @@ $("#generate-client-secret").on("click", function () {
 $("#generate-api-secret").on("click", function () {
   var secretArray = window.niceware.generatePassphrase(8);
   var secret = secretArray.join("-");
-  var isConfirm = confirm(
+  var isConfirm = window.confirm(
     "Are you sure you want to regenerate the api secret?",
   );
   if (isConfirm) {

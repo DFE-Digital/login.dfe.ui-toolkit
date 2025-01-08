@@ -20,6 +20,11 @@ module.exports = [
     languageOptions: {
       globals: {
         ...globals.node,
+        $: true,
+        window: true,
+        GOVUK: true,
+        document: true,
+        location: true,
       },
       ecmaVersion: "latest",
       sourceType: "commonjs",
