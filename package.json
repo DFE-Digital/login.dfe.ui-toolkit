@@ -12,7 +12,8 @@
     "prepare": "husky",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "lint:report": "eslint . -f junit -o eslint-results.xml"
+    "lint:report": "eslint . -f junit -o eslint-results.xml",
+    "test:report": "echo No tests."
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
