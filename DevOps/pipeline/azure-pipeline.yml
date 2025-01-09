@@ -84,6 +84,12 @@ stages:
           AppDeploy: true
           useRevisedLinting: true
 
+      - template: pipeline/buildToolkit.yml@devopsTemplates
+        parameters:
+          applicationName: ${{variables.applicationFullName}}
+          custRegAuth: $(custRegAuth)
+          nodeVersionSpec: "18.17.0"
+
   - ${{ each var in variables }}:
       - ${{ if and(in(var.key, 'tran','dev','test','pp','pr'), eq(var.value, 'true')) }}:
           - stage: Deployment_${{var.Key}}
@@ -163,7 +169,7 @@ stages:
                               workingDirectory: $(System.DefaultWorkingDirectory)
                             inlineScript: |
                               $ErrorActionPreference = "Stop"
-                              write-output "Waiting for FW rule to apply." 
+                              write-output "Waiting for FW rule to apply."
 
                               $FWTestAttempt = 1
                               $FWTestMax = 25
@@ -181,9 +187,9 @@ stages:
 
                                       $FWTest = $true
                                       write-output "Storage is now accessible & and data is uploaded"
-                                      
+
                                       if($ShdResourceGroupName -NotLike '*neu*'){
-                                        az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
+                                        az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName)
 
                                         if($env:newCdnV){
                                           $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
@@ -245,7 +251,7 @@ stages:
                               write-output "package.json Version New: $newVersion"
 
                               $branch = "release/$newVersion"
-                              git push origin --delete $branch  
+                              git push origin --delete $branch
                               git checkout -b $branch
 
                               git add *
