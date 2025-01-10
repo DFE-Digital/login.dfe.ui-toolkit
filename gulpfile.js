@@ -12,6 +12,8 @@ const sourcemaps = require("gulp-sourcemaps");
 const gulpIf = require("gulp-if");
 const child = require("child_process");
 
+const through = require("through2");
+
 const isDevEnv = process.env.NODE_ENV === "development";
 console.log("Dev environment = ", isDevEnv);
 
@@ -142,6 +144,27 @@ const jsDest = "dist/javascript";
 const gdsUpgradeJsFiles = "src/gds-upgrade/javascript/!(vendors)*.js";
 const gdsUpgradeJsDest = "dist/gds-upgrade/javascript";
 
+// appendDfeIdentifier appends a variable 'dfeIdentifier' to the bundle output.
+// Within browser tools -> console, type 'dfeIdentifier' which will then return
+// the date/time of the bundle build. Helps validate whether the browser has
+// downloaded the expected version of the bundle i.e. caching (browser/CDN/etc)
+function appendDfeIdentifier() {
+  const dfeIdentifier = `const dfeIdentifier = '${new Date().toISOString()}';`;
+
+  function transform(file, encoding, cb) {
+    if (file.isNull()) {
+      cb(null, file);
+      return;
+    }
+    const dfeIdentifierBuffer = Buffer.from(dfeIdentifier);
+    file.contents = Buffer.concat([file.contents, dfeIdentifierBuffer]);
+
+    cb(null, file);
+  }
+
+  return through.obj(transform);
+}
+
 gulp.task("scripts", async () =>
   gulp
     .src(jsFiles)
@@ -158,6 +181,7 @@ gulp.task("gds-upgrade-scripts", async () =>
     .pipe(gulpIf(isDevEnv, sourcemaps.init()))
     .pipe(concat("app.min.js"))
     .pipe(uglify())
+    .pipe(appendDfeIdentifier())
     .pipe(gulpIf(isDevEnv, sourcemaps.write()))
     .pipe(gulp.dest(gdsUpgradeJsDest)),
 );

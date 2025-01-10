@@ -249,15 +249,6 @@ function countTimeDiff() {
   }
 }
 
-// "identifier()" can be called from browser developer tools, and
-// used to validate whether the bundle downloaded matches expectations.
-// Therefore, between builds change the output as you see fit.
-/* eslint-disable-next-line no-unused-vars */
-function identifier() {
-  // format yyyy-mm-dd-version
-  console.log("2025010901");
-}
-
 // #endregion
 
 var showHideContent = new GOVUK.ShowHideContent();

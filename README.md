@@ -32,10 +32,6 @@ Before committing a final version to be merged:
 
 It will only compile and will not add sourcemaps as these files are then released to prod.
 
-NOTE: app.js contains `function identifier()` which can be called from the browser developer tools.
-You can update the output of identifier() so that you can validate whether the latest bundle has been
-deployed correctly.
-
 NOTE: we are currently migrating the styles to the latest GDS and we are keeping both versions running in parallel.
 The dist folder will contain current files and a subfolder gds-upgrade where the latest version will sit temporarily.
 The src folder will be split into the two versions: pre-gds and gds-upgrade.
