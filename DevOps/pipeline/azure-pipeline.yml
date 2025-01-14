@@ -170,6 +170,7 @@ stages:
                             inlineScript: |
                               $ErrorActionPreference = "Stop"
                               write-output "Waiting for FW rule to apply."
+                              Write-Host "storageAccountName: $(storageAccountName)"
 
                               $FWTestAttempt = 1
                               $FWTestMax = 25
