@@ -31,7 +31,7 @@ parameters:
   - name: shaUse
     type: boolean
     displayName: "Use Self Host agent"
-    default: true
+    default: false
   - name: cdn
     type: boolean
     displayName: "New Version of CDN"
