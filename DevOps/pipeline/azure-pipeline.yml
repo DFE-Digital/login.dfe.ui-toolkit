@@ -170,7 +170,6 @@ stages:
                             inlineScript: |
                               $ErrorActionPreference = "Stop"
                               write-output "Waiting for FW rule to apply."
-                              Write-Host "storageAccountName: $(storageAccountName)"
 
                               $FWTestAttempt = 1
                               $FWTestMax = 25
@@ -181,6 +180,8 @@ stages:
                                       if ($? -eq $false) {
                                         throw 'Failed to  delete-batch on storage account'
                                       }
+                                      
+                                      Write-Host "storageAccountName: $(storageAccountName)"
                                       az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist --destination $(UIContainerName)
                                       if ($? -eq $false) {
                                         throw 'Failed to  upload-batch on storage account'
