@@ -176,13 +176,11 @@ stages:
                               Start-Sleep -Seconds 35
                               do {
                                   try {
-                                      az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors
+                                      az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
                                       if ($? -eq $false) {
                                         throw 'Failed to  delete-batch on storage account'
                                       }
-                                      
-                                      Write-Host "storageAccountName: $(storageAccountName)"
-                                      az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist --destination $(UIContainerName)
+                                      az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist --destination $(UIContainerName) --auth-mode=login
                                       if ($? -eq $false) {
                                         throw 'Failed to  upload-batch on storage account'
                                       }
