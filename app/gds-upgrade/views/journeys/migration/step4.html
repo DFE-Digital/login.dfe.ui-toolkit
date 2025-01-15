@@ -1,34 +1,50 @@
-{% extends "layout.html" %}
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <a href="step3" class="link-back">Back</a>
 <div class="govuk-grid-row">
   <div class="col-8">
-    <h1 class="govuk-heading-xl">
-      Create a password
-    </h1>
-    <p class="govuk-body-l">We need you to create a password for your new DfE Sign-in account </p>
+    <h1 class="govuk-heading-xl">Create a password</h1>
+    <p class="govuk-body-l">
+      We need you to create a password for your new DfE Sign-in account
+    </p>
   </div>
 </div>
 <div class="govuk-grid-row">
   <div class="col-12">
     <form method="get" action="step5">
-
       <div class="govuk-form-group">
         <label class="govuk-label" for="password">Password</label>
         <div class="show-password">
-          <input class="govuk-input govuk-!-width-one-half" id="password" name="password" type="password" required="required">
+          <input
+            class="govuk-input govuk-!-width-one-half"
+            id="password"
+            name="password"
+            type="password"
+            required="required"
+          />
         </div>
       </div>
 
       <div class="govuk-form-group">
-        <label class="govuk-label" for="confirm-password">Confirm password</label>
+        <label class="govuk-label" for="confirm-password"
+          >Confirm password</label
+        >
         <div class="show-password">
-          <input class="govuk-input govuk-!-width-one-half" id="confirm-password" name="confirm-password" type="password" required="required">
+          <input
+            class="govuk-input govuk-!-width-one-half"
+            id="confirm-password"
+            name="confirm-password"
+            type="password"
+            required="required"
+          />
         </div>
       </div>
 
-      <input type="submit" class="button" class="button" value="Save and continue">
+      <input
+        type="submit"
+        class="button"
+        class="button"
+        value="Save and continue"
+      />
     </form>
   </div>
 </div>

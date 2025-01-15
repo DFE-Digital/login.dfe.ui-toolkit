@@ -4,7 +4,7 @@
 .organisation {
   header {
     display: table;
-    width:100%;
+    width: 100%;
     h2 {
       font-weight: bold;
       @include media(tablet) {
@@ -48,7 +48,7 @@
     border-bottom: 1px solid darken($grey-4, 5%);
     visibility: visible;
     &:before {
-      content: '';
+      content: "";
       position: absolute;
       border: 10px solid transparent;
       border-bottom-color: $grey-4;
@@ -56,7 +56,7 @@
       z-index: 10;
     }
     &:after {
-      content: '';
+      content: "";
       position: absolute;
       border: 10px solid transparent;
       border-bottom-color: darken($grey-4, 5%);
@@ -69,7 +69,6 @@
   }
 }
 
-
 .service-list {
   > li {
     margin-bottom: 10px;
@@ -80,7 +79,8 @@
       margin-left: 5px;
       position: relative;
     }
-    div.service-link, div.service-link-disabled {
+    div.service-link,
+    div.service-link-disabled {
       display: block;
       border-left: 5px solid $govuk-blue;
       padding: 15px;
@@ -145,7 +145,6 @@
   }
 }
 
-
 .js-enabled .service-list .modal {
   display: none;
 }
@@ -172,18 +171,19 @@
   }
   .close {
     position: absolute;
-    height:30px;
+    height: 30px;
     width: 30px;
     top: 15px;
-    right:15px;
+    right: 15px;
     overflow: hidden;
-    opacity: .5;
+    opacity: 0.5;
     text-indent: -9999px;
     cursor: pointer;
-    &:before, &:after {
+    &:before,
+    &:after {
       position: absolute;
       left: 15px;
-      content: ' ';
+      content: " ";
       height: 33px;
       width: 2px;
       background-color: #333;
@@ -195,14 +195,14 @@
       transform: rotate(-45deg);
     }
     &:hover {
-      opacity:1;
+      opacity: 1;
     }
   }
 }
 
 .modal-bg {
   position: fixed;
-  background: rgba(0,0,0,.3);
+  background: rgba(0, 0, 0, 0.3);
   left: 0;
   top: 0;
   right: 0;
@@ -215,7 +215,6 @@ html.modal-open body {
   overflow: hidden;
 }
 
-
 .servicesv2 {
   .header-user,
   .navigation {
@@ -224,7 +223,7 @@ html.modal-open body {
   .my-orgs {
     margin-bottom: 0.625em;
     @include media(tablet) {
-      margin-top: 4.0em;
+      margin-top: 4em;
     }
   }
   .wrapper {
@@ -269,10 +268,9 @@ html.modal-open body {
       &:hover {
         box-shadow: 0px 2px 9px 2px darken(#f8f9fb, 30%);
         svg {
-          fill: $link-colour
+          fill: $link-colour;
         }
       }
-
     }
   }
   .school {
@@ -292,6 +290,6 @@ html.modal-open body {
   }
 }
 
-.services-dropdown{
+.services-dropdown {
   margin-top: 20px;
 }

@@ -1,6 +1,3 @@
-/* global window */
-/* global document */
-
 ((global) => {
   const globalObject = global;
   const $ = global.jQuery;
@@ -11,25 +8,25 @@
 
     // Radio and Checkbox selectors
     const selectors = {
-      namespace: 'ShowHideContent',
+      namespace: "ShowHideContent",
       radio: '[data-target] > input[type="radio"]',
       checkbox: '[data-target] > input[type="checkbox"]',
-      link: 'a.js-toggle-content',
-      select: '[data-target] > select',
+      link: "a.js-toggle-content",
+      select: "[data-target] > select",
     };
 
     // Escape name attribute for use in DOM selector
     function escapeElementName(str) {
-      return str.replace('[', '\\[').replace(']', '\\]');
+      return str.replace("[", "\\[").replace("]", "\\]");
     }
 
     // Return toggled content for control
     function getToggledContent($control) {
-      let id = $control.attr('aria-controls');
+      let id = $control.attr("aria-controls");
 
       // ARIA attributes aren't set before init
       if (!id) {
-        id = $control.closest('[data-target]').data('target');
+        id = $control.closest("[data-target]").data("target");
       }
 
       // Find show/hide content by id
@@ -43,20 +40,20 @@
 
       // Set aria-controls and defaults
       if ($content.length) {
-        $control.attr('aria-controls', $content.attr('id'));
-        $control.attr('aria-expanded', 'false');
+        $control.attr("aria-controls", $content.attr("id"));
+        $control.attr("aria-expanded", "false");
       }
     }
 
     // Show toggled content for control
     function showToggledContent($control, $content) {
       // Show content
-      if ($content.hasClass('js-hidden')) {
-        $content.removeClass('js-hidden');
+      if ($content.hasClass("js-hidden")) {
+        $content.removeClass("js-hidden");
 
         // If the controlling input, update aria-expanded
-        if ($control.attr('aria-controls')) {
-          $control.attr('aria-expanded', 'true');
+        if ($control.attr("aria-controls")) {
+          $control.attr("aria-expanded", "true");
         }
       }
     }
@@ -66,12 +63,12 @@
       const content = $content || getToggledContent($control);
 
       // Hide content
-      if (!content.hasClass('js-hidden')) {
-        content.addClass('js-hidden');
+      if (!content.hasClass("js-hidden")) {
+        content.addClass("js-hidden");
 
         // If the controlling input, update aria-expanded
-        if ($control.attr('aria-controls')) {
-          $control.attr('aria-expanded', 'false');
+        if ($control.attr("aria-controls")) {
+          $control.attr("aria-expanded", "false");
         }
       }
     }
@@ -79,8 +76,8 @@
     // Handle radio show/hide
     function handleRadioContent($control, $content) {
       // All radios in this group which control content
-      const selector = `${selectors.radio}[name=${escapeElementName($control.attr('name'))}][aria-controls]`;
-      const $form = $control.closest('form');
+      const selector = `${selectors.radio}[name=${escapeElementName($control.attr("name"))}][aria-controls]`;
+      const $form = $control.closest("form");
       const $radios = $form.length ? $form.find(selector) : $(selector);
 
       // Hide content for radios in group
@@ -89,7 +86,7 @@
       });
 
       // Select content for this control
-      if ($control.is('[aria-controls]')) {
+      if ($control.is("[aria-controls]")) {
         showToggledContent($control, $content);
       }
     }
@@ -97,16 +94,17 @@
     // Handle checkbox show/hide
     function handleCheckboxContent($control, $content) {
       // Show checkbox content
-      if ($control.is(':checked')) {
+      if ($control.is(":checked")) {
         showToggledContent($control, $content);
-      } else { // Hide checkbox content
+      } else {
+        // Hide checkbox content
         hideToggledContent($control, $content);
       }
     }
 
     // Handle checkbox show/hide
     function handleLinkContent($control, $content, $event) {
-      if ($content.hasClass('js-hidden')) {
+      if ($content.hasClass("js-hidden")) {
         showToggledContent($control, $content);
       } else {
         hideToggledContent($control, $content);
@@ -115,16 +113,16 @@
     }
 
     function handleSelectContent($control, $content) {
-      if ($control.val() === $control.data('option')) {
+      if ($control.val() === $control.data("option")) {
         showToggledContent($control, $content);
         return;
       }
 
       hideToggledContent($content, $content);
-      if ($control.data('clear')) {
-        $content.find(':input').each((_, element) => {
+      if ($control.data("clear")) {
+        $content.find(":input").each((_, element) => {
           const input = element;
-          input.value = '';
+          input.value = "";
         });
       }
     }
@@ -146,15 +144,19 @@
       // Handle events
       $.each(eventSelectors, (_, eventSelector) => {
         if (handler === handleSelectContent) {
-          container.on(`change.${selectors.namespace}`, eventSelector, deferred);
+          container.on(
+            `change.${selectors.namespace}`,
+            eventSelector,
+            deferred,
+          );
         } else {
           container.on(`click.${selectors.namespace}`, eventSelector, deferred);
         }
       });
 
       // Any already :checked on init?
-      if (handler === handleCheckboxContent && $controls.is(':checked')) {
-        $controls.filter(':checked').each(deferred);
+      if (handler === handleCheckboxContent && $controls.is(":checked")) {
+        $controls.filter(":checked").each(deferred);
       }
 
       if (handler === handleSelectContent) {
@@ -168,11 +170,11 @@
 
       // Build an array of radio group selectors
       return $(selectors.radio).map(function () {
-        const groupName = $(this).attr('name');
+        const groupName = $(this).attr("name");
 
         if ($.inArray(groupName, radioGroups) === -1) {
           radioGroups.push(groupName);
-          return `input[type="radio"][name="${$(this).attr('name')}"]`;
+          return `input[type="radio"][name="${$(this).attr("name")}"]`;
         }
         return null;
       });
@@ -180,12 +182,22 @@
 
     // Set up radio show/hide content for container
     self.showHideRadioToggledContent = function ($container) {
-      init($container, selectors.radio, getEventSelectorsForRadioGroups(), handleRadioContent);
+      init(
+        $container,
+        selectors.radio,
+        getEventSelectorsForRadioGroups(),
+        handleRadioContent,
+      );
     };
 
     // Set up checkbox show/hide content for container
     self.showHideCheckboxToggledContent = function ($container) {
-      init($container, selectors.checkbox, [selectors.checkbox], handleCheckboxContent);
+      init(
+        $container,
+        selectors.checkbox,
+        [selectors.checkbox],
+        handleCheckboxContent,
+      );
     };
 
     // Set up links show/hide content for container
@@ -194,7 +206,12 @@
     };
 
     self.showHideSelectToggledContent = function ($container) {
-      init($container, selectors.select, [selectors.select], handleSelectContent);
+      init(
+        $container,
+        selectors.select,
+        [selectors.select],
+        handleSelectContent,
+      );
     };
 
     // Remove event handlers

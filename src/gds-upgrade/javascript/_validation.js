@@ -1,7 +1,7 @@
-var forms = $('#content form');
+var forms = $("#content form");
 //var inputs = forms.find('.form-group input');
 
-forms.attr('novalidate', 'novalidate');
+forms.attr("novalidate", "novalidate");
 
 /*
 forms.on('submit', function () {

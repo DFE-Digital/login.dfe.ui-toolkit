@@ -1,12 +1,15 @@
 <html>
   <head>
     <title>Services</title>
-    <link rel="stylesheet" href="../../dist/css/govuk/govuk-template.css">
-    <link rel="stylesheet" href="../../dist/css/screen.css">
+    <link rel="stylesheet" href="../../dist/css/govuk/govuk-template.css" />
+    <link rel="stylesheet" href="../../dist/css/screen.css" />
   </head>
   <body class="">
-
-    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+    <script>
+      document.body.className = document.body.className
+        ? document.body.className + " js-enabled"
+        : "js-enabled";
+    </script>
 
     <div id="skiplink-container">
       <div>
@@ -15,11 +18,15 @@
     </div>
 
     <div id="global-cookie-message">
-        <p class="govuk-body">GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies" class="govuk-link">Find out more about cookies</a></p>
+      <p class="govuk-body">
+        GOV.UK uses cookies to make the site simpler.
+        <a href="https://www.gov.uk/help/cookies" class="govuk-link"
+          >Find out more about cookies</a
+        >
+      </p>
     </div>
 
     <div class="wrapper">
-
       <header role="banner" id="global-header" class="with-proposition">
         <div class="header-wrapper">
           <div class="identity">Department for Education</div>
@@ -31,30 +38,40 @@
       <main class="elements-index" id="content" role="main" tabindex="-1">
         <div class="govuk-grid-row">
           <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">
-              Services
-            </h1>
+            <h1 class="govuk-heading-xl">Services</h1>
           </div>
         </div>
         <ul class="services-list">
-            <li>
-                <div class="card">
-                    <h2><a href="#" class="govuk-link">Key to Success</a></h2>
-                    <p class="govuk-body">Service approver is John Smith (john.smith@stpatricks.co.uk)</p>
-                </div>
-            </li>
-            <li>
-                <div class="card">
-                    <h2><a href="#" class="govuk-link">Multiplication tables check</a></h2>
-                    <p class="govuk-body">Service approver is John Smith (john.smith@stpatricks.co.uk)</p>
-                </div>
-            </li>
-            <li>
-                <div class="card">
-                    <h2>COLLECT (<a href="#" class="govuk-link">Visit via old Secure Access</a>)</h2>
-                    <p class="govuk-body">Service approver is John Smith (john.smith@stpatricks.co.uk)</p>
-                </div>
-            </li>
+          <li>
+            <div class="card">
+              <h2><a href="#" class="govuk-link">Key to Success</a></h2>
+              <p class="govuk-body">
+                Service approver is John Smith (john.smith@stpatricks.co.uk)
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="card">
+              <h2>
+                <a href="#" class="govuk-link">Multiplication tables check</a>
+              </h2>
+              <p class="govuk-body">
+                Service approver is John Smith (john.smith@stpatricks.co.uk)
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="card">
+              <h2>
+                COLLECT (<a href="#" class="govuk-link"
+                  >Visit via old Secure Access</a
+                >)
+              </h2>
+              <p class="govuk-body">
+                Service approver is John Smith (john.smith@stpatricks.co.uk)
+              </p>
+            </div>
+          </li>
         </ul>
       </main>
     </div>
@@ -64,13 +81,16 @@
         <nav>
           <ul>
             <li><a href="cookies.html" class="govuk-link">Cookies</a></li>
-            <li><a href="privacy.html" class="govuk-link">Privacy policy</a></li>
-            <li><a href="terms.html" class="govuk-link">Terms and conditions</a></li>
+            <li>
+              <a href="privacy.html" class="govuk-link">Privacy policy</a>
+            </li>
+            <li>
+              <a href="terms.html" class="govuk-link">Terms and conditions</a>
+            </li>
           </ul>
         </nav>
       </div>
     </footer>
-
 
     <nav class="prototype">
       <ul>
@@ -79,7 +99,5 @@
         <li><a href="login.html" class="govuk-link">Login</a></li>
       </ul>
     </nav>
-
-
   </body>
 </html>

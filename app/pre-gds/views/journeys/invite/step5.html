@@ -1,13 +1,11 @@
-{% extends "layout.html" %}
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <a href="step4" class="link-back">Back</a>
 <div class="grid-row">
   <div class="col-8">
-    <h1 class="heading-xlarge">
-      Review
-    </h1>
-    <p class="lede">Please confirm these details before granting access to the services.</p>
+    <h1 class="heading-xlarge">Review</h1>
+    <p class="lede">
+      Please confirm these details before granting access to the services.
+    </p>
   </div>
 </div>
 <div class="grid-row">
@@ -16,13 +14,19 @@
       <section>
         <div class="heading-group">
           <h2 class="heading-medium">Personal details</h2>
-          <a href="step2-2" class="button-secondary">Edit <span class="vh">the user's personal details</span> </a>
+          <a href="step2-2" class="button-secondary"
+            >Edit <span class="vh">the user's personal details</span>
+          </a>
         </div>
         <dl class="rows la">
           <dt>Name</dt>
           <dd>Catherine Mills</dd>
           <dt>Email address</dt>
-          <dd><span class="breakable">catherine.mills@bourbeabbey.herts.sch.uk</span></dd>
+          <dd>
+            <span class="breakable"
+              >catherine.mills@bourbeabbey.herts.sch.uk</span
+            >
+          </dd>
           <dt>Job title</dt>
           <dd>Information manager</dd>
         </dl>
@@ -30,7 +34,9 @@
       <section>
         <div class="heading-group">
           <h2 class="heading-medium">Services</h2>
-          <a href="step3-2" class="button-secondary">Edit <span class="vh">the user's services</span> </a>
+          <a href="step3-2" class="button-secondary"
+            >Edit <span class="vh">the user's services</span>
+          </a>
         </div>
         <table class="sortable">
           <thead>
@@ -58,20 +64,24 @@
       <section>
         <div class="heading-group">
           <h2 class="heading-medium">Welcome message</h2>
-          <a href="step4-2" class="button-secondary">Edit <span class="vh">the welcome message</span> </a>
+          <a href="step4-2" class="button-secondary"
+            >Edit <span class="vh">the welcome message</span>
+          </a>
         </div>
         <blockquote>
-          <pre>Catherine,
+          <pre>
+Catherine,
 
 I've given you access to our DfE services. Follow the instructions below to start using them.
 
 Let me know if you have any questions,
 
-Keith</pre>
+Keith</pre
+          >
         </blockquote>
       </section>
       <div class="submit-buttons">
-        <input type="submit" class="button" value="Submit">
+        <input type="submit" class="button" value="Submit" />
         <a href="/" class="button button-secondary">Cancel</a>
       </div>
     </form>

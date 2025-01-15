@@ -1,121 +1,148 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="{% if hideHeader == true %} white-bg {% endif %}">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
-  <title>DfE</title>
+    <title>DfE</title>
 
-  <link rel="stylesheet" href="/static/css/govuk/fonts.css">
-  <link rel="stylesheet" href="/static/css/govuk/govuk-template.css">
-  <link rel="stylesheet" href="/static/css/screen.css">
+    <link rel="stylesheet" href="/static/css/govuk/fonts.css" />
+    <link rel="stylesheet" href="/static/css/govuk/govuk-template.css" />
+    <link rel="stylesheet" href="/static/css/screen.css" />
 
-  <link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
+    <link
+      rel="shortcut icon"
+      href="/static/images/favicon.ico"
+      type="image/x-icon"
+    />
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-icon-180x180.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="/static/images/apple-icon-167x167.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/static/images/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" href="/static/images/apple-icon.png">
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/static/images/apple-icon-180x180.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="167x167"
+      href="/static/images/apple-icon-167x167.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="/static/images/apple-icon-152x152.png"
+    />
+    <link rel="apple-touch-icon" href="/static/images/apple-icon.png" />
 
-  <meta property="og:image" content="/static/images/opengraph-image.png">
+    <meta property="og:image" content="/static/images/opengraph-image.png" />
 
-  {% block styles %}
+    {% block styles %} {% endblock %}
+  </head>
+  <body class="{% if hideHeader == true %} white-bg {% endif %}">
+    <script>
+      document.body.className = document.body.className
+        ? document.body.className + " js-enabled"
+        : "js-enabled";
+    </script>
 
-  {% endblock %}
-
-
-</head>
-<body class="{% if hideHeader == true %} white-bg {% endif %}">
-
-<script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-
-<div id="skiplink-container">
-  <div>
-    <a href="#content" class="skiplink">Skip to content</a>
-  </div>
-</div>
-
-<div id="global-cookie-message">
-  <p>GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
-</div>
-
-<div class="wrapper">
-
-  {% if showBanner == true %}
-  <div class="environment-banner">
-    <div>This is an example of environment-banner</div>
-  </div>
-  {% endif %}
-
-  {% if hideHeader != true %}
-
-  <header role="banner" id="global-header" class="">
-    <div class="header-wrapper">
-      <div class="header-global">
-        <div class="header-logo">
-          <a href="https://www.gov.uk" title="Go to the GOV.UK homepage" id="logo" class="content">
-            <img src="https://assets.publishing.service.gov.uk/static/gov.uk_logotype_crown_invert_trans-203e1db49d3eff430d7dc450ce723c1002542fe1d2bce661b6d8571f14c1043c.png" width="36" height="32" alt=""> GOV.UK
-          </a>
-        </div>
-        <h1 class="header-title">DfE Sign-in</h1>
+    <div id="skiplink-container">
+      <div>
+        <a href="#content" class="skiplink">Skip to content</a>
       </div>
     </div>
-  </header>
 
-  <div class="header-user">
-    <div class="header-inner">
-      <div class="service-info">
-        <div class="phase-banner-beta">
-          <p>
-            <strong class="phase-tag">BETA</strong>
-            <span>This is a new service – your <a href="#" target="_blank">feedback</a> will help us to improve it. </span>
-          </p>
+    <div id="global-cookie-message">
+      <p>
+        GOV.UK uses cookies to make the site simpler.
+        <a href="https://www.gov.uk/help/cookies"
+          >Find out more about cookies</a
+        >
+      </p>
+    </div>
+
+    <div class="wrapper">
+      {% if showBanner == true %}
+      <div class="environment-banner">
+        <div>This is an example of environment-banner</div>
+      </div>
+      {% endif %} {% if hideHeader != true %}
+
+      <header role="banner" id="global-header" class="">
+        <div class="header-wrapper">
+          <div class="header-global">
+            <div class="header-logo">
+              <a
+                href="https://www.gov.uk"
+                title="Go to the GOV.UK homepage"
+                id="logo"
+                class="content"
+              >
+                <img
+                  src="https://assets.publishing.service.gov.uk/static/gov.uk_logotype_crown_invert_trans-203e1db49d3eff430d7dc450ce723c1002542fe1d2bce661b6d8571f14c1043c.png"
+                  width="36"
+                  height="32"
+                  alt=""
+                />
+                GOV.UK
+              </a>
+            </div>
+            <h1 class="header-title">DfE Sign-in</h1>
+          </div>
+        </div>
+      </header>
+
+      <div class="header-user">
+        <div class="header-inner">
+          <div class="service-info">
+            <div class="phase-banner-beta">
+              <p>
+                <strong class="phase-tag">BETA</strong>
+                <span
+                  >This is a new service – your
+                  <a href="#" target="_blank">feedback</a> will help us to
+                  improve it.
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
+
+      {% endif %}
+
+      <main class="elements-index" id="content" tabindex="-1">
+        {% block content %} {% endblock %}
+      </main>
     </div>
-  </div>
 
-  {% endif %}
+    {% if hideFooter != true %}
 
-  <main class="elements-index" id="content" tabindex="-1">
+    <footer id="footer">
+      <div class="footer-wrapper">
+        <nav>
+          <ul>
+            <li><a href="help.html">Help</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+            <li><a href="privacy.html">Privacy policy</a></li>
+            <li><a href="terms.html">Terms and conditions</a></li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
 
-    {% block content %}
+    {% endif %}
 
-    {% endblock %}
+    <script src="/static/javascript/vendors/jquery.js"></script>
+    <script src="/static/javascript/vendors/select2.min.js"></script>
+    <script
+      type="text/javascript"
+      src="/static/javascript/vendors/vendors.min.js"
+    ></script>
+    <script src="/static/javascript/app.min.js"></script>
 
-  </main>
-
-</div>
-
-{% if hideFooter != true %}
-
-<footer id="footer">
-  <div class="footer-wrapper">
-    <nav>
-      <ul>
-        <li><a href="help.html">Help</a></li>
-        <li><a href="cookies.html">Cookies</a></li>
-        <li><a href="privacy.html">Privacy policy</a></li>
-        <li><a href="terms.html">Terms and conditions</a></li>
-      </ul>
-    </nav>
-  </div>
-</footer>
-
-{% endif %}
-
-
-<script src="/static/javascript/vendors/jquery.js"></script>
-<script src="/static/javascript/vendors/select2.min.js"></script>
-<script type="text/javascript" src="/static/javascript/vendors/vendors.min.js"></script>
-<script src="/static/javascript/app.min.js"></script>
-
-
-
-{% block js %}
-
-{% endblock %}
-
-</body>
+    {% block js %} {% endblock %}
+  </body>
 </html>

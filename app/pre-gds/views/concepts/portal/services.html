@@ -1,18 +1,12 @@
-{% extends "layout.html" %}
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <div class="grid-row">
   <div class="column-two-thirds">
-    <h1 class="heading-xlarge">
-      Access DfE services
-    </h1>
+    <h1 class="heading-xlarge">Access DfE services</h1>
   </div>
 </div>
 <div class="grid-row">
   <div class="col-9">
-    <h2 class="heading-medium">
-      Your DfE services
-    </h2>
+    <h2 class="heading-medium">Your DfE services</h2>
 
     <div class="cards">
       <a class="card service-k2s" href="#">
@@ -31,38 +25,38 @@
       </a>
     </div>
 
-    <h3 class="heading-medium">You have requested access to the following services</h3>
+    <h3 class="heading-medium">
+      You have requested access to the following services
+    </h3>
     <ul class="service-list">
       <li class="service-mtc">
         <p>Multiplication tables check</p>
-        <span>Request sent to Steve Jones (steve.jones@stpatricks.co.uk) on 30th October 2017</span>
+        <span
+          >Request sent to Steve Jones (steve.jones@stpatricks.co.uk) on 30th
+          October 2017</span
+        >
       </li>
       <li class="service-eb">
         <p>Edubase</p>
-        <span>Request sent to Steve Jones (steve.jones@stpatricks.co.uk) on 30th October 2017</span>
+        <span
+          >Request sent to Steve Jones (steve.jones@stpatricks.co.uk) on 30th
+          October 2017</span
+        >
       </li>
     </ul>
-
-
   </div>
-  <div class="col-3">
-    ALL SERVICES
-  </div>
+  <div class="col-3">ALL SERVICES</div>
 </div>
 
-{% endblock %}
-
-
-{% block styles %}
+{% endblock %} {% block styles %}
 
 <style>
-
   a.card {
     border-left: 5px solid #347ca9;
   }
 
   a.service-k2s {
-    border-left-color: #24651D;
+    border-left-color: #24651d;
   }
   a.service-gias {
     border-left-color: #005ea5;
@@ -75,7 +69,6 @@
   }
 
   ul.service-list {
-
   }
 
   ul.service-list li {
@@ -86,7 +79,7 @@
   }
 
   ul.service-list li p {
-    font-weight:bold;
+    font-weight: bold;
     margin: 0;
   }
 
@@ -98,7 +91,6 @@
   ul.service-list li.service-eb {
     border-left-color: #224c69;
   }
-
 </style>
 
 {% endblock %}

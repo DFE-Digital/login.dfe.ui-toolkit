@@ -22,7 +22,8 @@
 @import "pages/requests";
 @import "pages/task-list";
 
-html, body {
+html,
+body {
   background: $grey-3;
   &.white-bg {
     background: #fff;
@@ -72,7 +73,3 @@ nav.prototype {
     }
   }
 }
-
-
-
-

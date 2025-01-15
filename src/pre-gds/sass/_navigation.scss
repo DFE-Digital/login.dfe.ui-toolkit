@@ -3,7 +3,7 @@
   nav {
     @include media(1020px) {
       margin: 0 auto;
-      max-width: 960px
+      max-width: 960px;
     }
   }
   ul {
@@ -41,7 +41,7 @@
         display: block;
         background: $govuk-blue;
         content: "";
-        width:5px;
+        width: 5px;
         top: 0;
         left: 0;
         bottom: 0;
@@ -59,13 +59,12 @@
   }
 }
 
-
 .main-nav {
   border-bottom: 1px solid $border-colour;
   nav {
     @include media(1020px) {
       margin: 0 auto;
-      max-width: 960px
+      max-width: 960px;
     }
   }
   ul {
@@ -101,7 +100,7 @@
         display: block;
         background: $govuk-blue;
         content: "";
-        width:5px;
+        width: 5px;
         top: 0;
         left: 0;
         bottom: 0;
@@ -121,7 +120,7 @@
 ul.tabs {
   list-style: none;
   border: 1px solid $border-colour;
-  margin:20px 0;
+  margin: 20px 0;
   @extend %contain-floats;
   @include media(tablet) {
     border: none;
@@ -136,7 +135,8 @@ ul.tabs {
       float: left;
     }
   }
-  li > a, li.active {
+  li > a,
+  li.active {
     padding: 15px 15px 10px;
     display: block;
     @include media(tablet) {
@@ -159,7 +159,9 @@ ul.tabs {
     float: left;
     text-align: center;
     margin-right: 10px;
-    a, span.current, button {
+    a,
+    span.current,
+    button {
       display: block;
       min-width: 1em;
       text-align: center;
@@ -173,7 +175,7 @@ ul.tabs {
 @include media(tablet) {
   .pagination {
     float: right;
-    margin-top: .26316em;
+    margin-top: 0.26316em;
     margin-bottom: 1.05263em;
     li {
       margin-left: 10px;

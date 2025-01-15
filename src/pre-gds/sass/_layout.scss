@@ -101,7 +101,8 @@ aside {
   @include media(tablet) {
     margin: 0 -15px;
   }
-  div.manage-card, div.manage-card-disabled {
+  div.manage-card,
+  div.manage-card-disabled {
     flex: 0 0 100%;
     box-sizing: border-box;
     margin-bottom: 15px;
@@ -110,7 +111,7 @@ aside {
       flex-basis: calc(50% - 30px);
       margin: 0 15px 30px;
     }
-    p.manage-link{
+    p.manage-link {
       color: #005ea5;
     }
   }
@@ -123,20 +124,24 @@ aside {
     width: 100%;
     z-index: 1;
   }
-  div.manage-card > a:hover, a:visited, a:active, a:focus {
+  div.manage-card > a:hover,
+  a:visited,
+  a:active,
+  a:focus {
     background: none;
     color: inherit;
     text-decoration: none;
   }
-  .manage-card, .manage-card-disabled a {
+  .manage-card,
+  .manage-card-disabled a {
     position: relative;
     z-index: 1;
   }
 }
 
-
 dl.inline {
-  dt, dd {
+  dt,
+  dd {
     display: inline;
   }
   dt {
@@ -158,7 +163,8 @@ dl.inline {
 .heading-group {
   margin: 15px 0;
   @extend %contain-floats;
-  h2, h3 {
+  h2,
+  h3 {
     margin: 0;
     float: left;
   }
@@ -169,14 +175,13 @@ dl.inline {
   padding-top: 10px;
 }
 
-
 ul.list-table {
   margin-bottom: 15px;
   li {
     padding: 10px 0;
     border-top: 1px solid $border-colour;
     p {
-      font-weight:bold;
+      font-weight: bold;
       margin: 0;
     }
     .meta {
@@ -232,7 +237,8 @@ img.spacing {
 }
 
 .inline-wrap {
-  form, p {
+  form,
+  p {
     display: inline;
   }
 }

@@ -12,9 +12,9 @@ Install all dependencies
 
 Run the server
 
-    npm run start 
+    npm run start
 
-This will run current version of the toolkit in the port configured in server.js, 
+This will run current version of the toolkit in the port configured in server.js,
 then you will be able to access it in other components setting the URL that points to the assets
 to that local URL.
 
@@ -31,7 +31,6 @@ Before committing a final version to be merged:
     npm run build
 
 It will only compile and will not add sourcemaps as these files are then released to prod.
-
 
 NOTE: we are currently migrating the styles to the latest GDS and we are keeping both versions running in parallel.
 The dist folder will contain current files and a subfolder gds-upgrade where the latest version will sit temporarily.

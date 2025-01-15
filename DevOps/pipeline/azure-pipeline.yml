@@ -1,7 +1,7 @@
 name: $(BuildDefinitionName)_tag-$(BuildID)_at-$(Date:yyyyMMdd)$(Rev:.r)
 resources:
   repositories:
-  # Defult branch is master
+    # Defult branch is master
     - repository: devopsTemplates
       type: github
       endpoint: DfE-Digital
@@ -11,50 +11,50 @@ resources:
 trigger:
   branches:
     include:
-    - release/*
-    - main
-    - feature/*
+      - release/*
+      - main
+      - feature/*
 
 pr:
   branches:
     include:
-    - main
+      - main
 
 parameters:
   - name: location
     type: string
-    displayName: 'Select Deploy location'
+    displayName: "Select Deploy location"
     default: westeurope
     values:
       - westeurope
       - northeurope
   - name: shaUse
     type: boolean
-    displayName: 'Use Self Host agent'
-    default: true
-  - name: cdn 
+    displayName: "Use Self Host agent"
+    default: false
+  - name: cdn
     type: boolean
-    displayName: 'New Version of CDN'
+    displayName: "New Version of CDN"
     default: true
-  - name: tran 
+  - name: tran
     type: boolean
-    displayName: 'Transformation Deployment'
+    displayName: "Transformation Deployment"
     default: false
   - name: dev
     type: boolean
-    displayName: 'Dev Deployment'
+    displayName: "Dev Deployment"
     default: false
   - name: test
     type: boolean
-    displayName: 'Test Deployment'
+    displayName: "Test Deployment"
     default: false
   - name: pp
     type: boolean
-    displayName: 'Pre-Prod Deployment'
+    displayName: "Pre-Prod Deployment"
     default: false
   - name: pr
     type: boolean
-    displayName: 'Prod Deployment'
+    displayName: "Prod Deployment"
     default: false
 
 variables:
@@ -71,203 +71,206 @@ variables:
   - name: pr
     value: ${{ or(eq(parameters.pr, 'true'), contains(variables['Build.SourceBranch'],'release')) }}
   - name: applicationFullName
-    value: 'ui-toolkit'
+    value: "ui-toolkit"
 
 stages:
+  # Code Scans & Build the artifact for deployment
+  - stage: scanApp
+    displayName: "Scan tools & Build"
+    jobs:
+      # Code scaning tools
+      - template: pipeline/scanTools.yml@devopsTemplates
+        parameters:
+          AppDeploy: true
+          useRevisedLinting: true
 
-# Code Scans & Build the artifact for deployment
-- stage: scanApp
-  displayName: "Scan tools & Build"
-  jobs:
-  # Code scaning tools
-  - template:  pipeline/scanTools.yml@devopsTemplates
-    parameters:
-      npmInstCmd: 'install --force --json --no-package-lock'
-      AppDeploy: true
+      - template: pipeline/buildToolkit.yml@devopsTemplates
+        parameters:
+          applicationName: ${{variables.applicationFullName}}
+          custRegAuth: $(custRegAuth)
+          nodeVersionSpec: "18.17.0"
 
   - ${{ each var in variables }}:
-    - ${{ if and(in(var.key, 'tran','dev','test','pp','pr'), eq(var.value, 'true')) }}:
-      - stage: Deployment_${{var.Key}}
-        dependsOn: 
-        - scanApp
-        variables:
-        - name: environmentId
-          value: $[variables['${{var.key}}EnvId']]
-        - name: secRegionId
-          value: $(${{ format('{0}{1}', parameters.location, 'Id') }})
-        - name: SubShortName
-          value: $(platformGlobalIdentifier)$(environmentId)
-        - name: storageAccountName
-          value: $(SubShortName)${{replace($(secRegionId),'-','')}}signinshdstr
-        - name: ShdResourceGroupName
-          value: $(SubShortName)-$(secRegionId)shd
-        - name: UIContainerName
-          value: ui-assets
-        - name: azureCdnName
-          value: $(SubShortName)-signin-shd-cdn
-        - name: cdnEndpointName
-          value: $(SubShortName)-signin-shd-cdnep
-        - name: keyVaultName
-          value: $(SubShortName)-signin-kv
-        - name: keyVaultResourceGroupName
-          value: "$(SubShortName)-shd"
-        - name: ServConName
-          value: ${{ format('{0}{1}', var.key, 'ServCon') }}
-        displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
-        ${{ if eq(parameters.shaUse, 'true') }}:
-          pool: $[variables['${{var.key}}ShaPool']]
-        jobs:
-        - deployment: 'Deploy_${{var.Key}}'
-          displayName: Updated content of CDN
-          environment: ${{var.Key}}
-          strategy:
-            runOnce:
-              deploy:
-                steps:
-                  - checkout: self
-                    persistCredentials: true
-                  - checkout: devopsTemplates
+      - ${{ if and(in(var.key, 'tran','dev','test','pp','pr'), eq(var.value, 'true')) }}:
+          - stage: Deployment_${{var.Key}}
+            dependsOn:
+              - scanApp
+            variables:
+              - name: environmentId
+                value: $[variables['${{var.key}}EnvId']]
+              - name: secRegionId
+                value: $(${{ format('{0}{1}', parameters.location, 'Id') }})
+              - name: SubShortName
+                value: $(platformGlobalIdentifier)$(environmentId)
+              - name: storageAccountName
+                value: ${{ format('{0}{1}signinshdstr', variables.SubShortName, replace(variables.secRegionId, '-', '')) }}
+              - name: ShdResourceGroupName
+                value: $(SubShortName)-$(secRegionId)shd
+              - name: UIContainerName
+                value: ui-assets
+              - name: azureCdnName
+                value: $(SubShortName)-signin-shd-cdn
+              - name: cdnEndpointName
+                value: $(SubShortName)-signin-shd-cdnep
+              - name: keyVaultName
+                value: $(SubShortName)-signin-kv
+              - name: keyVaultResourceGroupName
+                value: "$(SubShortName)-shd"
+              - name: ServConName
+                value: ${{ format('{0}{1}', var.key, 'ServCon') }}
+            displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
+            ${{ if eq(parameters.shaUse, 'true') }}:
+              pool: $[variables['${{var.key}}ShaPool']]
+            jobs:
+              - deployment: "Deploy_${{var.Key}}"
+                displayName: Updated content of CDN
+                environment: ${{var.Key}}
+                strategy:
+                  runOnce:
+                    deploy:
+                      steps:
+                        - checkout: self
+                          persistCredentials: true
+                        - checkout: devopsTemplates
 
-                  - task: AzureCLI@2
-                    displayName: 'White-list keyVault'
-                    condition: ${{not(parameters.shaUse)}}
-                    inputs:
-                      azureSubscription: $(${{variables.ServConName}})
-                      scriptType: 'pscore'
-                      scriptLocation: 'scriptPath'
-                      scriptPath: 'login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1'
-                      arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $True -NotSelfHost $True'
-                      workingDirectory: $(System.DefaultWorkingDirectory)
+                        - task: AzureCLI@2
+                          displayName: "White-list keyVault"
+                          condition: ${{not(parameters.shaUse)}}
+                          inputs:
+                            azureSubscription: $(${{variables.ServConName}})
+                            scriptType: "pscore"
+                            scriptLocation: "scriptPath"
+                            scriptPath: "login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1"
+                            arguments: "-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $True -NotSelfHost $True"
+                            workingDirectory: $(System.DefaultWorkingDirectory)
 
-                  - task: AzureCLI@2
-                    displayName: 'Enable Access to Storage Account'
-                    condition: ${{not(parameters.shaUse)}}
-                    inputs:
-                      azureSubscription: $(${{variables.ServConName}})
-                      scriptType: pscore
-                      scriptLocation: inlineScript
-                      inlineScript: |
-                        $publicIp = Invoke-RestMethod -uri https://api.ipify.org
-                        Write-Host "Public Ip : $publicIp "
-                        az storage account network-rule add --ip-address $publicIp --resource-group $(ShdResourceGroupName) --account-name $(storageAccountName)
-                        Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
+                        - task: AzureCLI@2
+                          displayName: "Enable Access to Storage Account"
+                          condition: ${{not(parameters.shaUse)}}
+                          inputs:
+                            azureSubscription: $(${{variables.ServConName}})
+                            scriptType: pscore
+                            scriptLocation: inlineScript
+                            inlineScript: |
+                              $publicIp = Invoke-RestMethod -uri https://api.ipify.org
+                              Write-Host "Public Ip : $publicIp "
+                              az storage account network-rule add --ip-address $publicIp --resource-group $(ShdResourceGroupName) --account-name $(storageAccountName)
+                              Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
 
-                  - task: AzureCLI@2
-                    displayName: 'Empty, upload & Purge Storage & CDN Contents & Updated CDN Version  '
-                    env:
-                      newCdnV: ${{ parameters.cdn }}
-                    inputs:
-                      azureSubscription: $(${{variables.ServConName}})
-                      scriptType: pscore
-                      scriptLocation: inlineScript
-                      ${{ if not(parameters.shaUse) }}:
-                        workingDirectory: $(System.DefaultWorkingDirectory)
-                      inlineScript: |
-                        $ErrorActionPreference = "Stop"
-                        write-output "Waiting for FW rule to apply." 
+                        - task: AzureCLI@2
+                          displayName: "Empty, upload & Purge Storage & CDN Contents & Updated CDN Version  "
+                          env:
+                            newCdnV: ${{ parameters.cdn }}
+                          inputs:
+                            azureSubscription: $(${{variables.ServConName}})
+                            scriptType: pscore
+                            scriptLocation: inlineScript
+                            ${{ if not(parameters.shaUse) }}:
+                              workingDirectory: $(System.DefaultWorkingDirectory)
+                            inlineScript: |
+                              $ErrorActionPreference = "Stop"
+                              write-output "Waiting for FW rule to apply."
 
-                        $FWTestAttempt = 1
-                        $FWTestMax = 25
-                        Start-Sleep -Seconds 35
-                        do {
-                            try {
-                                az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
-                                if ($? -eq $false) {
-                                  throw 'Failed to  delete-batch on storage account'
-                                }
-                                az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist --destination $(UIContainerName) --auth-mode=login
-                                if ($? -eq $false) {
-                                  throw 'Failed to  upload-batch on storage account'
-                                }
+                              $FWTestAttempt = 1
+                              $FWTestMax = 25
+                              Start-Sleep -Seconds 35
+                              do {
+                                  try {
+                                      az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
+                                      if ($? -eq $false) {
+                                        throw 'Failed to  delete-batch on storage account'
+                                      }
+                                      az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist --destination $(UIContainerName) --auth-mode=login
+                                      if ($? -eq $false) {
+                                        throw 'Failed to  upload-batch on storage account'
+                                      }
 
-                                $FWTest = $true
-                                write-output "Storage is now accessible & and data is uploaded"
-                                
-                                if($ShdResourceGroupName -NotLike '*neu*'){
-                                  az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName) 
+                                      $FWTest = $true
+                                      write-output "Storage is now accessible & and data is uploaded"
 
-                                  if($env:newCdnV){
-                                    $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
-                                    $cdnAssetsVersion = [decimal]$cdnAssetsVersion
-                                    $newCdnAssetsVersion = $cdnAssetsVersion+0.1
-                                    az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                                      if($ShdResourceGroupName -NotLike '*neu*'){
+                                        az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName)
+
+                                        if($env:newCdnV){
+                                          $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
+                                          $cdnAssetsVersion = [decimal]$cdnAssetsVersion
+                                          $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+                                          az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                                        }
+                                      }
+
+                                      exit 0
                                   }
-                                }
+                                  catch {
+                                      if ($FWTestAttempt -lt $FWTestMax) {
+                                          write-output "Unable to access storage account $FWTestAttempt/$FWTestMax. Waiting for FW rule to take effect."
+                                          $FWTestAttempt++
+                                          Start-Sleep -Seconds 20
+                                      }
+                                      else {
+                                          Write-Error "Unable to access storage account $FWTestAttempt/$FWTestMax."
+                                      }
+                                  }
+                              } while ($FWTestAttempt -lt $FWTestMax)
 
-                                exit 0
-                            }
-                            catch {
-                                if ($FWTestAttempt -lt $FWTestMax) {
-                                    write-output "Unable to access storage account $FWTestAttempt/$FWTestMax. Waiting for FW rule to take effect."
-                                    $FWTestAttempt++
-                                    Start-Sleep -Seconds 20
-                                }
-                                else {
-                                    Write-Error "Unable to access storage account $FWTestAttempt/$FWTestMax."
-                                }
-                            }
-                        } while ($FWTestAttempt -lt $FWTestMax)
+                        - task: AzureCLI@2
+                          displayName: Remove White-list of storage
+                          condition: ${{not(parameters.shaUse)}}
+                          inputs:
+                            azureSubscription: $(${{variables.ServConName}})
+                            scriptType: pscore
+                            scriptLocation: inlineScript
+                            inlineScript: |
+                              az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
 
-                  - task: AzureCLI@2
-                    displayName: Remove White-list of storage
-                    condition: ${{not(parameters.shaUse)}}
-                    inputs:
-                      azureSubscription: $(${{variables.ServConName}})
-                      scriptType: pscore
-                      scriptLocation: inlineScript
-                      inlineScript: |
-                        az storage account network-rule remove -g $(ShdResourceGroupName) --account-name $(storageAccountName) --ip-address $(agentIp)
+                        - task: AzureCLI@2
+                          displayName: "Remove White-list keyVault"
+                          condition: ${{not(parameters.shaUse)}}
+                          inputs:
+                            azureSubscription: $(${{variables.ServConName}})
+                            scriptType: "pscore"
+                            scriptLocation: "scriptPath"
+                            scriptPath: "login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1"
+                            arguments: "-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $False -NotSelfHost $True"
+                            workingDirectory: $(System.DefaultWorkingDirectory)
 
-                  - task: AzureCLI@2
-                    displayName: 'Remove White-list keyVault'
-                    condition:  ${{not(parameters.shaUse)}}
-                    inputs:
-                      azureSubscription: $(${{variables.ServConName}})
-                      scriptType: 'pscore'
-                      scriptLocation: 'scriptPath'
-                      scriptPath: 'login.dfe.devops/scripts/keyvaultWhiteListCheck.ps1'
-                      arguments: '-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $False -NotSelfHost $True'
-                      workingDirectory: $(System.DefaultWorkingDirectory)
-                  
-                  - task: PowerShell@2
-                    displayName: 'Release Branch Creation'
-                    condition: and(contains(variables['Build.SourceBranch'],'main'),eq('${{parameters.location}}', 'westeurope'))
-                    inputs:
-                      targetType: 'inline'
-                      workingDirectory: $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit
-                      script: |              
-                        git config --global user.email "pipeline@example.com"
-                        git config --global user.name "Azure Devops Pipeline"
-                        
-                        $version = $(node -p "require('./package.json').version")
-                        npm version major -m "Upgrade to version %s"
-                        $newVersion = $(node -p "require('./package.json').version")
-                        write-output "package.json Version Current: $version"
-                        write-output "package.json Version New: $newVersion"
+                        - task: PowerShell@2
+                          displayName: "Release Branch Creation"
+                          condition: and(contains(variables['Build.SourceBranch'],'main'),eq('${{parameters.location}}', 'westeurope'))
+                          inputs:
+                            targetType: "inline"
+                            workingDirectory: $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit
+                            script: |
+                              git config --global user.email "pipeline@example.com"
+                              git config --global user.name "Azure Devops Pipeline"
 
-                        $branch = "release/$newVersion"
-                        git push origin --delete $branch  
-                        git checkout -b $branch
+                              $version = $(node -p "require('./package.json').version")
+                              npm version major -m "Upgrade to version %s"
+                              $newVersion = $(node -p "require('./package.json').version")
+                              write-output "package.json Version Current: $version"
+                              write-output "package.json Version New: $newVersion"
 
-                        git add *
-                        git push origin HEAD:$branch
+                              $branch = "release/$newVersion"
+                              git push origin --delete $branch
+                              git checkout -b $branch
 
+                              git add *
+                              git push origin HEAD:$branch
 
-      - ${{ if and(eq(var.key, 'pp'),eq(location, 'westeurope')) }}:
-        - stage: releasebranch
-          displayName: "GitHub Release Branch Creation"
-          dependsOn: 
-          - Deployment_${{var.key}}
-          jobs:
-          - template:  pipeline/releaseCreation.yml@devopsTemplates
+          - ${{ if and(eq(var.key, 'pp'),eq(parameters.location, 'westeurope')) }}:
+              - stage: releasebranch
+                displayName: "GitHub Release Branch Creation"
+                dependsOn:
+                  - Deployment_${{var.key}}
+                jobs:
+                  - template: pipeline/releaseCreation.yml@devopsTemplates
 
-      - ${{ if and(eq(var.key, 'pr'),eq(parameters.location, 'westeurope')) }}:
-        - stage: branchPrTag
-          displayName: "GitHub PR & Release Branch Tag"
-          dependsOn: 
-          - Deployment_${{var.Key}}
-          jobs:
-          - template:  pipeline/tagCreation.yml@devopsTemplates
-            parameters:
-              applicationName: ${{variables.applicationFullName}}      
-
+          - ${{ if and(eq(var.key, 'pr'),eq(parameters.location, 'westeurope')) }}:
+              - stage: branchPrTag
+                displayName: "GitHub PR & Release Branch Tag"
+                dependsOn:
+                  - Deployment_${{var.Key}}
+                jobs:
+                  - template: pipeline/tagCreation.yml@devopsTemplates
+                    parameters:
+                      applicationName: ${{variables.applicationFullName}}

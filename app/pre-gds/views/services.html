@@ -1,12 +1,15 @@
 <html>
   <head>
     <title>Services</title>
-    <link rel="stylesheet" href="../../dist/css/govuk/govuk-template.css">
-    <link rel="stylesheet" href="../../dist/css/screen.css">
+    <link rel="stylesheet" href="../../dist/css/govuk/govuk-template.css" />
+    <link rel="stylesheet" href="../../dist/css/screen.css" />
   </head>
   <body class="">
-
-    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+    <script>
+      document.body.className = document.body.className
+        ? document.body.className + " js-enabled"
+        : "js-enabled";
+    </script>
 
     <div id="skiplink-container">
       <div>
@@ -15,11 +18,15 @@
     </div>
 
     <div id="global-cookie-message">
-        <p>GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
+      <p>
+        GOV.UK uses cookies to make the site simpler.
+        <a href="https://www.gov.uk/help/cookies"
+          >Find out more about cookies</a
+        >
+      </p>
     </div>
 
     <div class="wrapper">
-
       <header role="banner" id="global-header" class="with-proposition">
         <div class="header-wrapper">
           <div class="identity">Department for Education</div>
@@ -31,30 +38,34 @@
       <main class="elements-index" id="content" role="main" tabindex="-1">
         <div class="grid-row">
           <div class="column-two-thirds">
-            <h1 class="heading-xlarge">
-              Services
-            </h1>
+            <h1 class="heading-xlarge">Services</h1>
           </div>
         </div>
         <ul class="services-list">
-            <li>
-                <div class="card">
-                    <h2><a href="#">Key to Success</a></h2>
-                    <p>Service approver is John Smith (john.smith@stpatricks.co.uk)</p>
-                </div>
-            </li>
-            <li>
-                <div class="card">
-                    <h2><a href="#">Multiplication tables check</a></h2>
-                    <p>Service approver is John Smith (john.smith@stpatricks.co.uk)</p>
-                </div>
-            </li>
-            <li>
-                <div class="card">
-                    <h2>COLLECT (<a href="#">Visit via old Secure Access</a>)</h2>
-                    <p>Service approver is John Smith (john.smith@stpatricks.co.uk)</p>
-                </div>
-            </li>
+          <li>
+            <div class="card">
+              <h2><a href="#">Key to Success</a></h2>
+              <p>
+                Service approver is John Smith (john.smith@stpatricks.co.uk)
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="card">
+              <h2><a href="#">Multiplication tables check</a></h2>
+              <p>
+                Service approver is John Smith (john.smith@stpatricks.co.uk)
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="card">
+              <h2>COLLECT (<a href="#">Visit via old Secure Access</a>)</h2>
+              <p>
+                Service approver is John Smith (john.smith@stpatricks.co.uk)
+              </p>
+            </div>
+          </li>
         </ul>
       </main>
     </div>
@@ -71,7 +82,6 @@
       </div>
     </footer>
 
-
     <nav class="prototype">
       <ul>
         <li>Example layouts:</li>
@@ -79,7 +89,5 @@
         <li><a href="login.html">Login</a></li>
       </ul>
     </nav>
-
-
   </body>
 </html>

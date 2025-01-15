@@ -1,22 +1,17 @@
-{% set hideHeader = true %}
-{% set hideFooter = true %}
+{% set hideHeader = true %} {% set hideFooter = true %} {% extends "layout.html"
+%} {% block content %}
 
-{% extends "layout.html" %}
+<div class="splash">
+  <h2>Department for Education</h2>
+  <h1>DfE Sign-in</h1>
 
-{% block content %}
-
-    <div class="splash">
-
-      <h2>Department for Education</h2>
-      <h1>DfE Sign-in</h1>
-
-
-      <div class="govuk">
-        <img src="https://assets.publishing.service.gov.uk/static/gov.uk_logotype_crown_invert_trans-203e1db49d3eff430d7dc450ce723c1002542fe1d2bce661b6d8571f14c1043c.png" alt="">
-        GOV.UK
-      </div>
-
-    </div>
-
+  <div class="govuk">
+    <img
+      src="https://assets.publishing.service.gov.uk/static/gov.uk_logotype_crown_invert_trans-203e1db49d3eff430d7dc450ce723c1002542fe1d2bce661b6d8571f14c1043c.png"
+      alt=""
+    />
+    GOV.UK
+  </div>
+</div>
 
 {% endblock %}

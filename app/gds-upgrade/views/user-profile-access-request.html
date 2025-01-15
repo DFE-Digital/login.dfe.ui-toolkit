@@ -1,52 +1,50 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} {% block content %}
 
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">Jane Murphy</h1>
+  </div>
+</div>
 
-{% block content %}
-
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-xl">
-                    Jane Murphy
-                </h1>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-8">
-                <h2 class="govuk-heading-m">User details</h2>
-                <table>
-                    <tr>
-                        <th scope="row">First name</th>
-                        <td>Jane</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Last name</th>
-                        <td>Murphy</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Organisation</th>
-                        <td>St Patrick's school, Earlsfield (URN: 654321)</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Role</th>
-                        <td>Management information officer</td>
-                    </tr>
-                </table>
-                <h2 class="govuk-heading-m">Services user has access to</h2>
-                <p class="govuk-body">The user doesn't have access to any services.</p>
-
-            </div>
-            <div class="col-4">
-                <aside>
-                    <h2 class="govuk-heading-m">Profile actions</h2>
-                    <nav class="subnav">
-                        <ul>
-                            <li><a href="suspend.html" class="govuk-link">Suspend user</a></li>
-                            <li><a href="give-access.html" class="govuk-link">Give user access to a service</a></li>
-                        </ul>
-                    </nav>
-                </aside>
-            </div>
-        </div>
+<div class="row">
+  <div class="col-8">
+    <h2 class="govuk-heading-m">User details</h2>
+    <table>
+      <tr>
+        <th scope="row">First name</th>
+        <td>Jane</td>
+      </tr>
+      <tr>
+        <th scope="row">Last name</th>
+        <td>Murphy</td>
+      </tr>
+      <tr>
+        <th scope="row">Organisation</th>
+        <td>St Patrick's school, Earlsfield (URN: 654321)</td>
+      </tr>
+      <tr>
+        <th scope="row">Role</th>
+        <td>Management information officer</td>
+      </tr>
+    </table>
+    <h2 class="govuk-heading-m">Services user has access to</h2>
+    <p class="govuk-body">The user doesn't have access to any services.</p>
+  </div>
+  <div class="col-4">
+    <aside>
+      <h2 class="govuk-heading-m">Profile actions</h2>
+      <nav class="subnav">
+        <ul>
+          <li><a href="suspend.html" class="govuk-link">Suspend user</a></li>
+          <li>
+            <a href="give-access.html" class="govuk-link"
+              >Give user access to a service</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+</div>
 
 {% endblock %}
