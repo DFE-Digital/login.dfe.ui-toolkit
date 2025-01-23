@@ -179,7 +179,7 @@ stages:
                             ${{ if not(parameters.shaUse) }}:
                               workingDirectory: $(System.DefaultWorkingDirectory)
                             inlineScript: |
-                              $ErrorActionPreference = "Stop"
+                              #$ErrorActionPreference = "Stop"
                               # write-output "Waiting for FW rule to apply."
 
                               # $FWTestAttempt = 1
@@ -201,10 +201,10 @@ stages:
                                       if($ShdResourceGroupName -NotLike '*neu*'){
                                         #az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName)
                                         $cdnHostNameStripped = $env:cdnHostName -replace 'https://', ''
-                                        echo "The value of cdnHostName is: $cdnHostName"
+                                        echo "The value of cdnHostName is: $env:cdnHostName"
                                         echo "The value of cdnHostNameStripped is: $cdnHostNameStripped"
                                         
-                                        az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $(cdnHostNameStripped) --content-paths /* --debug
+                                        az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $cdnHostNameStripped --content-paths /* --debug
 
                                         # if($env:newCdnV){
                                         #   $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
