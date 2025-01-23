@@ -199,7 +199,7 @@ stages:
 
                                       if($ShdResourceGroupName -NotLike '*neu*'){
                                         #az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName)
-                                        cdnHostNameStripped=${cdnHostName#https://}
+                                        $cdnHostNameStripped=${cdnHostName#https://}
                                         echo "The value of cdnHostName is: $cdnHostName"
                                         echo "The value of cdnHostNameStripped is: $cdnHostNameStripped"
                                         
