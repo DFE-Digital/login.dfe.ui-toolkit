@@ -108,10 +108,12 @@ stages:
                 value: $(SubShortName)-$(secRegionId)shd
               - name: UIContainerName
                 value: ui-assets
-              - name: azureCdnName
-                value: $(SubShortName)-signin-shd-cdn
-              - name: cdnEndpointName
-                value: $(SubShortName)-signin-shd-cdnep
+              - name: frontDoorCdnResourceGroupName
+                value: $(SubShortName)-fd
+              - name: frontDoorCdnProfileName
+                value: $(SubShortName)-signin-fd
+              - name: frontDoorCdnEndpointName
+                value: $(SubShortName)-signin
               - name: keyVaultName
                 value: $(SubShortName)-signin-kv
               - name: keyVaultResourceGroupName
@@ -189,7 +191,8 @@ stages:
                                       write-output "Storage is now accessible & and data is uploaded"
 
                                       if($ShdResourceGroupName -NotLike '*neu*'){
-                                        az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName)
+                                        #az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName)
+                                        az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --content-paths /* --debug #--domains www.contoso.com
 
                                         if($env:newCdnV){
                                           $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
