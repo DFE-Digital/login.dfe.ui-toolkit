@@ -179,6 +179,7 @@ stages:
                             ${{ if not(parameters.shaUse) }}:
                               workingDirectory: $(System.DefaultWorkingDirectory)
                             inlineScript: |
+                              
                               $FWTestAttempt = 1
                               $FWTestMax = 10
                               Start-Sleep -Seconds 10
@@ -186,7 +187,7 @@ stages:
                                   try {
                                       write-output "Removing files from storage account"
 
-                                      az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
+                                      az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --auth-mode=login
                                       if ($? -eq $false) {
                                         throw 'Failed to  delete-batch on storage account'
                                       }
@@ -207,6 +208,7 @@ stages:
                                       }
                                       else {
                                           Write-Error "Max retries reached"
+                                          exit 1
                                       }
                                   }
                               } while ($FWTestAttempt -lt $FWTestMax)
