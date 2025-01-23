@@ -180,8 +180,8 @@ stages:
                               workingDirectory: $(System.DefaultWorkingDirectory)
                             inlineScript: |
                               $FWTestAttempt = 1
-                              $FWTestMax = 25
-                              Start-Sleep -Seconds 35
+                              $FWTestMax = 10
+                              Start-Sleep -Seconds 10
                               do {
                                   try {
                                       write-output "Removing files from storage account"
