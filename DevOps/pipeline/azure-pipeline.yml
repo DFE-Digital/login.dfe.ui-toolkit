@@ -197,7 +197,7 @@ stages:
                                         throw 'Failed to  upload-batch on storage account'
                                       }
 
-                                      exit 0
+                                      break
                                   }
                                   catch {
                                       if ($FWTestAttempt -lt $FWTestMax) {
