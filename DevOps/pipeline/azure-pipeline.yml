@@ -171,6 +171,7 @@ stages:
                           displayName: "Empty, upload & Purge Storage & CDN Contents & Updated CDN Version  "
                           env:
                             newCdnV: ${{ parameters.cdn }}
+                            cdnHostName: $(cdnHostName)
                           inputs:
                             azureSubscription: $(${{variables.ServConName}})
                             scriptType: pscore
@@ -199,7 +200,7 @@ stages:
 
                                       if($ShdResourceGroupName -NotLike '*neu*'){
                                         #az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName)
-                                        $cdnHostNameStripped=${cdnHostName#https://}
+                                        $cdnHostNameStripped = $env:cdnHostName -replace 'https://', ''
                                         echo "The value of cdnHostName is: $cdnHostName"
                                         echo "The value of cdnHostNameStripped is: $cdnHostNameStripped"
                                         
