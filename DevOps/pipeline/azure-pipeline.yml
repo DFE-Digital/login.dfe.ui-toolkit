@@ -179,54 +179,50 @@ stages:
                             ${{ if not(parameters.shaUse) }}:
                               workingDirectory: $(System.DefaultWorkingDirectory)
                             inlineScript: |
-                              #$ErrorActionPreference = "Stop"
-                              # write-output "Waiting for FW rule to apply."
+                              $ErrorActionPreference = "Stop"
+                              write-output "Waiting for FW rule to apply."
 
-                              # $FWTestAttempt = 1
-                              # $FWTestMax = 25
-                              # Start-Sleep -Seconds 35
-                              # do {
-                              #     try {
-                                      # az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
-                                      # if ($? -eq $false) {
-                                      #   throw 'Failed to  delete-batch on storage account'
-                                      # }
-                                      # az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist --destination $(UIContainerName) --auth-mode=login
-                                      # if ($? -eq $false) {
-                                      #   throw 'Failed to  upload-batch on storage account'
-                                      # }
-
-                                      # write-output "Storage is now accessible & and data is uploaded"
-
-                                      if($ShdResourceGroupName -NotLike '*neu*'){
-                                        #az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName)
-                                        $cdnHostNameStripped = $env:cdnHostName -replace 'https://', ''
-                                        echo "The value of cdnHostName is: $env:cdnHostName"
-                                        echo "The value of cdnHostNameStripped is: $cdnHostNameStripped"
-                                        
-                                        az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $cdnHostNameStripped --content-paths /* --debug
-
-                                        # if($env:newCdnV){
-                                        #   $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
-                                        #   $cdnAssetsVersion = [decimal]$cdnAssetsVersion
-                                        #   $newCdnAssetsVersion = $cdnAssetsVersion+0.1
-                                        #   az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
-                                        # }
+                              $FWTestAttempt = 1
+                              $FWTestMax = 25
+                              Start-Sleep -Seconds 35
+                              do {
+                                  try {
+                                      az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
+                                      if ($? -eq $false) {
+                                        throw 'Failed to  delete-batch on storage account'
+                                      }
+                                      az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist --destination $(UIContainerName) --auth-mode=login
+                                      if ($? -eq $false) {
+                                        throw 'Failed to  upload-batch on storage account'
                                       }
 
-                              #         exit 0
-                              #     }
-                              #     catch {
-                              #         if ($FWTestAttempt -lt $FWTestMax) {
-                              #             write-output "Unable to access storage account $FWTestAttempt/$FWTestMax. Waiting for FW rule to take effect."
-                              #             $FWTestAttempt++
-                              #             Start-Sleep -Seconds 20
-                              #         }
-                              #         else {
-                              #             Write-Error "Unable to access storage account $FWTestAttempt/$FWTestMax."
-                              #         }
-                              #     }
-                              # } while ($FWTestAttempt -lt $FWTestMax)
+                                      write-output "Storage is now accessible & and data is uploaded"
+
+                                      if($ShdResourceGroupName -NotLike '*neu*'){
+                                        $cdnHostNameStripped = $env:cdnHostName -replace 'https://', ''
+                                        az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $cdnHostNameStripped --content-paths /* --verbose
+
+                                        if($env:newCdnV){
+                                          $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
+                                          $cdnAssetsVersion = [decimal]$cdnAssetsVersion
+                                          $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+                                          az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                                        }
+                                      }
+
+                                      exit 0
+                                  }
+                                  catch {
+                                      if ($FWTestAttempt -lt $FWTestMax) {
+                                          write-output "Unable to access storage account $FWTestAttempt/$FWTestMax. Waiting for FW rule to take effect."
+                                          $FWTestAttempt++
+                                          Start-Sleep -Seconds 20
+                                      }
+                                      else {
+                                          Write-Error "Unable to access storage account $FWTestAttempt/$FWTestMax."
+                                      }
+                                  }
+                              } while ($FWTestAttempt -lt $FWTestMax)
 
                         - task: AzureCLI@2
                           displayName: Remove White-list of storage
