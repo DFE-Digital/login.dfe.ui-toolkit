@@ -61,7 +61,7 @@ variables:
   - group: dsi-global
   - group: dsi-envs-list
   - name: tran
-    value: ${{ eq(parameters.tran, 'true') }}
+    value: ${{ eq(parameters.tran, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}
   - name: dev
     value: ${{ or(eq(parameters.dev, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}
   - name: test
@@ -202,7 +202,7 @@ stages:
                                         #az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName)
                                         cdnHostNameStripped=${cdnHostName#https://}
                                         
-                                        az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $(cdnHostNameStripped) --content-paths /*
+                                        az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $(cdnHostNameStripped) --content-paths /* --debug
 
                                         if($env:newCdnV){
                                           $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
