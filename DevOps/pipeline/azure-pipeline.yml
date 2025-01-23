@@ -186,30 +186,31 @@ stages:
                               Start-Sleep -Seconds 35
                               do {
                                   try {
-                                      az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
-                                      if ($? -eq $false) {
-                                        throw 'Failed to  delete-batch on storage account'
-                                      }
-                                      az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist --destination $(UIContainerName) --auth-mode=login
-                                      if ($? -eq $false) {
-                                        throw 'Failed to  upload-batch on storage account'
-                                      }
+                                      # az storage blob delete-batch --account-name $(storageAccountName) --source $(UIContainerName) --only-show-errors --auth-mode=login
+                                      # if ($? -eq $false) {
+                                      #   throw 'Failed to  delete-batch on storage account'
+                                      # }
+                                      # az storage blob upload-batch  --account-name $(storageAccountName) --source  $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist --destination $(UIContainerName) --auth-mode=login
+                                      # if ($? -eq $false) {
+                                      #   throw 'Failed to  upload-batch on storage account'
+                                      # }
 
-                                      $FWTest = $true
                                       write-output "Storage is now accessible & and data is uploaded"
 
                                       if($ShdResourceGroupName -NotLike '*neu*'){
                                         #az cdn endpoint purge --content-paths /* --profile-name $(azureCdnName) -g $(ShdResourceGroupName) -n $(cdnEndpointName)
                                         cdnHostNameStripped=${cdnHostName#https://}
+                                        echo "The value of cdnHostName is: $cdnHostName"
+                                        echo "The value of cdnHostNameStripped is: $cdnHostNameStripped"
                                         
                                         az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $(cdnHostNameStripped) --content-paths /* --debug
 
-                                        if($env:newCdnV){
-                                          $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
-                                          $cdnAssetsVersion = [decimal]$cdnAssetsVersion
-                                          $newCdnAssetsVersion = $cdnAssetsVersion+0.1
-                                          az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
-                                        }
+                                        # if($env:newCdnV){
+                                        #   $cdnAssetsVersion = $(az keyvault secret show -n cdnAssetsVersion --vault-name $(keyVaultName)).value
+                                        #   $cdnAssetsVersion = [decimal]$cdnAssetsVersion
+                                        #   $newCdnAssetsVersion = $cdnAssetsVersion+0.1
+                                        #   az keyvault secret set --name cdnAssetsVersion --vault-name $(keyVaultName) --value $newCdnAssetsVersion
+                                        # }
                                       }
 
                                       exit 0
