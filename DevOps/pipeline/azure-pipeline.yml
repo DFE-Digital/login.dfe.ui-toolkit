@@ -201,12 +201,12 @@ stages:
                                   }
                                   catch {
                                       if ($FWTestAttempt -lt $FWTestMax) {
-                                          write-output "Unable to access storage account $FWTestAttempt/$FWTestMax. Waiting for FW rule to take effect."
+                                          write-output "An error occurred during adding or removing files in storage account. $FWTestAttempt/$FWTestMax"
                                           $FWTestAttempt++
                                           Start-Sleep -Seconds 20
                                       }
                                       else {
-                                          Write-Error "An error occurred during adding or removing files in storage account. $FWTestAttempt/$FWTestMax."
+                                          Write-Error "Max retries reached"
                                       }
                                   }
                               } while ($FWTestAttempt -lt $FWTestMax)
