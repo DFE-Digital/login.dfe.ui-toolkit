@@ -61,7 +61,7 @@ variables:
   - group: dsi-global
   - group: dsi-envs-list
   - name: tran
-    value: ${{ eq(parameters.tran, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}
+    value: ${{ or(eq(parameters.tran, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}
   - name: dev
     value: ${{ or(eq(parameters.dev, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}
   - name: test
