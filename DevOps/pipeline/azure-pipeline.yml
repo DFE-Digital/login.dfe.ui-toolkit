@@ -61,7 +61,7 @@ variables:
   - group: dsi-global
   - group: dsi-envs-list
   - name: tran
-    value: ${{ or(eq(parameters.tran, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}
+    value: ${{ eq(parameters.tran, 'true') }}
   - name: dev
     value: ${{ or(eq(parameters.dev, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}
   - name: test
@@ -203,7 +203,7 @@ stages:
                                   }
                                   catch {
                                       if ($FWTestAttempt -lt $FWTestMax) {
-                                          write-output "An error occurred during adding or removing files in storage account. $FWTestAttempt/$FWTestMax"
+                                          write-output "An error occurred during adding or removing files in storage account - attempt $FWTestAttempt/$FWTestMax - retrying..."
                                           $FWTestAttempt++
                                           Start-Sleep -Seconds 10
                                       }
@@ -216,7 +216,7 @@ stages:
 
                               if($ShdResourceGroupName -NotLike '*neu*'){
                                 $cdnHostNameStripped = $env:cdnHostName -replace 'https://', ''
-                                write-output "Purging CDN"
+                                write-output "Purging CDN - this will take several minutes"
                                 az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $cdnHostNameStripped --content-paths /* --verbose
 
                                 if($env:newCdnV){
