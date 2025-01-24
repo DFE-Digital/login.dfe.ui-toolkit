@@ -182,7 +182,7 @@ stages:
                             inlineScript: |
                               
                               $FWTestAttempt = 1
-                              $FWTestMax = 10
+                              $FWTestMax = 30
                               
                               do {
                                   try {
