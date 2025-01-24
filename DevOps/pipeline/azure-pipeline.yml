@@ -151,7 +151,7 @@ stages:
                           inputs:
                             azureSubscription: $(${{variables.ServConName}})
                             KeyVaultName: '$(keyVaultName)'
-                            SecretsFilter: '*'
+                            SecretsFilter: 'cdnHostName'
                             RunAsPreJob: false
                         
                         - task: AzureCLI@2
