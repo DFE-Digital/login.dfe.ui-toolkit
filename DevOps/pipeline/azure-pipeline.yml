@@ -166,6 +166,7 @@ stages:
                               Write-Host "Public Ip : $publicIp "
                               az storage account network-rule add --ip-address $publicIp --resource-group $(ShdResourceGroupName) --account-name $(storageAccountName)
                               Write-Host "##vso[task.setvariable variable=agentIp]$publicIp"
+                              Start-Sleep -Seconds 20
 
                         - task: AzureCLI@2
                           displayName: "Empty, upload & Purge Storage & CDN Contents & Updated CDN Version  "
@@ -182,7 +183,7 @@ stages:
                               
                               $FWTestAttempt = 1
                               $FWTestMax = 10
-                              Start-Sleep -Seconds 10
+                              
                               do {
                                   try {
                                       write-output "Removing files from storage account"
@@ -204,14 +205,14 @@ stages:
                                       if ($FWTestAttempt -lt $FWTestMax) {
                                           write-output "An error occurred during adding or removing files in storage account. $FWTestAttempt/$FWTestMax"
                                           $FWTestAttempt++
-                                          Start-Sleep -Seconds 20
+                                          Start-Sleep -Seconds 10
                                       }
                                       else {
                                           Write-Error "Max retries reached"
                                           exit 1
                                       }
                                   }
-                              } while ($FWTestAttempt -lt $FWTestMax)
+                              } while ($FWTestAttempt -le $FWTestMax)
 
                               if($ShdResourceGroupName -NotLike '*neu*'){
                                 $cdnHostNameStripped = $env:cdnHostName -replace 'https://', ''
