@@ -166,7 +166,8 @@ $(".toggle-open").on("click", function (e) {
 
 var tabId = new Date().getTime();
 
-const sessionDurationInMinutes = 20;
+// 8 hour session = 8 * 60 = 480
+const sessionDurationInMinutes = 480;
 
 // When only N minutes of the session remain, notify the user via the modal
 const notifyUserWhenSessionMinutesRemain = 5;
