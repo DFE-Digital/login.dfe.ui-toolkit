@@ -166,6 +166,24 @@ $(".toggle-open").on("click", function (e) {
 
 var tabId = new Date().getTime();
 
+// 8 hour session = 8 * 60 = 480
+const sessionDurationInMinutes = 480;
+
+// When only N minutes of the session remain, notify the user via the modal
+const notifyUserWhenSessionMinutesRemain = 5;
+
+function getSessionNotifyUserInSeconds() {
+  return notifyUserWhenSessionMinutesRemain * 60 - 1;
+}
+
+function updateSessionCounterDisplay(totalSecondsRemaining) {
+  const minutesRemaining = Math.floor(totalSecondsRemaining / 60);
+  const secondsRemaining = totalSecondsRemaining % 60;
+
+  $("#minutes").html(minutesRemaining.toString().padStart(1, "0"));
+  $("#seconds").html(secondsRemaining.toString().padStart(2, "0"));
+}
+
 /* eslint-disable-next-line no-unused-vars */
 function sessionTimeout() {
   window.localStorage.removeItem("uri");
@@ -174,19 +192,22 @@ function sessionTimeout() {
     countTimeDiff();
   };
 
-  setTimeout(
-    function () {
-      // Tabs are set to check if other tabs running timer then set to 1
-      // when set to 0 means 'Stay signed in' is selected
-      window.localStorage.setItem("tabs", "1");
+  updateSessionCounterDisplay(getSessionNotifyUserInSeconds());
 
-      $(".session-timeout-overlay").show();
-      $("#modal-signin").focus();
+  // Convert sessionDurationInMinutes into seconds - getSessionNotifyUserInSeconds and convert the sum into milliseconds
+  const triggerCallbackInMilliseconds =
+    (sessionDurationInMinutes * 60 - getSessionNotifyUserInSeconds()) * 1000;
 
-      startTimer();
-    },
-    14 * 59 * 1000,
-  ); // minute * seconds * milliseconds e.g 14 * 59 * 1000
+  setTimeout(function () {
+    // Tabs are set to check if other tabs running timer then set to 1
+    // when set to 0 means 'Stay signed in' is selected
+    window.localStorage.setItem("tabs", "1");
+
+    $(".session-timeout-overlay").show();
+    $("#modal-signin").focus();
+
+    startTimer();
+  }, triggerCallbackInMilliseconds);
 }
 
 $("#modal-signin").on("click", () => {
@@ -203,7 +224,7 @@ $("#modal-signout").on("click", () => {
 var timeoutTimer;
 
 function startTimer() {
-  var timePlaceHolder = "4 minutes and 60 seconds";
+  var totalSecondsRemaining = getSessionNotifyUserInSeconds();
 
   timeoutTimer = setInterval(function () {
     if (window.localStorage.getItem("tabs") === "0") {
@@ -211,24 +232,14 @@ function startTimer() {
       location.reload();
     }
 
-    var timer = timePlaceHolder.split("and");
-    var minutes = parseInt(timer[0], 10);
-    var seconds = parseInt(timer[1], 10);
-    --seconds;
-    minutes = seconds < 0 ? --minutes : minutes;
-    seconds = seconds < 0 ? 59 : seconds;
-    seconds = seconds < 10 ? "0" + seconds : seconds;
+    totalSecondsRemaining--;
+    updateSessionCounterDisplay(totalSecondsRemaining);
 
-    $("#minutes").html(minutes);
-    $("#seconds").html(seconds);
-
-    if (minutes < 0 || (seconds <= 0 && minutes <= 0)) {
+    if (totalSecondsRemaining <= 0) {
       callTimeout();
     } else if (tabId) {
       countTimeDiff();
     }
-
-    timePlaceHolder = minutes + " minutes and " + seconds + " seconds";
   }, 1000);
 }
 
@@ -242,7 +253,7 @@ function countTimeDiff() {
   var diff = new Date().getTime() - Number(tabId);
   var minutes = diff / (60 * 1000);
 
-  if (minutes > 20) {
+  if (minutes > sessionDurationInMinutes) {
     window.localStorage.setItem("uri", location.pathname);
     clearInterval(timeoutTimer);
     location.reload();
