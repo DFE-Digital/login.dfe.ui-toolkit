@@ -124,7 +124,7 @@ stages:
             ${{ if eq(parameters.shaUse, 'true') }}:
               pool:
                 name: $[variables['${{var.key}}ShaPool']]
-                demands: Agent.Name -equals Agent-Linux-$(secRegionId)${{var.key}}-cg-0-ci-0
+                demands: Agent.Name -equals Agent-Linux-$(secRegionId)$[variables['${{var.key}}ShaCode']]-cg-0-ci-0
             jobs:
               - deployment: "Deploy_${{var.Key}}"
                 displayName: Updated content of CDN
