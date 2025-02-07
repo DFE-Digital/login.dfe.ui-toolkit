@@ -122,7 +122,9 @@ stages:
                 value: ${{ format('{0}{1}', var.key, 'ServCon') }}
             displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
             ${{ if eq(parameters.shaUse, 'true') }}:
-              pool: $[variables['${{var.key}}ShaPool']]
+              pool:
+                name: $[variables['${{var.key}}ShaPool']]
+                demands: Agent.Name -equals Agent-Linux-${{var.key}}-cg-0-ci-0
             jobs:
               - deployment: "Deploy_${{var.Key}}"
                 displayName: Updated content of CDN
