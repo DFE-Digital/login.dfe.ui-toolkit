@@ -122,11 +122,11 @@ stages:
                 value: ${{ format('{0}{1}', var.key, 'ServCon') }}
               - name: agShaCode
                 ${{ if in(var.key, 'tran','dev') }}:
-                  value: $(tranShaCode)
+                  value: tran
                 ${{ elseif in(var.key, 'test','pp') }}:
-                  value: $(ppShaCode)
+                  value: pp
                 ${{ elseif in(var.key, 'pr') }}:
-                  value: $(prhaCode)
+                  value: pr
             displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
             ${{ if eq(parameters.shaUse, 'true') }}:
               pool:
