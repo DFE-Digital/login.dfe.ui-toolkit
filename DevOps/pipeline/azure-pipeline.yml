@@ -120,9 +120,18 @@ stages:
                 value: "$(SubShortName)-shd"
               - name: ServConName
                 value: ${{ format('{0}{1}', var.key, 'ServCon') }}
+              - name: agShaCode
+                ${{ if in(var.key, 'tran','dev') }}:
+                  value: tran
+                ${{ elseif in(var.key, 'test','pp') }}:
+                  value: pp
+                ${{ elseif in(var.key, 'pr') }}:
+                  value: pr
             displayName: "Deployment [${{var.Key}}] ${{parameters.location}}"
             ${{ if eq(parameters.shaUse, 'true') }}:
-              pool: $[variables['${{var.key}}ShaPool']]
+              pool:
+                name: $[variables['${{var.key}}ShaPool']]
+                demands: Agent.Name -equals Agent-Linux-${{variables.secRegionId}}$(agShaCode)-cg-0-ci-0
             jobs:
               - deployment: "Deploy_${{var.Key}}"
                 displayName: Updated content of CDN
