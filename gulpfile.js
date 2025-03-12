@@ -46,7 +46,7 @@ const sassOptions = {
 const gdsUpgradeSassOptions = {
   errLogToConsole: true,
   outputStyle: "compressed",
-  includePaths: ["node_modules/govuk-frontend/govuk/assets"],
+  includePaths: ["node_modules/govuk-frontend/dist/govuk/assets"],
 };
 
 gulp.task("sass", async () =>
@@ -194,7 +194,7 @@ gulp.task("gds-upgrade-copy-assets", async () => {
   gulp
     .src(
       [
-        "node_modules/govuk-frontend/govuk/assets/**/*",
+        "node_modules/govuk-frontend/dist/govuk/assets/**/*",
         "src/gds-upgrade/assets/**/*",
       ],
       { encoding: false },
