@@ -194,7 +194,7 @@ stages:
 
                               $strMngClnId = $(az identity show -n $(storageMngIdName) -g $(ShdResourceGroupName) --query clientId) 
                               
-                              az login --identity --username $strMngClnId
+                              #az login --identity --username $strMngClnId
 
                               $FWTestAttempt = 1
                               $FWTestMax = 30
