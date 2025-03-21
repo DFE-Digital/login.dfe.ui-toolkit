@@ -118,6 +118,8 @@ stages:
                 value: $(SubShortName)-signin-kv
               - name: keyVaultResourceGroupName
                 value: "$(SubShortName)-shd"
+              - name: storageMngIdName
+                value: $(SubShortName)-$(secRegionId)signin-shd-str-id
               - name: ServConName
                 value: ${{ format('{0}{1}', var.key, 'ServCon') }}
               - name: agShaCode
@@ -189,7 +191,11 @@ stages:
                             ${{ if not(parameters.shaUse) }}:
                               workingDirectory: $(System.DefaultWorkingDirectory)
                             inlineScript: |
+
+                              $strMngClnId = $(az identity show -n $(storageMngIdName) -g $(ShdResourceGroupName) --query clientId) 
                               
+                              az login --identity --username $strMngClnId
+
                               $FWTestAttempt = 1
                               $FWTestMax = 30
                               
