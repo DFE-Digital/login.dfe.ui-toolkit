@@ -118,8 +118,6 @@ stages:
                 value: $(SubShortName)-signin-kv
               - name: keyVaultResourceGroupName
                 value: "$(SubShortName)-shd"
-              - name: storageMngIdName
-                value: $(SubShortName)-$(secRegionId)signin-shd-str-id
               - name: ServConName
                 value: ${{ format('{0}{1}', var.key, 'ServCon') }}
               - name: agShaCode
@@ -192,10 +190,6 @@ stages:
                               workingDirectory: $(System.DefaultWorkingDirectory)
                             inlineScript: |
 
-                              $strMngClnId = $(az identity show -n $(storageMngIdName) -g $(ShdResourceGroupName) --query clientId) 
-                              
-                              #az login --identity --username $strMngClnId
-
                               $FWTestAttempt = 1
                               $FWTestMax = 30
                               
@@ -266,28 +260,6 @@ stages:
                             arguments: "-keyVault $(keyVaultName) -keyVaultRg $(keyVaultResourceGroupName) -WhiteListIP $False -NotSelfHost $True"
                             workingDirectory: $(System.DefaultWorkingDirectory)
 
-                        - task: PowerShell@2
-                          displayName: "Release Branch Creation"
-                          condition: and(contains(variables['Build.SourceBranch'],'main'),eq('${{parameters.location}}', 'westeurope'))
-                          inputs:
-                            targetType: "inline"
-                            workingDirectory: $(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit
-                            script: |
-                              git config --global user.email "pipeline@example.com"
-                              git config --global user.name "Azure Devops Pipeline"
-
-                              $version = $(node -p "require('./package.json').version")
-                              npm version major -m "Upgrade to version %s"
-                              $newVersion = $(node -p "require('./package.json').version")
-                              write-output "package.json Version Current: $version"
-                              write-output "package.json Version New: $newVersion"
-
-                              $branch = "release/$newVersion"
-                              git push origin --delete $branch
-                              git checkout -b $branch
-
-                              git add *
-                              git push origin HEAD:$branch
 
           - ${{ if and(eq(var.key, 'pp'),eq(parameters.location, 'westeurope')) }}:
               - stage: releasebranch
