@@ -243,6 +243,8 @@ stages:
                                 }
                               }
 
+                              az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $cdnHostNameStripped --content-paths /* --verbose
+
                         - task: AzureCLI@2
                           displayName: Remove White-list of storage
                           condition: ${{not(parameters.shaUse)}}
