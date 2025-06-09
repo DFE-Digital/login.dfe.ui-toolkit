@@ -1,6 +1,7 @@
 const nunjucks = require("nunjucks");
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 
 const routes = require("./app/routes");
 
@@ -24,10 +25,28 @@ nunjucks.configure("app/gds-upgrade/views", {
   noCache: true,
 });
 
+app.use(cors({ origin: "*" }));
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'", "localhost:*"],
+      },
+    },
+    crossOriginOpenerPolicy: {
+      policy: "same-origin",
+    },
+    crossOriginResourcePolicy: {
+      policy: "cross-origin",
+    },
+  }),
+);
+
 app.set("view engine", "html");
-app.use("/", cors(), express.static("dist/"));
-app.use("/static", cors(), express.static("dist/"));
-app.use("/gds-upgrade", cors(), express.static("dist/gds-upgrade/"));
+app.use("/", express.static("dist/"));
+app.use("/static", express.static("dist/"));
+app.use("/gds-upgrade", express.static("dist/gds-upgrade/"));
 
 routes.bind(app);
 
