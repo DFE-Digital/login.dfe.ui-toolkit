@@ -21,7 +21,7 @@ pr:
       - main
 
 parameters:
-  - name: location
+  - name: locations
     type: object
     displayName: "Deployment locations (- westeurope & - northeurope)"
     default:
@@ -81,7 +81,7 @@ stages:
       - template: pipeline/components/checks/checks.yml@devopsTemplates
         parameters:
           AppDeploy: true
-          useRevisedLinting: true
+          custRegAuth: $(custRegAuth)
 
       - template: pipeline/buildToolkit.yml@devopsTemplates
         parameters:
