@@ -92,7 +92,7 @@ stages:
   - ${{ each location in parameters.locations }}:
     - ${{ each var in variables }}:
         - ${{ if and(in(var.key, 'tran','dev','test','pp','pr'), eq(var.value, 'true')) }}:
-            - stage: Deployment_${{var.Key}}
+            - stage: Deployment_${{var.Key}}_${{location}}
               dependsOn:
                 - scanApp
               variables:
