@@ -90,8 +90,8 @@ stages:
           nodeVersionSpec: "18.17.0"
 
   - ${{ each location in parameters.locations }}:
-    - ${{ each var in variables }}:
-        - ${{ if and(in(var.key, 'tran','dev','test','pp','pr'), eq(var.value, 'true')) }}:
+    - ${{each env in split(variables[location],',') }}:
+          - ${{ if eq(variables[env], 'true') }}:
             - stage: Deployment_${{var.Key}}_${{location}}
               dependsOn:
                 - scanApp
