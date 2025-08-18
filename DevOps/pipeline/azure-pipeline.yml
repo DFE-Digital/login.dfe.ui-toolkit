@@ -273,7 +273,7 @@ stages:
                 - stage: releasebranch
                   displayName: "GitHub Release Branch Creation"
                   dependsOn:
-                    - Deployment_${{env}}
+                    - Deployment_${{env}}_westeurope
                   jobs:
                     - template: pipeline/components/git/releaseCreation.yml@devopsTemplates
 
@@ -281,7 +281,7 @@ stages:
                 - stage: branchPrTag
                   displayName: "GitHub PR & Release Branch Tag"
                   dependsOn:
-                    - Deployment_${{env}}
+                    - Deployment_${{env}}_westeurope
                   jobs:
                     - template: pipeline/components/git/tagCreation.yml@devopsTemplates
                       parameters:
