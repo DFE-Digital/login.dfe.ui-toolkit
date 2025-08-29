@@ -2,11 +2,24 @@
   overflow: hidden;
   background: govuk-colour("blue");
   color: #fff;
-  padding-bottom: govuk-spacing(4);
+  padding-bottom: govuk-spacing(6);
 
   & .govuk-heading-xl,
+  & .govuk-heading-m,
+  a {
+    color: #fff !important;
+  }
+
   & .govuk-heading-m {
-    color: inherit;
+    margin-bottom: govuk-spacing(2);
+  }
+
+  a:active {
+    color: $govuk-text-colour !important;
+  }
+
+  & .govuk-breadcrumbs__list-item::before {
+    border-color: #fff !important;
   }
 }
 
@@ -82,3 +95,11 @@
 //   border-right: none;
 //   padding-right: 0;
 // }
+
+.app-header {
+  display: flex;
+}
+
+.app-header__service-name {
+  flex-grow: 2;
+}
