@@ -10,6 +10,10 @@
     color: #fff !important;
   }
 
+  & .govuk-heading-m {
+    margin-bottom: govuk-spacing(2);
+  }
+
   a:active {
     color: $govuk-text-colour !important;
   }
