@@ -2,7 +2,6 @@ const gulp = require("gulp");
 const sass = require("gulp-dart-sass");
 const concat = require("gulp-concat");
 const uglify = require("gulp-uglify-es").default;
-const cleanCSS = require("gulp-clean-css");
 
 const browserify = require("browserify");
 const source = require("vinyl-source-stream");
@@ -60,45 +59,9 @@ gulp.task("gds-upgrade-sass", async () =>
     .pipe(gulp.dest(gdsUpgradeOutput)),
 );
 
-/**
- * Copy govuk-template files to dist
- */
-
-gulp.task("copy-minify", async () => {
-  gulp
-    .src([
-      "node_modules/govuk_template_jinja/assets/stylesheets/fonts.css",
-      "node_modules/govuk_template_jinja/assets/stylesheets/govuk-template.css",
-    ])
-    .pipe(cleanCSS({ compatibility: "ie8" }))
-    .pipe(gulp.dest(`${output}govuk/`));
-
-  gulp
-    .src(["node_modules/govuk_template_jinja/assets/stylesheets/fonts/**/*"], {
-      encoding: false,
-    })
-    .pipe(gulp.dest(`${output}govuk/fonts`));
-});
-
 // /**
 //  * Copy some external dependencies
 //  */
-
-gulp.task("browserify", async () => {
-  const entries = path.join(
-    __dirname,
-    "src",
-    "pre-gds",
-    "javascript",
-    "vendors.js",
-  );
-  return browserify(entries)
-    .bundle()
-    .pipe(source("vendors.min.js"))
-    .pipe(buffer())
-    .pipe(uglify())
-    .pipe(gulp.dest("./dist/javascript/vendors/"));
-});
 
 gulp.task("gds-upgrade-browserify", async () => {
   const entries = path.join(
@@ -139,8 +102,6 @@ gulp.task("gds-upgrade-copy-js", async () => {
 //  */
 
 // script paths
-const jsFiles = "src/pre-gds/javascript/!(vendors)*.js";
-const jsDest = "dist/javascript";
 const gdsUpgradeJsFiles = "src/gds-upgrade/javascript/!(vendors)*.js";
 const gdsUpgradeJsDest = "dist/gds-upgrade/javascript";
 
@@ -164,16 +125,6 @@ function appendDfeIdentifier() {
 
   return through.obj(transform);
 }
-
-gulp.task("scripts", async () =>
-  gulp
-    .src(jsFiles)
-    .pipe(gulpIf(isDevEnv, sourcemaps.init()))
-    .pipe(concat("app.min.js"))
-    .pipe(uglify())
-    .pipe(gulpIf(isDevEnv, sourcemaps.write()))
-    .pipe(gulp.dest(jsDest)),
-);
 
 gulp.task("gds-upgrade-scripts", async () =>
   gulp
@@ -210,9 +161,6 @@ gulp.task("watch", async () => {
   gulp.watch(sassInput, gulp.series("sass")).on("change", (event) => {
     console.log(`File ${event} was changed, running tasks...`);
   });
-  gulp.watch(jsFiles, gulp.series("scripts")).on("change", (event) => {
-    console.log(`File ${event} was changed, running tasks...`);
-  });
 });
 
 gulp.task("gds-upgrade-watch", async () => {
@@ -232,10 +180,7 @@ gulp.task("gds-upgrade-watch", async () => {
 //  * Task definition
 //  */
 
-gulp.task(
-  "preGdsBuild",
-  gulp.series("sass", "scripts", "copy-minify", "copy-js", "browserify"),
-);
+gulp.task("preGdsBuild", gulp.series("sass", "copy-js"));
 gulp.task(
   "gdsUpgradeBuild",
   gulp.series(
