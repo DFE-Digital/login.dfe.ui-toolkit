@@ -20,27 +20,12 @@ console.log("Dev environment = ", isDevEnv);
  * SASS build
  */
 
-const sassInput = [
-  "./src/pre-gds/sass/*.scss",
-  "./src/pre-gds/sass/pages/*.scss",
-];
-const output = "./dist/css/";
-
 const gdsUpgradeSassInput = [
   "./src/gds-upgrade/sass/*.scss",
   "./src/gds-upgrade/sass/pages/*.scss",
 ];
 const gdsUpgradeSassWatch = ["./src/gds-upgrade/sass/**/*.scss"];
 const gdsUpgradeOutput = "./dist/gds-upgrade/css/";
-
-const sassOptions = {
-  errLogToConsole: true,
-  outputStyle: "compressed",
-  includePaths: [
-    "node_modules/govuk_frontend_toolkit/stylesheets",
-    "node_modules/govuk-elements-sass/public/sass",
-  ],
-};
 
 const gdsUpgradeSassOptions = {
   errLogToConsole: true,
@@ -49,10 +34,6 @@ const gdsUpgradeSassOptions = {
 };
 
 gulp.task("sass", async () =>
-  gulp.src(sassInput).pipe(sass(sassOptions)).pipe(gulp.dest(output)),
-);
-
-gulp.task("gds-upgrade-sass", async () =>
   gulp
     .src(gdsUpgradeSassInput)
     .pipe(sass(gdsUpgradeSassOptions))
@@ -63,7 +44,7 @@ gulp.task("gds-upgrade-sass", async () =>
 //  * Copy some external dependencies
 //  */
 
-gulp.task("gds-upgrade-browserify", async () => {
+gulp.task("browserify", async () => {
   const entries = path.join(
     __dirname,
     "src",
@@ -80,15 +61,6 @@ gulp.task("gds-upgrade-browserify", async () => {
 });
 
 gulp.task("copy-js", async () => {
-  gulp
-    .src([
-      "node_modules/jquery/dist/jquery.min.js",
-      "node_modules/select2/dist/js/select2.min.js",
-    ])
-    .pipe(gulp.dest("./dist/javascript/vendors/"));
-});
-
-gulp.task("gds-upgrade-copy-js", async () => {
   gulp
     .src([
       "node_modules/jquery/dist/jquery.min.js",
@@ -126,7 +98,7 @@ function appendDfeIdentifier() {
   return through.obj(transform);
 }
 
-gulp.task("gds-upgrade-scripts", async () =>
+gulp.task("scripts", async () =>
   gulp
     .src(gdsUpgradeJsFiles)
     .pipe(gulpIf(isDevEnv, sourcemaps.init()))
@@ -141,7 +113,7 @@ gulp.task("gds-upgrade-scripts", async () =>
  * Copy static assets
  */
 
-gulp.task("gds-upgrade-copy-assets", async () => {
+gulp.task("copy-assets", async () => {
   gulp
     .src(
       [
@@ -158,19 +130,11 @@ gulp.task("gds-upgrade-copy-assets", async () => {
  */
 
 gulp.task("watch", async () => {
-  gulp.watch(sassInput, gulp.series("sass")).on("change", (event) => {
+  gulp.watch(gdsUpgradeSassWatch, gulp.series("sass")).on("change", (event) => {
     console.log(`File ${event} was changed, running tasks...`);
   });
-});
-
-gulp.task("gds-upgrade-watch", async () => {
   gulp
-    .watch(gdsUpgradeSassWatch, gulp.series("gds-upgrade-sass"))
-    .on("change", (event) => {
-      console.log(`File ${event} was changed, running tasks...`);
-    });
-  gulp
-    .watch(gdsUpgradeJsFiles, gulp.series("gds-upgrade-scripts"))
+    .watch(gdsUpgradeJsFiles, gulp.series("scripts"))
     .on("change", (event) => {
       console.log(`File ${event} was changed, running tasks...`);
     });
@@ -180,16 +144,9 @@ gulp.task("gds-upgrade-watch", async () => {
 //  * Task definition
 //  */
 
-gulp.task("preGdsBuild", gulp.series("sass", "copy-js"));
 gulp.task(
-  "gdsUpgradeBuild",
-  gulp.series(
-    "gds-upgrade-sass",
-    "gds-upgrade-scripts",
-    "gds-upgrade-copy-assets",
-    "gds-upgrade-browserify",
-    "gds-upgrade-copy-js",
-  ),
+  "build-gds",
+  gulp.series("sass", "scripts", "copy-assets", "browserify", "copy-js"),
 );
 
 gulp.task("run-server", async () => {
@@ -199,5 +156,3 @@ gulp.task("run-server", async () => {
   server.stderr.on("data", outputToConsole);
   console.log("server is running...");
 });
-
-gulp.task("build-gds", gulp.series("preGdsBuild", "gdsUpgradeBuild"));
