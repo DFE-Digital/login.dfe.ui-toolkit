@@ -1,3 +1,5 @@
+const Cookies = require("js-cookie");
+
 var COOKIE_NAMES = {
   PREFERENCES_SET: "cookies_preferences_set",
   POLICY: "cookies_policy",
@@ -15,36 +17,20 @@ var GOVUK_COOKIE_OPTIONS = {
 
 var GovUKCookie = {
   getRaw: function (name) {
-    if (!window.Cookies) {
-      return;
-    }
-
-    return window.Cookies.get(name);
+    return Cookies.get(name);
   },
   get: function (name) {
-    if (!window.Cookies) {
-      return;
-    }
-
-    var value = window.Cookies.get(name);
+    var value = Cookies.get(name);
     if (value) {
       return JSON.parse(value);
     }
     return value;
   },
   set: function (name, value) {
-    if (!window.Cookies) {
-      return;
-    }
-
-    return window.Cookies.set(name, value, GOVUK_COOKIE_OPTIONS);
+    return Cookies.set(name, value, GOVUK_COOKIE_OPTIONS);
   },
   remove: function (name) {
-    if (!window.Cookies) {
-      return;
-    }
-
-    return window.Cookies.remove(name, GOVUK_COOKIE_OPTIONS);
+    return Cookies.remove(name, GOVUK_COOKIE_OPTIONS);
   },
 };
 
