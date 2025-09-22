@@ -1,3 +1,15 @@
+require("./_cookies.js");
+require("./_details.polyfill.js");
+require("./_filter-boxes.js");
+require("./_filters.js");
+require("./_modal.js");
+require("./_serviceConfigForm.js");
+require("./_show-hide-content.js");
+require("./_tablesort.js");
+require("./_tooltip.js");
+require("./_validate-password.js");
+require("./_validation.js");
+
 var NSA = NSA || {};
 
 NSA = {
@@ -184,7 +196,6 @@ function updateSessionCounterDisplay(totalSecondsRemaining) {
   $("#seconds").html(secondsRemaining.toString().padStart(2, "0"));
 }
 
-/* eslint-disable-next-line no-unused-vars */
 function sessionTimeout() {
   window.localStorage.removeItem("uri");
 
@@ -259,6 +270,10 @@ function countTimeDiff() {
     location.reload();
   }
 }
+
+// exports
+
+window.sessionTimeout = sessionTimeout;
 
 // #endregion
 

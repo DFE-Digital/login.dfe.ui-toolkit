@@ -1,20 +1,15 @@
 const gulp = require("gulp");
 const sass = require("gulp-dart-sass");
-const concat = require("gulp-concat");
 const uglify = require("gulp-uglify-es").default;
 
 const browserify = require("browserify");
 const source = require("vinyl-source-stream");
 const buffer = require("vinyl-buffer");
 const path = require("path");
-const sourcemaps = require("gulp-sourcemaps");
-const gulpIf = require("gulp-if");
+// const sourcemaps = require("gulp-sourcemaps");
 const child = require("child_process");
 
 const through = require("through2");
-
-const isDevEnv = process.env.NODE_ENV === "development";
-console.log("Dev environment = ", isDevEnv);
 
 /**
  * SASS build
@@ -44,7 +39,7 @@ gulp.task("sass", async () =>
 //  * Copy some external dependencies
 //  */
 
-gulp.task("browserify", async () => {
+gulp.task("vendor-scripts", async () => {
   const entries = path.join(
     __dirname,
     "src",
@@ -52,12 +47,16 @@ gulp.task("browserify", async () => {
     "javascript",
     "vendors.js",
   );
-  return browserify(entries)
-    .bundle()
-    .pipe(source("vendors.min.js"))
-    .pipe(buffer())
-    .pipe(uglify())
-    .pipe(gulp.dest("./dist/gds-upgrade/javascript/vendors/"));
+  return (
+    browserify(entries)
+      .bundle()
+      .pipe(source("vendors.min.js"))
+      .pipe(buffer())
+      // .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(uglify())
+      // .pipe(sourcemaps.write("."))
+      .pipe(gulp.dest("./dist/gds-upgrade/javascript/vendors/"))
+  );
 });
 
 gulp.task("copy-js", async () => {
@@ -73,16 +72,10 @@ gulp.task("copy-js", async () => {
 //  * Build JS script
 //  */
 
-// script paths
-const gdsUpgradeJsFiles = "src/gds-upgrade/javascript/!(vendors)*.js";
-const gdsUpgradeJsDest = "dist/gds-upgrade/javascript";
-
-// appendDfeIdentifier appends a variable 'dfeIdentifier' to the bundle output.
-// Within browser tools -> console, type 'dfeIdentifier' which will then return
-// the date/time of the bundle build. Helps validate whether the browser has
-// downloaded the expected version of the bundle i.e. caching (browser/CDN/etc)
+// Appends the date/time of the bundle build to help validate whether the browser
+// has downloaded the expected version of the bundle i.e. caching (browser/CDN/etc).
 function appendDfeIdentifier() {
-  const dfeIdentifier = `const dfeIdentifier = '${new Date().toISOString()}';`;
+  const dfeIdentifier = `// ${new Date().toISOString()}`;
 
   function transform(file, encoding, cb) {
     if (file.isNull()) {
@@ -99,14 +92,15 @@ function appendDfeIdentifier() {
 }
 
 gulp.task("scripts", async () =>
-  gulp
-    .src(gdsUpgradeJsFiles)
-    .pipe(gulpIf(isDevEnv, sourcemaps.init()))
-    .pipe(concat("app.min.js"))
+  browserify("src/gds-upgrade/javascript/app.js")
+    .bundle()
+    .pipe(source("app.min.js"))
+    .pipe(buffer())
+    // .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(uglify())
     .pipe(appendDfeIdentifier())
-    .pipe(gulpIf(isDevEnv, sourcemaps.write()))
-    .pipe(gulp.dest(gdsUpgradeJsDest)),
+    // .pipe(sourcemaps.write("."))
+    .pipe(gulp.dest("./dist/gds-upgrade/javascript/")),
 );
 
 /**
@@ -134,7 +128,7 @@ gulp.task("watch", async () => {
     console.log(`File ${event} was changed, running tasks...`);
   });
   gulp
-    .watch(gdsUpgradeJsFiles, gulp.series("scripts"))
+    .watch("src/gds-upgrade/javascript/*.js", gulp.series("scripts"))
     .on("change", (event) => {
       console.log(`File ${event} was changed, running tasks...`);
     });
@@ -146,7 +140,7 @@ gulp.task("watch", async () => {
 
 gulp.task(
   "build-gds",
-  gulp.series("sass", "scripts", "copy-assets", "browserify", "copy-js"),
+  gulp.series("sass", "scripts", "copy-assets", "vendor-scripts", "copy-js"),
 );
 
 gulp.task("run-server", async () => {
