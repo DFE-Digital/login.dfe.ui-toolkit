@@ -10,14 +10,6 @@ const port = process.env.PORT || 3001;
 
 const https = require("https");
 
-// Choose what sample pages you want to serve: pre-gds or GDS upgrade
-
-// nunjucks.configure('app/pre-gds/views', {
-//   express: app,
-//   autoescape: true,
-//   watch: true,
-//   noCache: true,
-// });
 nunjucks.configure("app/gds-upgrade/views", {
   express: app,
   autoescape: true,

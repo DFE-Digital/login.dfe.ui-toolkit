@@ -31,7 +31,3 @@ Before committing a final version to be merged:
     npm run build
 
 It will only compile and will not add sourcemaps as these files are then released to prod.
-
-NOTE: we are currently migrating the styles to the latest GDS and we are keeping both versions running in parallel.
-The dist folder will contain current files and a subfolder gds-upgrade where the latest version will sit temporarily.
-The src folder will be split into the two versions: pre-gds and gds-upgrade.
