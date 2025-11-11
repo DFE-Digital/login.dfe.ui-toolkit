@@ -14,7 +14,7 @@ NSA.filters = {
       const header = filterBox.find(".container-head");
       const title = header.find(".option-select-label");
       const checkboxes = filterBox.find("input:checkbox");
-      const button = $("<button />").addClass("js-container-head");
+      const button = $("<button type='button'/>").addClass("js-container-head");
       const checkCount = $("<div />")
         .addClass("js-selected-counter")
         .text(() => checkCountText(checkboxes));
