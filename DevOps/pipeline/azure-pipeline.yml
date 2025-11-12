@@ -62,11 +62,11 @@ variables:
   - name: tran
     value: ${{ eq(parameters.tran, 'true') }}
   - name: dev
-    value: ${{ or(eq(parameters.dev, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}
+    value: ${{ or(parameters.dev, and(contains(variables['Build.SourceBranch'],'feature'), not(eq(variables['Build.Reason'], 'Manual')))) }}
   - name: test
-    value: ${{ or(eq(parameters.test, 'true'), contains(variables['Build.SourceBranch'],'feature')) }}
+    value: ${{ or(parameters.test, and(contains(variables['Build.SourceBranch'],'feature'), not(eq(variables['Build.Reason'], 'Manual')))) }}
   - name: pp
-    value: ${{ and(or(eq(parameters.pp, 'true'), contains(variables['Build.SourceBranch'],'main')), not(contains(variables['Build.SourceVersionMessage'],'Upgrade to version'))) }}
+    value: ${{ and(or(eq(parameters.pp, 'true'), and(contains(variables['Build.SourceBranch'],'main'), not(eq(variables['Build.Reason'], 'Manual')))), not(contains(variables['Build.SourceVersionMessage'],'Upgrade to version'))) }}
   - name: pr
     value: ${{ or(eq(parameters.pr, 'true'), contains(variables['Build.SourceBranch'],'release')) }}
   - name: applicationFullName
@@ -204,11 +204,15 @@ stages:
 
                                   do {
                                       try {
-                                          write-output "Removing files from storage account"
 
-                                          az storage blob delete-batch --account-name $storageAccountName --source $(UIContainerName) --auth-mode=login
-                                          if ($? -eq $false) {
-                                            throw 'Failed to  delete-batch on storage account'
+                                          $removeFolders = Get-ChildItem -Path "$(System.DefaultWorkingDirectory)/login.dfe.ui-toolkit/dist" -Directory | Select-Object Name
+                                          foreach ($removeFolder in $removeFolders) {
+                                            Write-Host "Removing files from storage account of $($removeFolder.Name)/*"
+
+                                            az storage blob delete-batch --account-name $storageAccountName --source $(UIContainerName) --pattern "$($removeFolder.Name)/*" --auth-mode=login
+                                            if ($? -eq $false) {
+                                              throw "Failed to  delete-batch on storage account of $pattern"
+                                            }
                                           }
                                           
                                           write-output "Uploading files to storage account"
@@ -235,7 +239,6 @@ stages:
                                   if($ShdResourceGroupName -NotLike '*neu*'){
                                     $cdnHostNameStripped = $env:cdnHostName -replace 'https://', ''
                                     write-output "Purging CDN - this will take several minutes"
-                                    az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $cdnHostNameStripped --content-paths /* --verbose
                                     az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $cdnHostNameStripped --content-paths /* --verbose
 
                                     if($env:newCdnV){
