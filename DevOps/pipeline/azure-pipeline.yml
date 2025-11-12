@@ -240,7 +240,6 @@ stages:
                                     $cdnHostNameStripped = $env:cdnHostName -replace 'https://', ''
                                     write-output "Purging CDN - this will take several minutes"
                                     az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $cdnHostNameStripped --content-paths /* --verbose
-                                    #az afd endpoint purge --resource-group $(frontDoorCdnResourceGroupName) --profile-name $(frontDoorCdnProfileName) --endpoint-name $(frontDoorCdnEndpointName) --domains $cdnHostNameStripped --content-paths /* --verbose
 
                                     if($env:newCdnV){
                                       write-output "Incrementing keyvault value cdnAssetsVersion by 0.1"
