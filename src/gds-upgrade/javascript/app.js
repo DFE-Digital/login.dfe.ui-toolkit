@@ -2,6 +2,7 @@ require("./_cookies.js");
 require("./_details.polyfill.js");
 require("./_filter-boxes.js");
 require("./_filters.js");
+require("./_select-deselect-all-checkboxes.js");
 require("./_modal.js");
 require("./_serviceConfigForm.js");
 require("./_show-hide-content.js");
